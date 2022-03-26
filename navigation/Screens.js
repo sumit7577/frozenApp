@@ -11,6 +11,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Address from "../screens/manageAddress";
+import EditAddress from '../screens/editAddress';
 
 const Stack = createStackNavigator();
 const TabNav = createBottomTabNavigator();
@@ -20,6 +21,7 @@ function ProfileStack(props) {
     <Stack.Navigator initialRouteName="Profile" mode="card" headerMode="screen">
       <Stack.Screen name="Profile" component={Profile} options={{headerShown:false}} />
       <Stack.Screen name="ManageAddress" component={Address} options={{headerShown:false}} />
+      <Stack.Screen name="EditAddress" component={EditAddress} options={{headerShown:false}} />
       {/* <Stack.Screen name="ChangePassword" component={PageView} options={{ title: 'Page View', backgroundColor: '#FFFFFF' }} /> */}
     </Stack.Navigator>
   );

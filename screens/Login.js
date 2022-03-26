@@ -14,7 +14,7 @@ class Login extends React.Component {
     const { navigation } = this.props;
     const onLogin = () => {
       const { updateUser } = this.props;
-      updateUser({ firstName: 'test', lastName: 'test' });
+      updateUser({ firstName: 'test', lastName: 'test',address:["RAY TEST (DEFAULT) 55","TEST ROAD BIRMINGHAM, ENG B12 5TR UNITED KINGDOM"],number:"+44790337333" });
     }
 
     return (
