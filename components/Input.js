@@ -1,9 +1,7 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import PropTypes from 'prop-types';
-
 import { Input } from "galio-framework";
-
 import Icon from './Icon';
 import { nowTheme } from "../constants";
 
@@ -56,7 +54,7 @@ ArInput.propTypes = {
 
 const styles = StyleSheet.create({
   input: {
-    borderRadius: 30,
+    borderRadius: 8,
     borderColor: nowTheme.COLORS.BORDER,
     height: 44,
     backgroundColor: '#FFFFFF'

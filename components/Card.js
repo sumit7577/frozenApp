@@ -38,7 +38,7 @@ class Card extends React.Component {
                 </Text>
               </Block>}
             </Block>
-        </Block >
+        </Block>
         );
   }
 }

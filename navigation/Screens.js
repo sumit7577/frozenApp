@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity,Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from '../screens/Home';
 import Stores from '../screens/store';
@@ -12,6 +12,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Address from "../screens/manageAddress";
 import EditAddress from '../screens/editAddress';
+import Search from '../screens/Search';
 
 const Stack = createStackNavigator();
 const TabNav = createBottomTabNavigator();
@@ -19,9 +20,9 @@ const TabNav = createBottomTabNavigator();
 function ProfileStack(props) {
   return (
     <Stack.Navigator initialRouteName="Profile" mode="card" headerMode="screen">
-      <Stack.Screen name="Profile" component={Profile} options={{headerShown:false}} />
-      <Stack.Screen name="ManageAddress" component={Address} options={{headerShown:false}} />
-      <Stack.Screen name="EditAddress" component={EditAddress} options={{headerShown:false}} />
+      <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+      <Stack.Screen name="ManageAddress" component={Address} options={{ headerShown: false }} />
+      <Stack.Screen name="EditAddress" component={EditAddress} options={{ headerShown: false }} />
       {/* <Stack.Screen name="ChangePassword" component={PageView} options={{ title: 'Page View', backgroundColor: '#FFFFFF' }} /> */}
     </Stack.Navigator>
   );
@@ -30,9 +31,18 @@ function ProfileStack(props) {
 function HomeStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen" initialRouteName='Homepage'>
-      <Stack.Screen name="Homepage" component={Home} options={{headerShown: false}} />
+      <Stack.Screen name="Homepage" component={Home} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
+}
+
+function SearchStack(props) {
+  return (
+    <Stack.Navigator mode="card" headerMode="screen" initialRouteName='SearchHome'>
+      <Stack.Screen name="SearchHome" component={Search} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  )
+
 }
 
 function StoreStack(props) {
@@ -159,7 +169,7 @@ export default function AppStack(props) {
     <TabNav.Navigator tabBar={(props) => <CustomBar {...props} />}
       initialRouteName="Home">
       <TabNav.Screen name="Account" component={ProfileStack} />
-      <TabNav.Screen name="Search" component={ProfileStack} />
+      <TabNav.Screen name="Search" component={SearchStack} />
       <TabNav.Screen name="Home" component={HomeStack} />
       <TabNav.Screen name="Favourites" component={ProfileStack} />
       <TabNav.Screen name="Cart" component={StoreStack} />

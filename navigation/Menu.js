@@ -8,7 +8,6 @@ import {
   Linking
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
-import { useSafeArea } from "react-native-safe-area-context";
 import Images from "../constants/Images";
 import { DrawerItem as DrawerCustomItem, Icon } from "../components";
 

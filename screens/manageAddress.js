@@ -11,7 +11,9 @@ export default function ManageAddress(props) {
     const { navigation } = props;
     const { user } = useSelector(state => state);
     const editAddress = (index)=>{
-        console.log(index);
+        navigation.navigate("EditAddress",{
+            id:index,
+        })
     }
     return (
         <SafeAreaView>
