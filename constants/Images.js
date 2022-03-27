@@ -23,11 +23,11 @@ const homeLogo = require("../assets/branding/homepage.png");
 const addressLogo = require("../assets/branding/address.jpg");
 
 const Brands = [
-  {text: 'View article',path: require('../assets/imgs/demo.jpeg')},
-  {text: 'View article',path: require('../assets/imgs/demo2.jpeg')},
-  {text: 'View article',path: require('../assets/imgs/demo3.jpeg')},
-  {text: 'View article',path: require('../assets/imgs/demo4.png')},
-  {text: 'View article',path: require('../assets/imgs/demo5.png')},
+  {text: 'COKE & FANTA',path: require('../assets/imgs/demo.jpeg')},
+  {text: 'SLUSHY JACK`S',path: require('../assets/imgs/demo2.jpeg')},
+  {text: 'TANGO ICE BLAST',path: require('../assets/imgs/demo3.jpeg')},
+  {text: 'FRUITINA',path: require('../assets/imgs/demo4.png')},
+  {text: 'QUENCH',path: require('../assets/imgs/demo5.png')},
 ]
 
 const Categories=[

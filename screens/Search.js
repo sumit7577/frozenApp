@@ -12,7 +12,7 @@ export default function Search(props) {
             <Block style={styles.container}>
                 <Block flex style={styles.header}>
                     <Text style={{ fontSize: nowTheme.SIZES.FONT * 2, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>Search</Text>
-                    <Input placeholder="Search all Products" style={{ borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: 55, marginTop: 15, }} />
+                    <Input placeholder="Search all Products" style={styles.inputs} value={props.route?.params?.name?props.route.params.name:""} />
                 </Block>
                 <Block style={{ flex: 3.8 }}>
                     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={true}>
@@ -42,5 +42,6 @@ const styles = StyleSheet.create({
     header: {
         flex: 1,
         marginTop: 10,
-    }
+    }, 
+    inputs: { borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: 55, marginTop: 15, }
 })

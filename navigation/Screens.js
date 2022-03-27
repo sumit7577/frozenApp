@@ -1,11 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from '../screens/Home';
 import Stores from '../screens/store';
 import Profile from '../screens/Profile';
 import { nowTheme } from '../constants';
-import { Icon } from '../components';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -48,29 +47,7 @@ function SearchStack(props) {
 function StoreStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen">
-      <Stack.Screen name="Stores" component={Stores} options={{
-        title: "Store",
-        headerStyle: { backgroundColor: '#3467eb' },
-        headerTitleStyle: { marginLeft: -20, color: nowTheme.COLORS.WHITE },
-        headerLeftContainerStyle: { marginLeft: 20 },
-        headerRightContainerStyle: { marginRight: 20 },
-        headerRight: () => (
-          <TouchableOpacity>
-            <Icon family="Font-Awesome"
-              size={22}
-              color={nowTheme.COLORS.WHITE}
-              name='shopping-cart' />
-          </TouchableOpacity>
-        ),
-        headerLeft: () => (
-          <TouchableOpacity>
-            <Icon family="Font-Awesome"
-              size={22}
-              color={nowTheme.COLORS.WHITE}
-              name='user' />
-          </TouchableOpacity>
-        )
-      }}>
+      <Stack.Screen name="Stores" component={Stores} options={{headerShown:false}}>
       </Stack.Screen>
     </Stack.Navigator>
   )
