@@ -23,11 +23,11 @@ const homeLogo = require("../assets/branding/homepage.png");
 const addressLogo = require("../assets/branding/address.jpg");
 
 const Brands = [
-  {text: 'COKE & FANTA',path: require('../assets/imgs/demo.jpeg')},
-  {text: 'SLUSHY JACK`S',path: require('../assets/imgs/demo2.jpeg')},
-  {text: 'TANGO ICE BLAST',path: require('../assets/imgs/demo3.jpeg')},
-  {text: 'FRUITINA',path: require('../assets/imgs/demo4.png')},
-  {text: 'QUENCH',path: require('../assets/imgs/demo5.png')},
+  {text: 'COKE & FANTA',path: require('../assets/branding/coke.png'),tag:"All Coca-Cola"},
+  {text: 'SLUSHY JACK`S',path: require('../assets/branding/slushjack.png'),tag:"All Slushy Jack"},
+  {text: 'TANGO ICE BLAST',path: require('../assets/branding/tango.png'),tag:"All Tango Ice"},
+  {text: 'FRUITINA',path: require('../assets/branding/fruitina.png'),tag:"All Frutina"},
+  {text: 'QUENCH',path: require('../assets/branding/qunch.png'),tag:"All Quench"},
 ]
 
 const Categories=[

@@ -9,9 +9,9 @@ import { connect } from 'react-redux';
 
 const { width, height } = Dimensions.get('screen');
 function CompleteRegistration(props) {
-    const {...config} = props;
+    const {updateUser} = props;
     const register = ()=>{
-        config.updateUser({ firstName: 'test', lastName: 'test' });
+        updateUser({ firstName: 'test', lastName: 'test' });
     }
     return (
         <SafeAreaView>

@@ -10,7 +10,7 @@ import ArButton from './Button';
 
 class Card extends React.Component {
   render() {
-    const { navigation, item, horizontal, full, style, ctaColor, imageStyle, ctaRight, titleStyle, isText, isImage, button } = this.props;
+    const { navigation, horizontal, full, style, ctaColor, imageStyle, ctaRight, titleStyle, isText, isImage, button,name,imageUri,tags,uri } = this.props;
     const imageStyles = [full ? styles.fullImage : styles.horizontalImage, imageStyle];
     const titleStyles = [styles.cardTitle, titleStyle];
     const cardContainer = [button ? styles.buttonCard : styles.card, style];
@@ -23,7 +23,7 @@ class Card extends React.Component {
       <Block row={horizontal} card flex style={cardContainer}>
         <Block flex space="between" style={styles.cardDescription}>
           {isImage ? <Block flex center style={imgContainer} >
-            <Image source={item.path} style={imageStyles} />
+            {uri?<Image source={{uri:imageUri}} style={imageStyles} /> :<Image source={imageUri} style={imageStyles} />}
           </Block> :
             <Block flex center style={styles.icon} >
               <Icon
@@ -34,21 +34,21 @@ class Card extends React.Component {
             </Block>}
           {isText == false ? <View /> : <Block flex style={titleStyles} >
             <Text style={styles.title} bold>
-              {item.title}
+              {name}
             </Text>
           </Block>}
           {button ? <ArButton color={nowTheme.COLORS.THEME} border style={{ backgroundColor: nowTheme.COLORS.WHITE, width: "100%", height: 35, marginLeft: 0 }} onPress={() => {
-            navigation.navigate("Search")
-            navigation.navigate("SearchHome", {
-              name: item.text,
-            });
+            navigation.navigate("Search",{screen:"SearchHome", params:{
+              name: name,
+              tag:tags,
+            }});
           }}>
             <Text
-              style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
+              style={{ fontFamily: nowTheme.FONTFAMILY.BOLD,textAlign:"center" }}
               size={12}
               color={nowTheme.COLORS.THEME}
             >
-              {item.text}
+              {name}
             </Text>
           </ArButton> : null}
         </Block>
@@ -89,9 +89,9 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: 'montserrat-regular',
     color: nowTheme.COLORS.ACTIVE,
-    fontSize: 24,
+    fontSize: 8,
     textAlign: 'center',
-    top: 20
+    top: 5
   },
   icon: {
     top: 20

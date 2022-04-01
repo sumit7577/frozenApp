@@ -11,8 +11,16 @@ class Home extends React.Component {
   constructor() {
     super()
     this.delayDate = ["4 April 2022", "5 April 2022"]
+    this.state = {
+      list: []
+    }
+  }
+  componentDidMount() {
+  }
+  componentDidUpdate() {
   }
   render() {
+    
     const { ...property } = this.props;
     return (
       <Block flex style={{ marginTop: "10%" }}>
@@ -29,15 +37,19 @@ class Home extends React.Component {
             })}
           </Block>
         </Block>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {_.map(_.chunk(Brands, 2), (element, index) => (
-            <Block flex row center key={index} style={styles.home}>
-              {_.map(element, (item, i) => (
-                  <Card item={item} navigation={property.navigation} horizontal style={{ margin: 8 }} button key={i} isText={false} isImage />
+        <Block style={{ flex: 8 }}>
+          {Brands.length === 0 ? (<Text>Loading...</Text>) :
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {_.map(_.chunk(Brands, 2), (element, index) => (
+                <Block flex row center key={index} style={styles.home}>
+                  {_.map(element, (item, i) => (
+                    <Card name={item.text} tags={item.tag} imageUri={item.path} navigation={property.navigation} horizontal style={{ margin: 8 }} button key={i} isText={false} isImage />
+                  ))}
+                </Block>
               ))}
-            </Block>
-          ))}
-        </ScrollView>
+            </ScrollView>
+          }
+        </Block>
       </Block>
     );
   }
@@ -46,14 +58,14 @@ class Home extends React.Component {
 const { width, height } = Dimensions.get("screen");
 const styles = StyleSheet.create({
   home: {
-    width: width * .95
+    width: width * .95,
   },
   top: {
     flexDirection: "row",
     width: width * .95,
     backgroundColor: nowTheme.COLORS.THEME,
     marginLeft: 12,
-    flex: 2.5,
+    flex: 1.5,
     justifyContent: "space-between",
     alignItems: "center",
     borderRadius: 5,
