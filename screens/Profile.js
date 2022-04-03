@@ -31,7 +31,7 @@ const Profile = (props) => {
           <Text style={{ fontSize: 22,marginTop:8, fontFamily: nowTheme.FONTFAMILY.BOLD }}>{fullName ? fullName : "Bob Smith"}</Text>
           <Text style={{ fontSize: 15,marginTop:8, fontFamily: nowTheme.FONTFAMILY.BOLD }}>{user.user.user.email ? user.user.user.email : "ACME CINEMA LTD RAY@ TEST.COM"}</Text>
           <Text style={{ marginLeft:20, fontSize: 15,marginTop:8, fontFamily: nowTheme.FONTFAMILY.BOLD }}>{user.user.user.address ? user.user.user.address : "RAY TEST (DEFAULT) 55 TEST ROAD BIRMINGHAM, ENG B12 5TR UNITED KINGDOM"}</Text>
-          <Text style={{ fontSize: 15,marginTop:8, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{user.user.user.phone ? user.user.user.phone : "+44790337333"}</Text>
+          <Text style={{ fontSize: 15,marginTop:8, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{user.user.user.number ? user.user.user.number : "+44790337333"}</Text>
         </View>
 
         <View style={{flex:4,alignItems: "center"}}>

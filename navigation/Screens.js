@@ -12,6 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Address from "../screens/manageAddress";
 import EditAddress from '../screens/editAddress';
 import Search from '../screens/Search';
+import SearchDetail from '../screens/searchDetail';
 
 const Stack = createStackNavigator();
 const TabNav = createBottomTabNavigator();
@@ -39,6 +40,7 @@ function SearchStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen" initialRouteName='SearchHome'>
       <Stack.Screen name="SearchHome" component={Search} options={{ headerShown: false }} />
+      <Stack.Screen name="SearchDetail" component={SearchDetail} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 

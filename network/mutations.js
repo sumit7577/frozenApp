@@ -1,5 +1,5 @@
-export const GETPRODUCT = `{
-    products (first: 3) {
+export const GETUSER = `{
+    customer (first: 3) {
       edges {
         node {
           id

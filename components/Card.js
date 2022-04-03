@@ -1,7 +1,7 @@
 import React from 'react';
 import { withNavigation } from '@react-navigation/compat';
 import PropTypes from 'prop-types';
-import { StyleSheet, Image, View } from 'react-native';
+import { StyleSheet, Image, View,TouchableOpacity } from 'react-native';
 import { Block, Text, theme } from 'galio-framework';
 import _ from 'lodash';
 import { nowTheme } from '../constants';
@@ -10,7 +10,7 @@ import ArButton from './Button';
 
 class Card extends React.Component {
   render() {
-    const { navigation, horizontal, full, style, ctaColor, imageStyle, ctaRight, titleStyle, isText, isImage, button,name,imageUri,tags,uri } = this.props;
+    const { navigation, horizontal, full, style, ctaColor, imageStyle, ctaRight, titleStyle, isText, isImage, button, name, imageUri, tags, uri,item } = this.props;
     const imageStyles = [full ? styles.fullImage : styles.horizontalImage, imageStyle];
     const titleStyles = [styles.cardTitle, titleStyle];
     const cardContainer = [button ? styles.buttonCard : styles.card, style];
@@ -22,9 +22,12 @@ class Card extends React.Component {
     return (
       <Block row={horizontal} card flex style={cardContainer}>
         <Block flex space="between" style={styles.cardDescription}>
-          {isImage ? <Block flex center style={imgContainer} >
-            {uri?<Image source={{uri:imageUri}} style={imageStyles} /> :<Image source={imageUri} style={imageStyles} />}
-          </Block> :
+          {isImage ?
+            <Block flex center style={imgContainer} >
+              {uri ?
+                <Image source={{ uri: imageUri }} style={imageStyles} /> : <Image source={imageUri} style={imageStyles} />}
+            </Block>
+            :
             <Block flex center style={styles.icon} >
               <Icon
                 family="Font-Awesome"
@@ -32,19 +35,31 @@ class Card extends React.Component {
                 name={item.icon}
               />
             </Block>}
-          {isText == false ? <View /> : <Block flex style={titleStyles} >
-            <Text style={styles.title} bold>
-              {name}
-            </Text>
-          </Block>}
+          {isText == false ? <View /> :
+            <Block flex style={titleStyles} >
+              <TouchableOpacity onPress={()=>navigation.navigate("SearchDetail",{
+                name:name,
+                desc:item.detail,
+                image:imageUri,
+                price:item.price
+              })}>
+                <Text style={styles.title} bold>
+                  {name}
+                </Text>
+              </TouchableOpacity>
+            </Block>
+          }
           {button ? <ArButton color={nowTheme.COLORS.THEME} border style={{ backgroundColor: nowTheme.COLORS.WHITE, width: "100%", height: 35, marginLeft: 0 }} onPress={() => {
-            navigation.navigate("Search",{screen:"SearchHome", params:{
-              name: name,
-              tag:tags,
-            }});
-          }}>
+            navigation.navigate("Search", {
+              screen: "SearchHome", params: {
+                name: name,
+                tag: tags,
+              }
+            })
+          }}
+          >
             <Text
-              style={{ fontFamily: nowTheme.FONTFAMILY.BOLD,textAlign:"center" }}
+              style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, textAlign: "center" }}
               size={12}
               color={nowTheme.COLORS.THEME}
             >
@@ -84,14 +99,15 @@ const styles = StyleSheet.create({
   cardTitle: {
     paddingHorizontal: 9,
     paddingTop: 7,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   title: {
     fontFamily: 'montserrat-regular',
     color: nowTheme.COLORS.ACTIVE,
     fontSize: 8,
     textAlign: 'center',
-    top: 5
+    top: 5,
+    overflow: 'scroll',
   },
   icon: {
     top: 20

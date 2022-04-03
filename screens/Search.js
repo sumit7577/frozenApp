@@ -1,17 +1,15 @@
-import { StyleSheet, ScrollView, Dimensions } from 'react-native';
+import { StyleSheet, ScrollView, Dimensions, TouchableOpacity, Image,View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
 import { Block, Text } from 'galio-framework';
 import { nowTheme } from "../constants";
 import { Button, Input } from '../components';
-import { getCollections,getProducts } from "../network/products";
+import { getCollections, getProducts } from "../network/products";
 import _ from 'lodash';
 import { Card } from "../components";
 
 export default function Search(props) {
-    const [state, setState] = useState([]);
     const [allprods, setProducts] = useState([]);
-
     useEffect(() => {
         getCollections().then(data => {
             data.map((value) => {
@@ -22,7 +20,7 @@ export default function Search(props) {
         });
 
         const setProduct = (value) => {
-            getProducts(value,30).then(data => {
+            getProducts(value, 30).then(data => {
                 setProducts((prevProd) => {
                     return [...prevProd, data]
                 })
@@ -52,7 +50,7 @@ export default function Search(props) {
                                         <Block flex row center key={index} style={styles.home}>
                                             {_.map(element, (item, i) => {
                                                 return (
-                                                    <Card name={item.title} imageUri={item.images[0].src} uri horizontal style={{ margin: 8 }} key={i} isText={true} isImage />
+                                                    <Card name={item.title} navigation={navigation} item={{detail:item?.details?.description,price:item?.variants[0]?.price}} imageUri={item.images[0].src} uri horizontal style={{ margin: 8 }} key={i} isText={true} isImage/>
                                                 )
                                             })}
                                         </Block>

@@ -6,6 +6,7 @@ import { Button, Input } from '../components';
 import { nowTheme } from '../constants';
 import { updateUser } from '../store/user/actions';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getUser, creatToken } from "../network/products";
 
 const { width, height } = Dimensions.get('screen');
 
@@ -15,6 +16,7 @@ class Login extends React.Component {
     this.state = {
       username: "",
       password: "",
+      value: {}
     }
 
   }
@@ -22,6 +24,7 @@ class Login extends React.Component {
     const { navigation } = this.props;
     const { updateUser } = this.props;
     const onLogin = () => {
+
       if (this.state.username === "" || this.state.password === "") {
         Alert.alert(
           "Invalid Login",
@@ -29,16 +32,53 @@ class Login extends React.Component {
           [
             {
               text: "Cancel",
-              onPress: () => console.log("Cancel Pressed"),
               style: "cancel"
             },
-            { text: "OK", onPress: () => console.log("OK Pressed") }
+            { text: "OK" }
           ]
         );
       }
+
       else {
-        updateUser({ firstName: this.state.username, lastName: 'test', address: ["RAY TEST (DEFAULT) 55", "TEST ROAD BIRMINGHAM, ENG B12 5TR UNITED KINGDOM"], number: "+44790337333" });
+        creatToken(this.state.username, this.state.password).then(response => {
+          this.setState({ value: response.data.data })
+          if (this.state.value.customerAccessTokenCreate.customerAccessToken === null || !this.state.value.customerAccessTokenCreate.customerAccessToken) {
+            Alert.alert(
+              "Invalid Login",
+              "Username or Password Incorrect",
+              [
+                {
+                  text: "Cancel",
+                  style: "cancel"
+                },
+                { text: "OK" }
+              ]
+            );
+          }
+          else {
+            getUser(this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken).then(data=>{
+              if(data.data.data.customer === undefined || data.data.data.customer.email !== this.state.username){
+                Alert.alert(
+                  "Server Error",
+                  "Oops! Something Wrong",
+                  [
+                    {
+                      text: "Cancel",
+                      style: "cancel"
+                    },
+                    { text: "OK"}
+                  ]
+                );
+              }
+              else{
+                updateUser({ firstName: data.data.data.customer.firstName, lastName: data.data.data.customer.lastName, address: ["RAY TEST (DEFAULT) 55", "TEST ROAD BIRMINGHAM, ENG B12 5TR UNITED KINGDOM"], number: data.data.data.customer.phone});
+              }
+            })
+            
+          }
+        })
       }
+
 
 
     }
@@ -71,7 +111,7 @@ class Login extends React.Component {
           <Link style={{ color: "black", textAlign: "right", marginRight: 5 }} onPress={() => navigation.navigate("Register")}>Forgotten Password</Link>
         </Block>
 
-      </SafeAreaView>
+      </SafeAreaView >
     );
   }
 }
