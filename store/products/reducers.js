@@ -1,4 +1,4 @@
-import { LIST_MEMBER } from '../mutations';
+import { LIST_PRODUCTS } from '../mutations';
 
 const initialState = {
     list: null
@@ -6,7 +6,7 @@ const initialState = {
 
 export default function productReducer(state = initialState, action) {
     switch (action.type) {
-        case LIST_MEMBER:
+        case LIST_PRODUCTS:
             return {
                 ...state,
                 list: action.payload

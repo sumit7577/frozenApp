@@ -7,8 +7,10 @@ import { Button } from '../components';
 import { addressLogo } from '../constants/Images';
 import { Input } from '../components';
 
-export default function EditAddress({ navigation, route }) {
+export default function EditAddress({navigation,route}) {
     const { user } = useSelector(state => state);
+    const base = user.user.address.edges[route.params.id].node;
+    const fullAddress = base.address1;
     return (
         <SafeAreaView>
             <View style={styles.container}>
@@ -27,12 +29,12 @@ export default function EditAddress({ navigation, route }) {
                     </View>
                     <View style={styles.blocks}>
                         <Text style={styles.text}>COMPANY</Text>
-                        <Input value={user.user.company? user.user.company: "Frozen Brothers"} editable={true} style={styles.inputs} />
+                        <Input value={base.company? base.company: " "} editable={true} style={styles.inputs} />
                     </View>
 
                     <View style={styles.blocks}>
-                        <Text style={styles.text}>ADDRESS</Text>
-                        <Input value={user.user.address[route.params.id]} editable={true} style={styles.inputs} />
+                        <Text style={styles.text}>ADDRESS 1</Text>
+                        <Input value={fullAddress ?fullAddress :""} editable={true} style={styles.inputs} />
                     </View>
                 </View>
 

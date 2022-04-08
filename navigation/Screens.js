@@ -48,7 +48,7 @@ function SearchStack(props) {
 
 function StoreStack(props) {
   return (
-    <Stack.Navigator mode="card" headerMode="screen">
+    <Stack.Navigator mode="card" headerMode="screen" initialRouteName='Stores'>
       <Stack.Screen name="Stores" component={Stores} options={{headerShown:false}}>
       </Stack.Screen>
     </Stack.Navigator>

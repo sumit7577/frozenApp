@@ -10,6 +10,7 @@ import { Card } from "../components";
 
 export default function Search(props) {
     const [allprods, setProducts] = useState([]);
+    
     useEffect(() => {
         getCollections().then(data => {
             data.map((value) => {
@@ -50,7 +51,7 @@ export default function Search(props) {
                                         <Block flex row center key={index} style={styles.home}>
                                             {_.map(element, (item, i) => {
                                                 return (
-                                                    <Card name={item.title} navigation={navigation} item={{detail:item?.details?.description,price:item?.variants[0]?.price}} imageUri={item.images[0].src} uri horizontal style={{ margin: 8 }} key={i} isText={true} isImage/>
+                                                    <Card name={item.title} navigation={navigation} item={{id:item?.id, detail:item?.description, price:item?.variants[0]?.price, code:item?.variants[0]?.priceV2.currrencyCode, variantId:item?.variants[0]?.id}} imageUri={item.images[0].src} uri horizontal style={{ margin: 8,backgroundColor:"white" }} key={i} isText={true} isImage/>
                                                 )
                                             })}
                                         </Block>

@@ -41,7 +41,10 @@ class Card extends React.Component {
                 name:name,
                 desc:item.detail,
                 image:imageUri,
-                price:item.price
+                price:item.price,
+                code:item.code,
+                variantId:item.variantId,
+                id:item.id,
               })}>
                 <Text style={styles.title} bold>
                   {name}
@@ -99,11 +102,10 @@ const styles = StyleSheet.create({
   cardTitle: {
     paddingHorizontal: 9,
     paddingTop: 7,
-    paddingBottom: 15,
   },
   title: {
     fontFamily: 'montserrat-regular',
-    color: nowTheme.COLORS.ACTIVE,
+    color: nowTheme.COLORS.BLACK,
     fontSize: 8,
     textAlign: 'center',
     top: 5,

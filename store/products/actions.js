@@ -16,3 +16,10 @@ export function listProducts(payload) {
         }
     };
 };
+
+
+export function addProduct(payload){
+    return function(dispatch) {
+        dispatch({type:LIST_PRODUCTS,payload:payload});
+    }
+}

@@ -6,7 +6,7 @@ import { Button, Input } from '../components';
 import { nowTheme } from '../constants';
 import { updateUser } from '../store/user/actions';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getUser, creatToken } from "../network/products";
+import { getUser, creatToken, createCart } from "../network/products";
 
 const { width, height } = Dimensions.get('screen');
 
@@ -21,6 +21,7 @@ class Login extends React.Component {
 
   }
   render() {
+    createCart();
     const { navigation } = this.props;
     const { updateUser } = this.props;
     const onLogin = () => {
@@ -56,8 +57,8 @@ class Login extends React.Component {
             );
           }
           else {
-            getUser(this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken).then(data=>{
-              if(data.data.data.customer === undefined || data.data.data.customer.email !== this.state.username){
+            getUser(this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken).then(data => {
+              if (data.data.data.customer === undefined || data.data.data.customer.email !== this.state.username) {
                 Alert.alert(
                   "Server Error",
                   "Oops! Something Wrong",
@@ -66,20 +67,23 @@ class Login extends React.Component {
                       text: "Cancel",
                       style: "cancel"
                     },
-                    { text: "OK"}
+                    { text: "OK" }
                   ]
                 );
               }
-              else{
-                updateUser({ firstName: data.data.data.customer.firstName, lastName: data.data.data.customer.lastName, address: ["RAY TEST (DEFAULT) 55", "TEST ROAD BIRMINGHAM, ENG B12 5TR UNITED KINGDOM"], number: data.data.data.customer.phone});
+              else {
+                const base = data.data.data;
+                updateUser({ id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone, email:base.customer.email, token: this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken});
               }
+            }).catch(error=>{
+              console.log(error);
             })
-            
+
           }
+        }).catch(error=>{
+          console.log(error);
         })
       }
-
-
 
     }
 
@@ -111,7 +115,7 @@ class Login extends React.Component {
           <Link style={{ color: "black", textAlign: "right", marginRight: 5 }} onPress={() => navigation.navigate("Register")}>Forgotten Password</Link>
         </Block>
 
-      </SafeAreaView >
+      </SafeAreaView>
     );
   }
 }

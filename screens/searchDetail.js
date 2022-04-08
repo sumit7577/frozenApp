@@ -4,14 +4,19 @@ import React from 'react';
 import { Block } from "galio-framework";
 import { Button } from "../components";
 import { nowTheme } from '../constants';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { createCart, updateCart } from '../network/products';
+import { addProduct } from '../store/products/actions';
+import { useDispatch } from "react-redux";
 
 export default function SearchDetail(props) {
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user.user);
+  const cart = useSelector(state => state.product);
   const { route, navigation } = props;
-  const [number, setNumber] = useState(() => {
-    return 1;
-  })
+  const [number, setNumber] = useState(1);
+
   const [price, setPrice] = useState(() => {
     return route.params.price;
   })
@@ -39,6 +44,35 @@ export default function SearchDetail(props) {
     })
 
   }, [number]);
+
+  const addtoCart = () => {
+    if (cart.list == null) {
+      createCart(user.token, "id", route.params.id, route.params.variantId, number).then((resp) => {
+        dispatch(addProduct(resp.data));
+        let respProps = resp.data.data.cartCreate.cart.lines.edges;
+        navigation.navigate("Cart",{
+          screen:"Stores",params:{
+            property:respProps
+          }
+        });
+      }).catch((error) => {
+        console.log(error);
+      })
+    }
+    else {
+      updateCart(cart.list.data.cartCreate.cart.id,"id",route.params.id,route.params.variantId,number).then(res =>{
+        let respProps = res.data.data.cartLinesAdd.cart.lines.edges;
+        navigation.navigate("Cart",{
+          screen:"Stores",params:{
+            property:respProps
+          }
+        });
+      }).catch(error=>{
+        console.log(error);
+      })
+    }
+    
+  }
   return (
     <SafeAreaView>
       <Block middle style={styles.container}>
@@ -76,11 +110,9 @@ export default function SearchDetail(props) {
 
           </Block>
 
-          <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
+          <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }} onPress={addtoCart}>
             <Text
-              style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
-              size={14}
-              color={nowTheme.COLORS.THEME}
+              style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, color: nowTheme.COLORS.THEME }}
             >
               ADD TO CART
             </Text>
@@ -89,7 +121,7 @@ export default function SearchDetail(props) {
         </Block>
 
         <Block style={styles.footer}>
-          <Text> I am footer</Text>
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR }}> {route.params.desc}</Text>
         </Block>
 
       </Block>
@@ -123,4 +155,4 @@ const styles = StyleSheet.create({
   }, text: {
     fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12,
   }
-})
+});
