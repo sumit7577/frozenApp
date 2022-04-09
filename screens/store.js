@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Dimensions, ScrollView, TouchableOpacity, FlatList, Image } from "react-native";
+import { StyleSheet, Dimensions, ScrollView, Image } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Block, Text } from 'galio-framework';
 import _ from 'lodash';
-import { Card, Button } from "../components";
+import { Button } from "../components";
 import { nowTheme } from '../constants';
 import { useSelector } from "react-redux";
 import { getCart, getCartProduct } from "../network/products";
@@ -13,6 +13,8 @@ function Stores(props) {
     const { route, navigation } = props;
     const updatedCart = route?.params?.property;
     const cart = useSelector(state => state.product.list);
+    const users = useSelector(state => state.user.user);
+    const addresses = users.address.edges[0].node;
     const [cartdetail, setCart] = useState(() => {
         return null;
     });
@@ -26,43 +28,47 @@ function Stores(props) {
 
     useEffect(() => {
         setProds([]);
-        getCart(cart.data.cartCreate.cart.id).then(res => {
+        getCart(cart?.data?.cartCreate.cart.id).then(res => {
 
-            setCart(res.data.data.cart?.lines?.edges);
+            setCart(res?.data?.data.cart?.lines?.edges);
 
             setTotalAmount(() => {
-                const baseObject = res.data.data.cart;
+                const baseObject = res?.data?.data.cart;
                 return [baseObject.estimatedCost.subtotalAmount.amount,
                 baseObject.estimatedCost.totalTaxAmount.amount,
                 baseObject.estimatedCost.totalAmount.amount];
             });
 
             setCurrencyCode(() => {
-                const baseObject = res.data.data.cart;
+                const baseObject = res?.data?.data.cart;
 
                 return [baseObject.estimatedCost.subtotalAmount.currencyCode,
                 baseObject.estimatedCost.totalTaxAmount.currencyCode,
                 baseObject.estimatedCost.totalAmount.currencyCode];
             });
 
-            let base = res.data.data.cart?.lines?.edges;
+            let base = res?.data?.data.cart?.lines?.edges;
 
             if (base.length >= 1) {
 
-                base.map((value) => {
+                base?.map((value) => {
                     getCartProduct(value.node.attributes[0].value).then(res => {
                         res.quantity = value.node.quantity;
                         setProds((prevProd) => {
                             return [...prevProd, res];
                         })
-                    })
-                });
+                    }).catch(error => {
+                        console.log(error);
+                    });
+                })
             }
 
             else {
                 console.log("no producs")
             }
 
+        }).catch(error => {
+            console.log(error);
         })
     }, [updatedCart]);
 
@@ -117,7 +123,7 @@ function Stores(props) {
                     </Block>
 
                     <Block style={styles.body}>
-                        <Block style={{ flex: 3, padding: 5 }} right>
+                        <Block style={{ flex: 3, padding: 5, marginRight: 8 }} right>
 
                             <Block row style={styles.bill}>
                                 <Text style={styles.texts}>SUB TOTAL</Text>
@@ -140,9 +146,49 @@ function Stores(props) {
                             </Block>
 
                         </Block>
-                        <Block style={{ flex: 6 }}>
-                            <Text>SHIPPING ADDRESS</Text>
+
+                        <Block style={{ flex: 3, justifyContent: "space-between", paddingLeft: 12, paddingRight: 12 }} row>
+
+                            <Block>
+                                <Text style={styles.texts}>SHIPPING ADDRESS</Text>
+                                <Text style={styles.text}>{users.firstName} {users.lastName}</Text>
+                                <Text style={styles.text}>{addresses.address1}</Text>
+                                <Text style={styles.text}>{addresses.city} {addresses.zip}</Text>
+                                <Text style={styles.text}>{addresses.country}</Text>
+                                <Text style={{ marginTop: 12, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10 }}>{users.number ? users.number : "Phone Number Not Exists!"}</Text>
+                            </Block>
+
+                            <Block style={{ alignItems: "center" }}>
+                                <Button border style={{ backgroundColor: nowTheme.COLORS.WHITE, height: 50, width: width / 3, marginTop: "20%" }} onPress={() => {
+                                    navigation.navigate("Account", {
+                                        screen: "EditAddress", params: {
+                                            id: 0
+                                        }
+                                    })
+                                }}>
+                                    <Text
+                                        style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
+                                        size={12}
+                                        color={nowTheme.COLORS.THEME}
+                                    >
+                                        EDIT
+                                    </Text>
+                                </Button>
+                            </Block>
+
                         </Block>
+
+                        <Block style={{ flex: 4, margin: 20, justifyContent: "space-between" }}>
+
+                            <Block style={{ borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: height / 8, justifyContent: "center", borderRadius: 5 }}>
+                                <Text style={{ textAlign: "center", color: nowTheme.COLORS.MUTED, fontSize: 9, fontFamily: nowTheme.FONTFAMILY.BOLD, paddingHorizontal: 20 }}>include any purchase order numbers, notes or special instructions for your order here</Text>
+                            </Block>
+
+                            <Block>
+                                <Text style={{ textAlign: "center", fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10, paddingHorizontal: 20 }}>By placing an order you agree to our terms & conditions of sale & use of equipment, to view them click here</Text>
+                            </Block>
+                        </Block>
+
                     </Block>
 
                     <Block style={styles.footer} middle>
@@ -198,7 +244,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginBottom: 5,
     },
-    bill:{
+    bill: {
         justifyContent: "space-between",
         width: "55%"
     }

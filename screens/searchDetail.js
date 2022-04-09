@@ -50,9 +50,9 @@ export default function SearchDetail(props) {
       createCart(user.token, "id", route.params.id, route.params.variantId, number).then((resp) => {
         dispatch(addProduct(resp.data));
         let respProps = resp.data.data.cartCreate.cart.lines.edges;
-        navigation.navigate("Cart",{
-          screen:"Stores",params:{
-            property:respProps
+        navigation.navigate("Cart", {
+          screen: "Stores", params: {
+            property: respProps
           }
         });
       }).catch((error) => {
@@ -60,18 +60,18 @@ export default function SearchDetail(props) {
       })
     }
     else {
-      updateCart(cart.list.data.cartCreate.cart.id,"id",route.params.id,route.params.variantId,number).then(res =>{
+      updateCart(cart.list.data.cartCreate.cart.id, "id", route.params.id, route.params.variantId, number).then(res => {
         let respProps = res.data.data.cartLinesAdd.cart.lines.edges;
-        navigation.navigate("Cart",{
-          screen:"Stores",params:{
-            property:respProps
+        navigation.navigate("Cart", {
+          screen: "Stores", params: {
+            property: respProps
           }
         });
-      }).catch(error=>{
+      }).catch(error => {
         console.log(error);
       })
     }
-    
+
   }
   return (
     <SafeAreaView>
@@ -120,8 +120,12 @@ export default function SearchDetail(props) {
 
         </Block>
 
-        <Block style={styles.footer}>
-          <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR }}> {route.params.desc}</Text>
+        <Block style={styles.footer} top>
+          <Text style={styles.texts}>{route.params.desc.slice(0, 54)}
+          </Text>
+          <Text style={styles.texts}>{route.params.desc.slice(54, 98)}</Text>
+          <Text style={styles.texts}>{route.params.desc.slice(98, 196)}</Text>
+          <Text style={styles.texts}>{route.params.desc.slice(196)}</Text>
         </Block>
 
       </Block>
@@ -149,10 +153,18 @@ const styles = StyleSheet.create({
   },
   footer: {
     flex: 6,
+    marginLeft: 15,
+    maxWidth: width / 1.3,
+    paddingTop:height/7,
   },
   details: {
     width: "90%",
   }, text: {
     fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12,
+  },
+  texts:{
+    fontFamily:nowTheme.FONTFAMILY.BOLD,
+    fontSize:12,
+    marginBottom:20,
   }
 });
