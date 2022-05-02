@@ -14,7 +14,7 @@ class ArButton extends React.Component {
       small && styles.smallButton,
       big && styles.bigButton,
       full && styles.fullButton,
-      border && {borderWidth:2,borderColor:nowTheme.COLORS.THEME},
+      border && {borderWidth:1,borderColor:nowTheme.COLORS.THEME},
       colorStyle === 'neutral'
         ? { backgroundColor: 'rgba(0,0,0,0)' }
         : color && { backgroundColor: colorStyle },

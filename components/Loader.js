@@ -3,13 +3,13 @@ import { View, StyleSheet, ActivityIndicator, Modal } from 'react-native';
 import { connect } from 'react-redux';
 
 function Loader(props) {
-    const { spinner } = props;
+    const {response} = props;
     return (
         <View >
-            <Modal transparent={true} animationType={'none'} visible={spinner > 0}>
+            <Modal transparent={true} animationType={'none'} visible={response == true}>
                 <View style={styles.modalBackground}>
                     <View style={styles.activityIndicatorWrapper}>
-                        <ActivityIndicator color="#0000ff" size="large" animating={spinner > 0} />
+                        <ActivityIndicator color="#0000ff" size="large" spinner={response==true} />
                     </View>
                 </View>
             </Modal>

@@ -9,10 +9,17 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Address from "../screens/manageAddress";
 import EditAddress from '../screens/editAddress';
 import Search from '../screens/Search';
 import SearchDetail from '../screens/searchDetail';
+import Payment from '../screens/payment';
+import Settings from '../screens/Settings';
+import Policy from '../screens/policy';
+import Contact from '../screens/contact';
+import Condition from '../screens/condition';
+
 
 const Stack = createStackNavigator();
 const TabNav = createBottomTabNavigator();
@@ -46,11 +53,25 @@ function SearchStack(props) {
 
 }
 
+function SettingStack(props) {
+  return (
+    <Stack.Navigator mode="card" headerMode="screen" initialRouteName='Settings' >
+      <Stack.Screen name="SettingHome" component={Settings} options={{ headerShown: false }} />
+      <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+      <Stack.Screen name="ManageAddress" component={Address} options={{ headerShown: false }} />
+      <Stack.Screen name="EditAddress" component={EditAddress} options={{ headerShown: false }} />
+      <Stack.Screen name="Contact" component={Contact} options={{ headerShown: false }} />
+      <Stack.Screen name="Policy" component={Policy} options={{ headerShown: false }} />
+      <Stack.Screen name="Condition" component={Condition} options={{ headerShown: false }} />
+    </Stack.Navigator>
+  )
+}
+
 function StoreStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen" initialRouteName='Stores'>
-      <Stack.Screen name="Stores" component={Stores} options={{headerShown:false}}>
-      </Stack.Screen>
+      <Stack.Screen name="Stores" component={Stores} options={{ headerShown: false }} />
+      <Stack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }
@@ -58,22 +79,22 @@ function StoreStack(props) {
 function CustomIcons(props) {
   if (props.name == "Account") {
     return (
-      <MaterialCommunityIcons name="account" size={props.size} color={props.color} />
+      <MaterialCommunityIcons name="account-outline" size={props.size} color={props.color} />
     )
   }
   else if (props.name == "Search") {
     return (
-      <Octicons name="search" size={props.size} color={props.color} />
+      <Octicons name="search" size={props.size} color={props.color} style={{ transform: [{ rotateY: '180deg' }] }} />
     )
   }
   else if (props.name == "Favourites") {
     return (
-      <MaterialIcons name="favorite" size={props.size} color={props.color} />
+      <MaterialIcons name="favorite-outline" size={props.size} color={props.color} />
     )
   }
   else if (props.name == "Cart") {
     return (
-      <MaterialCommunityIcons name="cart" size={props.size} color={props.color} />
+      <SimpleLineIcons name="handbag" size={props.size - 8} color={props.color} />
     )
   }
   else {
@@ -132,9 +153,9 @@ function CustomBar({ state, descriptors, navigation }) {
               testID={options.tabBarTestID}
               onPress={onPress}
               onLongPress={onLongPress}
-              style={{ alignItems: "center", justifyContent: "center", backgroundColor: nowTheme.COLORS.THEME, height: 70, width: 70, borderRadius: 50, margin: 7 }}
+              style={{ alignItems: "center", justifyContent: "center", height: 70, width: 70, margin: 4 }}
             >
-              <CustomIcons name={label} size={50} color="black" />
+              <CustomIcons name={label} size={35} color={nowTheme.COLORS.THEME} />
             </TouchableOpacity>
           );
         }
@@ -150,7 +171,7 @@ export default function AppStack(props) {
       <TabNav.Screen name="Account" component={ProfileStack} />
       <TabNav.Screen name="Search" component={SearchStack} />
       <TabNav.Screen name="Home" component={HomeStack} />
-      <TabNav.Screen name="Favourites" component={ProfileStack} />
+      <TabNav.Screen name="Favourites" component={SettingStack} />
       <TabNav.Screen name="Cart" component={StoreStack} />
     </TabNav.Navigator>
   );

@@ -11,8 +11,12 @@ export default function ManageAddress(props) {
     const { navigation } = props;
     const { user } = useSelector(state => state);
     const editAddress = (index) => {
-        navigation.navigate("EditAddress",{
-            id: index,
+        navigation.navigate("Favourites", {
+            screen: "EditAddress",
+            params: {
+                id: index,
+            }
+
         })
     }
     return (
@@ -25,14 +29,14 @@ export default function ManageAddress(props) {
                 <Block style={{ flex: 5, alignItems: "center" }}>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {user.user.address.edges.map((value, index) => {
-                            let fullAddress = value.node.address1 + value.node.address2 + "\n" +  value.node.city + "\n" + value.node.country + "\n" + value.node.zip;
+                            let fullAddress = value.node.address1 + value.node.address2 + "\n" + value.node.city + "\n" + value.node.country + "\n" + value.node.zip;
                             return (
                                 <Block key={index} style={{ padding: 8, marginTop: 20 }}>
                                     {index === 0 ?
                                         <Text style={styles.text}>DEFAULT</Text> :
                                         <Text style={styles.text}>OTHER ADDRESS</Text>}
                                     <Text style={{ marginLeft: 15, fontSize: 12, maxWidth: 200, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{fullAddress}</Text>
-                                    <Text style={{ marginLeft: 15, fontSize: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{ user.user.number ?user.user.number :""}</Text>
+                                    <Text style={{ marginLeft: 15, fontSize: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{user.user.number ? user.user.number : ""}</Text>
                                     <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }} onPress={() => {
                                         editAddress(index);
                                     }}>
@@ -50,7 +54,7 @@ export default function ManageAddress(props) {
                     </ScrollView>
                 </Block>
 
-                <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={() => navigation.navigate("Profile")}>
+                <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={() => navigation.pop()}>
                     <Text
                         style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
                         size={12}
@@ -70,7 +74,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
     },
-    text:{
+    text: {
         marginLeft: 15, fontSize: 14, fontFamily: nowTheme.FONTFAMILY.BOLD
     }
 });

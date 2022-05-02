@@ -9,6 +9,8 @@ import { useSelector } from 'react-redux';
 import { createCart, updateCart } from '../network/products';
 import { addProduct } from '../store/products/actions';
 import { useDispatch } from "react-redux";
+import { getSymbol } from "../network/checkout";
+import Loader from '../components/Loader';
 
 export default function SearchDetail(props) {
   const dispatch = useDispatch();
@@ -16,6 +18,9 @@ export default function SearchDetail(props) {
   const cart = useSelector(state => state.product);
   const { route, navigation } = props;
   const [number, setNumber] = useState(1);
+  const [response, setResponse] = useState(() => {
+    return false;
+  })
 
   const [price, setPrice] = useState(() => {
     return route.params.price;
@@ -46,8 +51,14 @@ export default function SearchDetail(props) {
   }, [number]);
 
   const addtoCart = () => {
+    setResponse(() => {
+      return true;
+    })
     if (cart.list == null) {
       createCart(user.token, "id", route.params.id, route.params.variantId, number).then((resp) => {
+        setResponse(() => {
+          return false;
+        })
         dispatch(addProduct(resp.data));
         let respProps = resp.data.data.cartCreate.cart.lines.edges;
         navigation.navigate("Cart", {
@@ -56,11 +67,17 @@ export default function SearchDetail(props) {
           }
         });
       }).catch((error) => {
+        setResponse(() => {
+          return false;
+        })
         console.log(error);
       })
     }
     else {
       updateCart(cart.list.data.cartCreate.cart.id, "id", route.params.id, route.params.variantId, number).then(res => {
+        setResponse(() => {
+          return false;
+        })
         let respProps = res.data.data.cartLinesAdd.cart.lines.edges;
         navigation.navigate("Cart", {
           screen: "Stores", params: {
@@ -68,23 +85,28 @@ export default function SearchDetail(props) {
           }
         });
       }).catch(error => {
+        setResponse(() => {
+          return false;
+        })
         console.log(error);
       })
     }
 
   }
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor:nowTheme.COLORS.WHITE}}>
+      <Loader response={response} />
       <Block middle style={styles.container}>
         <Block style={styles.header} middle row>
           <Image source={{ uri: route.params.image }} style={{ height: 50, width: 50 }} />
-          <Text style={{ maxWidth: width * 0.7, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, paddingLeft: 5 }}> {route.params.name}{'\n'} ${price}</Text>
+          <Text style={{ maxWidth: width * 0.7, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, paddingLeft: 5 }}> {route.params.name}{'\n'}
+            {getSymbol(route.params.code)}{price}</Text>
         </Block>
 
         <Block style={styles.body}>
 
           <Block row bottom style={{ alignItems: "center" }}>
-            <Text style={styles.text}>${price}</Text>
+            <Text style={styles.text}>{getSymbol(route.params.code)}{price}</Text>
 
             <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 50, height: 40 }} onPress={increaseCounter}>
               <Text
@@ -155,16 +177,16 @@ const styles = StyleSheet.create({
     flex: 6,
     marginLeft: 15,
     maxWidth: width / 1.3,
-    paddingTop:height/7,
+    paddingTop: height / 7,
   },
   details: {
     width: "90%",
   }, text: {
     fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12,
   },
-  texts:{
-    fontFamily:nowTheme.FONTFAMILY.BOLD,
-    fontSize:12,
-    marginBottom:20,
+  texts: {
+    fontFamily: nowTheme.FONTFAMILY.BOLD,
+    fontSize: 12,
+    marginBottom: 20,
   }
 });

@@ -7,10 +7,10 @@ import { nowTheme } from "../constants";
 
 class ArInput extends React.Component {
   render() {
-    const { shadowless, success, error, primary } = this.props;
+    const { shadowless, success, error, primary,borderless } = this.props;
 
     const inputStyles = [
-      styles.input,
+      !borderless &&styles.input,
       !shadowless,
       success && styles.success,
       error && styles.error,
@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
     shadowRadius: 1,
     shadowOpacity: 0.13,
     elevation: 2,
-  }
+  },
+  
 });
 
 export default ArInput;

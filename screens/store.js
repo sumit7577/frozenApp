@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Dimensions, ScrollView, Image } from "react-native";
+import { StyleSheet, Dimensions, ScrollView, Image, Alert } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Block, Text } from 'galio-framework';
 import _ from 'lodash';
@@ -7,6 +7,8 @@ import { Button } from "../components";
 import { nowTheme } from '../constants';
 import { useSelector } from "react-redux";
 import { getCart, getCartProduct } from "../network/products";
+import { createCheckout, getSymbol } from "../network/checkout";
+import Loader from "../components/Loader";
 
 
 function Stores(props) {
@@ -15,6 +17,9 @@ function Stores(props) {
     const cart = useSelector(state => state.product.list);
     const users = useSelector(state => state.user.user);
     const addresses = users.address.edges[0].node;
+    const [response, setResponse] = useState(() => {
+        return false;
+    })
     const [cartdetail, setCart] = useState(() => {
         return null;
     });
@@ -27,7 +32,9 @@ function Stores(props) {
     });
 
     useEffect(() => {
-        setProds([]);
+        setResponse(() => {
+            return true;
+        })
         getCart(cart?.data?.cartCreate.cart.id).then(res => {
 
             setCart(res?.data?.data.cart?.lines?.edges);
@@ -42,9 +49,9 @@ function Stores(props) {
             setCurrencyCode(() => {
                 const baseObject = res?.data?.data.cart;
 
-                return [baseObject.estimatedCost.subtotalAmount.currencyCode,
-                baseObject.estimatedCost.totalTaxAmount.currencyCode,
-                baseObject.estimatedCost.totalAmount.currencyCode];
+                return [getSymbol(baseObject.estimatedCost.subtotalAmount.currencyCode),
+                getSymbol(baseObject.estimatedCost.totalTaxAmount.currencyCode),
+                getSymbol(baseObject.estimatedCost.totalAmount.currencyCode)];
             });
 
             let base = res?.data?.data.cart?.lines?.edges;
@@ -53,24 +60,91 @@ function Stores(props) {
 
                 base?.map((value) => {
                     getCartProduct(value.node.attributes[0].value).then(res => {
+                        setResponse(() => {
+                            return false;
+                        })
                         res.quantity = value.node.quantity;
                         setProds((prevProd) => {
                             return [...prevProd, res];
                         })
                     }).catch(error => {
+                        setResponse(() => {
+                            return false;
+                        })
                         console.log(error);
                     });
-                })
+                }
+                )
             }
 
             else {
-                console.log("no producs")
+                setResponse(() => {
+                    return false;
+                })
+                console.log("no products")
             }
 
         }).catch(error => {
+            setResponse(() => {
+                return false;
+            })
             console.log(error);
         })
+
+        return () => {
+            setProds([]);
+        }
     }, [updatedCart]);
+
+    const createCart = () => {
+        setResponse(() => {
+            return true;
+        })
+        let lineItems = [];
+        if (allProds && allProds.length >= 1) {
+            allProds.map(value => {
+                lineItems.push(
+                    {
+                        variantId: value.variants[0].id,
+                        quantity: value.quantity,
+                        customAttributes: [{ key: "id", value: value.id }]
+                    }
+                )
+            })
+        }
+        else {
+            setResponse(() => {
+                return false;
+            })
+            Alert.alert("No Products");
+        }
+
+        if (lineItems.length >= 1) {
+            createCheckout(lineItems, addresses.address1, addresses?.address2, addresses.city, addresses?.company,
+                users.firstName, users.lastName, users?.number, addresses?.zip, addresses.country, users?.email, users.token).then(
+                    res => {
+                        setResponse(() => {
+                            return false;
+                        })
+                        if (res.id) {
+                            navigation.navigate("Cart", {
+                                screen: "Payment", params: {
+                                    id: res.id,
+                                    totalPrice: res.totalPrice,
+                                }
+                            })
+                        }
+
+                    }
+                ).catch(error => {
+                    setResponse(()=>{
+                        return false;
+                    })
+                    console.log(error);
+                })
+        }
+
+    }
 
     if (cartdetail === null) {
         return (
@@ -81,16 +155,17 @@ function Stores(props) {
     }
     else {
         return (
-            <SafeAreaView>
+            <SafeAreaView style={{backgroundColor:nowTheme.COLORS.WHITE}}>
+                <Loader response={response} />
                 <Block style={styles.container}>
-
                     <Block style={styles.header} middle>
                         <ScrollView showsVerticalScrollIndicator={false}>
                             {allProds.map((value, index) => {
                                 return (
                                     <Block middle row style={styles.prods} key={index}>
                                         <Image source={{ uri: value?.images[0]?.src }} style={{ height: 50, width: 50 }} />
-                                        <Text style={{ maxWidth: width * 0.4, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10, paddingLeft: 5 }}> {value?.title}{'\n'} ${value.variants[0]?.price}</Text>
+                                        <Text style={{ maxWidth: width * 0.4, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10, paddingLeft: 5 }}>
+                                            {value?.title}{'\n'} {getSymbol(value.variants[0].priceV2.currencyCode)}{value.variants[0]?.price}</Text>
 
                                         <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 30, height: 40 }}>
                                             <Text
@@ -114,7 +189,7 @@ function Stores(props) {
                                             </Text>
                                         </Button>
 
-                                        <Text style={styles.text}>${value.variants[0]?.price}</Text>
+                                        <Text style={styles.text}>{getSymbol(value.variants[0].priceV2.currencyCode)}{value.variants[0]?.price}</Text>
                                     </Block>
                                 )
                             })}
@@ -127,22 +202,22 @@ function Stores(props) {
 
                             <Block row style={styles.bill}>
                                 <Text style={styles.texts}>SUB TOTAL</Text>
-                                <Text style={styles.texts}>${totalAmount[0]}</Text>
+                                <Text style={styles.texts}>{currencyCode[0]}{totalAmount[0]}</Text>
                             </Block>
 
                             <Block row style={styles.bill}>
                                 <Text style={styles.texts}>VAT</Text>
-                                <Text style={styles.texts}>${totalAmount[1]}</Text>
+                                <Text style={styles.texts}>{currencyCode[1]}{totalAmount[1]}</Text>
                             </Block>
 
                             <Block row style={styles.bill}>
                                 <Text style={styles.texts}>DELIVERY </Text>
-                                <Text style={styles.texts}>$</Text>
+                                <Text style={styles.texts}>{currencyCode[0]}</Text>
                             </Block>
 
                             <Block row style={styles.bill}>
                                 <Text style={styles.texts}>TOTAL</Text>
-                                <Text style={styles.texts}>${totalAmount[2]}</Text>
+                                <Text style={styles.texts}>{currencyCode[2]}{totalAmount[2]}</Text>
                             </Block>
 
                         </Block>
@@ -155,17 +230,19 @@ function Stores(props) {
                                 <Text style={styles.text}>{addresses.address1}</Text>
                                 <Text style={styles.text}>{addresses.city} {addresses.zip}</Text>
                                 <Text style={styles.text}>{addresses.country}</Text>
-                                <Text style={{ marginTop: 12, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10 }}>{users.number ? users.number : "Phone Number Not Exists!"}</Text>
+                                <Text style={{ marginTop: 12, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10 }}>
+                                    {users.number ? users.number : "Phone Number Not Exists!"}</Text>
                             </Block>
 
                             <Block style={{ alignItems: "center" }}>
-                                <Button border style={{ backgroundColor: nowTheme.COLORS.WHITE, height: 50, width: width / 3, marginTop: "20%" }} onPress={() => {
-                                    navigation.navigate("Account", {
-                                        screen: "EditAddress", params: {
-                                            id: 0
-                                        }
-                                    })
-                                }}>
+                                <Button border style={{ backgroundColor: nowTheme.COLORS.WHITE, height: 50, width: width / 3, marginTop: "20%" }}
+                                    onPress={() => {
+                                        navigation.navigate("Account", {
+                                            screen: "EditAddress", params: {
+                                                id: 0
+                                            }
+                                        })
+                                    }}>
                                     <Text
                                         style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
                                         size={12}
@@ -181,11 +258,13 @@ function Stores(props) {
                         <Block style={{ flex: 4, margin: 20, justifyContent: "space-between" }}>
 
                             <Block style={{ borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: height / 8, justifyContent: "center", borderRadius: 5 }}>
-                                <Text style={{ textAlign: "center", color: nowTheme.COLORS.MUTED, fontSize: 9, fontFamily: nowTheme.FONTFAMILY.BOLD, paddingHorizontal: 20 }}>include any purchase order numbers, notes or special instructions for your order here</Text>
+                                <Text style={{ textAlign: "center", color: nowTheme.COLORS.MUTED, fontSize: 9, fontFamily: nowTheme.FONTFAMILY.BOLD, paddingHorizontal: 20 }}>
+                                    include any purchase order numbers, notes or special instructions for your order here</Text>
                             </Block>
 
                             <Block>
-                                <Text style={{ textAlign: "center", fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10, paddingHorizontal: 20 }}>By placing an order you agree to our terms & conditions of sale & use of equipment, to view them click here</Text>
+                                <Text style={{ textAlign: "center", fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10, paddingHorizontal: 20 }}>
+                                    By placing an order you agree to our terms & conditions of sale & use of equipment, to view them click here</Text>
                             </Block>
                         </Block>
 
@@ -193,7 +272,7 @@ function Stores(props) {
 
                     <Block style={styles.footer} middle>
 
-                        <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }}>
+                        <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={createCart}>
                             <Text
                                 style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
                                 size={12}

@@ -1,5 +1,5 @@
 const COLORS = {
-  THEME:"#0abbcf",
+  THEME:"#8CD0E5",
   DEFAULT: '#888888',
   PRIMARY: '#f96332',
   LABEL: '#FE2472',

@@ -6,10 +6,10 @@ import { nowTheme } from '../constants';
 
 class DropDown extends React.Component {
   state = {
-    value: '',
+    value: 'kh',
     open: false,
   };
-
+  
   handleOnSelect = (index, value) => {
     const { onSelect } = this.props;
 

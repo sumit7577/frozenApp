@@ -1,12 +1,14 @@
 import React from 'react';
-import { StyleSheet, Dimensions, Alert } from 'react-native';
+import { StyleSheet, Dimensions, Alert, ShadowPropTypesIOS } from 'react-native';
 import { Block, Text, Link } from 'galio-framework';
 import { connect } from 'react-redux';
 import { Button, Input } from '../components';
 import { nowTheme } from '../constants';
 import { updateUser } from '../store/user/actions';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getUser, creatToken, createCart } from "../network/products";
+import { getUser, creatToken } from "../network/products";
+import * as Localization from 'expo-localization';
+import Loader from '../components/Loader';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -16,16 +18,16 @@ class Login extends React.Component {
     this.state = {
       username: "",
       password: "",
-      value: {}
+      value: {},
+      localize: Localization.locale,
+      response: false
     }
 
   }
   render() {
-    createCart();
     const { navigation } = this.props;
     const { updateUser } = this.props;
     const onLogin = () => {
-
       if (this.state.username === "" || this.state.password === "") {
         Alert.alert(
           "Invalid Login",
@@ -41,9 +43,11 @@ class Login extends React.Component {
       }
 
       else {
+        this.setState({ response: true });
         creatToken(this.state.username, this.state.password).then(response => {
           this.setState({ value: response.data.data })
           if (this.state.value.customerAccessTokenCreate.customerAccessToken === null || !this.state.value.customerAccessTokenCreate.customerAccessToken) {
+            this.setState({response:false});
             Alert.alert(
               "Invalid Login",
               "Username or Password Incorrect",
@@ -59,6 +63,7 @@ class Login extends React.Component {
           else {
             getUser(this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken).then(data => {
               if (data.data.data.customer === undefined || data.data.data.customer.email !== this.state.username) {
+                this.setState({response:false});
                 Alert.alert(
                   "Server Error",
                   "Oops! Something Wrong",
@@ -72,15 +77,20 @@ class Login extends React.Component {
                 );
               }
               else {
+                this.setState({response:false});
                 const base = data.data.data;
-                updateUser({ id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone, email:base.customer.email, token: this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken});
+                updateUser({
+                  id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone,
+                  email: base.customer.email, token: this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken, defaultAddress: base.customer.defaultAddress
+                  , localization: this.state.localize
+                });
               }
-            }).catch(error=>{
+            }).catch(error => {
               console.log(error);
             })
 
           }
-        }).catch(error=>{
+        }).catch(error => {
           console.log(error);
         })
       }
@@ -89,17 +99,18 @@ class Login extends React.Component {
 
     return (
       <SafeAreaView>
+        <Loader response={this.state.response}/>
         <Block style={styles.container}>
           <Block style={styles.headingBlock}>
             <Text style={{ fontSize: nowTheme.SIZES.FONT * 2, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>Log in</Text>
           </Block>
           <Block style={{ marginTop: 10, }}>
-            <Input placeholder='Username' maxLength={50} style={{ borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: 55 }} onChangeText={text => {
+            <Input placeholder='Username' maxLength={50} style={{ borderWidth: 1, borderColor: nowTheme.COLORS.THEME, height: 55 }} onChangeText={text => {
               this.setState({ username: text })
             }} />
           </Block>
           <Block>
-            <Input secureTextEntry maxLength={40} placeholder='Password' style={{ borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: 55 }} onChangeText={text => {
+            <Input secureTextEntry maxLength={40} placeholder='Password' style={{ borderWidth: 1, borderColor: nowTheme.COLORS.THEME, height: 55 }} onChangeText={text => {
               this.setState({ password: text })
             }} />
           </Block>
@@ -112,7 +123,7 @@ class Login extends React.Component {
               LOG IN
             </Text>
           </Button>
-          <Link style={{ color: "black", textAlign: "right", marginRight: 5 }} onPress={() => navigation.navigate("Register")}>Forgotten Password</Link>
+          <Link style={{ color: "black", textAlign: "right", marginRight: 5 }} onPress={() => navigation.navigate("ForgetPassword")}>Forgotten Password</Link>
         </Block>
 
       </SafeAreaView>
@@ -132,4 +143,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(() => ({}), { updateUser })(Login);
+export default connect((state) => ({}), { updateUser })(Login);

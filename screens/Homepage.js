@@ -20,7 +20,7 @@ class Homepage extends React.Component {
                         <Image style={{ width:"90%",resizeMode: 'contain'}}source={homeLogo} alt="brand image" />
                     </View>
                     <View style={styles.butttonBlock}>
-                        <Button big color="white" style={{ borderColor: nowTheme.COLORS.THEME, borderWidth: 2 }} onPress={this.navigateLogin}>
+                        <Button big color="white" border onPress={this.navigateLogin}>
                             <Text
                                 style={{ fontFamily: 'montserrat-bold' }}
                                 size={20}

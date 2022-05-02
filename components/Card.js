@@ -7,6 +7,7 @@ import _ from 'lodash';
 import { nowTheme } from '../constants';
 import Icon from './Icon';
 import ArButton from './Button';
+import { getSymbol } from "../network/checkout";
 
 class Card extends React.Component {
   render() {
@@ -42,12 +43,15 @@ class Card extends React.Component {
                 desc:item.detail,
                 image:imageUri,
                 price:item.price,
-                code:item.code,
+                code:item.code.currencyCode,
                 variantId:item.variantId,
                 id:item.id,
               })}>
                 <Text style={styles.title} bold>
                   {name}
+                </Text>
+                <Text style={styles.price} bold>
+                  {getSymbol(item.code.currencyCode)}{item.price}
                 </Text>
               </TouchableOpacity>
             </Block>
@@ -90,13 +94,13 @@ const styles = StyleSheet.create({
   card: {
     marginVertical: theme.SIZES.BASE,
     borderWidth: 0,
-    height: 150,
+    height: 230,
     marginBottom: 4,
   },
   buttonCard: {
     marginVertical: theme.SIZES.BASE,
     borderWidth: 0,
-    height: 180,
+    height: 200,
     marginBottom: 4,
   },
   cardTitle: {
@@ -104,24 +108,31 @@ const styles = StyleSheet.create({
     paddingTop: 7,
   },
   title: {
-    fontFamily: 'montserrat-regular',
+    fontFamily: nowTheme.FONTFAMILY.BOLD,
     color: nowTheme.COLORS.BLACK,
-    fontSize: 8,
+    fontSize: 9,
     textAlign: 'center',
-    top: 5,
+    top:5,
+    overflow: 'scroll',
+  },
+  price:{
+    fontFamily: nowTheme.FONTFAMILY.BOLD,
+    color: nowTheme.COLORS.BLACK,
+    fontSize: 10,
+    textAlign: 'center',
+    top:5,
     overflow: 'scroll',
   },
   icon: {
     top: 20
   },
   cardDescription: {
-    padding: theme.SIZES.BASE / 2
+    padding: theme.SIZES.BASE / 2,
   },
   imageContainer: {
     borderRadius: 3,
     height: "100%",
     width: "100%",
-    overflow: 'hidden'
   },
   image: {
     // borderRadius: 3,

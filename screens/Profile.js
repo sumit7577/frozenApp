@@ -9,6 +9,7 @@ import { homeLogo } from "../constants/Images";
 import { connect } from 'react-redux';
 import { updateUser } from '../store/user/actions';
 import { useSelector } from 'react-redux';
+import { Block } from 'galio-framework';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -16,14 +17,17 @@ const Profile = (props) => {
   let user = useSelector(state => state.user.user);
   const baseAddr = user.address.edges[0].node;
   const fullName = user.firstName + " " + user.lastName;
-  const fullAddress = user.firstName + " (Default)" + "\n" + baseAddr.address1 + baseAddr.address2 + baseAddr.city + "\n" + baseAddr.country + "\n" + baseAddr.zip
+  const fullAddress = user.firstName + " (Default)" + "\n" + baseAddr.address1 + baseAddr?.address2 + "\n" + baseAddr.city + "\n" + baseAddr.country + "\n" + baseAddr.zip
   const { updateUser } = props;
   const clearUser = async () => {
     updateUser(null);
     await AsyncStorage.clear();
   }
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
+      <Block middle style={{ borderBottomWidth: 1, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
+        <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4 }}>Profile</Text>
+      </Block>
       <View style={{ alignItems: "center", height: "100%", padding: 8 }} >
         <View style={{ marginTop: 20, height: 150, width: 150, borderRadius: 150 / 2, overflow: "hidden", zIndex: 5 }}>
           <Image source={homeLogo} alt="Profile image" style={{ height: 150, width: 150, borderRadius: 150 / 2, resizeMode: "contain" }} />
@@ -37,43 +41,14 @@ const Profile = (props) => {
         </View>
 
         <View style={{ flex: 4, alignItems: "center" }}>
-          <Button full border style={styles.button} onPress={() => props.navigation.navigate("ManageAddress")}>
-            <Text
-              style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
-              size={12}
-              color={nowTheme.COLORS.THEME}
-            >
-              MANAGE ADDRESSES
-            </Text>
-          </Button>
 
-          <Button full border color={nowTheme.COLORS.WHITE} style={styles.button}>
+          <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME, marginLeft: 4 }}>
             <Text
               style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
               size={12}
-              color={nowTheme.COLORS.THEME}
+              color={nowTheme.COLORS.WHITE}
             >
               PREVIOUS ORDERS
-            </Text>
-          </Button>
-
-          <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME, marginLeft: 4 }} onPress={() => props.navigation.navigate("Homepage")}>
-            <Text
-              style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
-              size={12}
-              color={nowTheme.COLORS.WHITE}
-            >
-              CLOSE
-            </Text>
-          </Button>
-
-          <Button full color={nowTheme.COLORS.THEME} style={{ backgroundColor: nowTheme.COLORS.BLACK, marginLeft: 4, marginTop: "25%" }} onPress={clearUser}>
-            <Text
-              style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
-              size={12}
-              color={nowTheme.COLORS.WHITE}
-            >
-              LOGOUT
             </Text>
           </Button>
         </View>
@@ -87,7 +62,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.BOLD, textAlign: "center"
   },
-  button:{
+  button: {
     backgroundColor: nowTheme.COLORS.WHITE, marginLeft: 4
   }
 })

@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, Dimensions, TouchableOpacity, Image,View } from 'react-native';
+import { StyleSheet, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
 import { Block, Text } from 'galio-framework';
@@ -7,11 +7,22 @@ import { Button, Input } from '../components';
 import { getCollections, getProducts } from "../network/products";
 import _ from 'lodash';
 import { Card } from "../components";
+import { useSelector } from 'react-redux';
+import Loader from '../components/Loader';
+
 
 export default function Search(props) {
     const [allprods, setProducts] = useState([]);
-    
+    const [response, setResponse] = useState(() => {
+        return false;
+    })
+    const users = useSelector(state => state.user.user);
     useEffect(() => {
+        if (props.route?.params?.tag) {
+            setResponse(() => {
+                return true;
+            })
+        }
         getCollections().then(data => {
             data.map((value) => {
                 if (value.title.includes(props.route?.params?.tag)) {
@@ -22,10 +33,16 @@ export default function Search(props) {
 
         const setProduct = (value) => {
             getProducts(value, 30).then(data => {
+                setResponse(() => {
+                    return false;
+                })
                 setProducts((prevProd) => {
                     return [...prevProd, data]
                 })
             }).catch((error) => {
+                setResponse(() => {
+                    return false;
+                })
                 console.warn(error)
             })
         }
@@ -34,9 +51,11 @@ export default function Search(props) {
             setProducts([])
         }
     }, [props.route?.params?.tag]);
+
     const { navigation } = props;
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{backgroundColor:nowTheme.COLORS.WHITE}}>
+            <Loader response={response} />
             <Block style={styles.container}>
                 <Block flex style={styles.header}>
                     <Text style={{ fontSize: nowTheme.SIZES.FONT * 2, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>Search</Text>
@@ -46,12 +65,15 @@ export default function Search(props) {
                     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                         {allprods.map((value, index) => {
                             return (
-                                _.map(_.chunk(value.products, 3), (element, index) => {
+                                _.map(_.chunk(value.products, 2), (element, index) => {
                                     return (
                                         <Block flex row center key={index} style={styles.home}>
                                             {_.map(element, (item, i) => {
                                                 return (
-                                                    <Card name={item.title} navigation={navigation} item={{id:item?.id, detail:item?.description, price:item?.variants[0]?.price, code:item?.variants[0]?.priceV2.currrencyCode, variantId:item?.variants[0]?.id}} imageUri={item.images[0].src} uri horizontal style={{ margin: 8,backgroundColor:"white" }} key={i} isText={true} isImage/>
+                                                    <Card name={item.title} navigation={navigation} item={{
+                                                        id: item?.id, detail: item?.description, price: item?.variants[0]?.price, code: item.variants[0].priceV2,
+                                                        variantId: item?.variants[0]?.id
+                                                    }} imageUri={item.images[0].src} uri horizontal style={{ margin: 8, }} key={i} isText={true} isImage />
                                                 )
                                             })}
                                         </Block>
@@ -90,6 +112,12 @@ const styles = StyleSheet.create({
     },
     home: {
         width: width * .95,
+        height:height/4.2,
     },
-    inputs: { borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: 55, marginTop: 15, }
+    inputs: {
+        borderWidth: 1,
+        borderColor: nowTheme.COLORS.THEME,
+        height: 55,
+        marginTop: 15
+    }
 })

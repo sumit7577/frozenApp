@@ -2,6 +2,7 @@ import { SHOPIFY_STORE, API_KEY } from "@env";
 import Client from 'shopify-buy';
 import Axios from 'axios';
 
+
 const shopName = "frozen-brothers-online.myshopify.com";
 
 const client = Client.buildClient({
@@ -35,6 +36,17 @@ const getUser = async (password) => {
             lastName
             email
             phone
+            defaultAddress{
+                address1
+                address2 
+                city
+                company
+                country
+                countryCodeV2
+                zip
+                province
+                provinceCode
+            }
             addresses(first:5){
                 edges{
                     node{
@@ -43,7 +55,10 @@ const getUser = async (password) => {
                         city
                         company
                         country
+                        countryCodeV2
                         zip
+                        province
+                        provinceCode
                     }
                 }
             }
@@ -75,6 +90,21 @@ const creatToken = async (email, password) => {
         }
     `
     const response = await axios.post(SHOPIFY_STORE, JSON.stringify({ query: data }));
+    return response;
+}
+
+const resetPassword = async(email)=>{
+    const data = `
+    mutation customerRecover{
+        customerRecover(email: \"${email}") {
+          customerUserErrors {
+            code
+            message
+          }
+        }
+      }
+    `
+    const response = await axios.post(SHOPIFY_STORE,JSON.stringify({query:data}));
     return response;
 }
 
@@ -204,4 +234,4 @@ const updateCart = async(id,key,value,variantId,quantity)=>{
     return response;
 }
 
-export { getCollections, getProducts, getUser, creatToken, createCart,getCart,getCartProduct,updateCart };
+export { getCollections, getProducts, getUser, creatToken, createCart,getCart,getCartProduct,updateCart,axios,client,resetPassword };
