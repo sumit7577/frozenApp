@@ -46,12 +46,25 @@ const Favourites = [
 
 ]
 
+const Icons = {
+  profile : require("../assets/setttingIcon/Profile.png"),
+  address: require("../assets/setttingIcon/Address.png"),
+  contact : require("../assets/setttingIcon/contact_us.png"),
+  logout: require("../assets/setttingIcon/Logout.png"),
+  profile: require("../assets/setttingIcon/Profile.png"),
+  profiePic: require("../assets/setttingIcon/profile_image.png"),
+  privacy : require("../assets/setttingIcon/Privacy.png"),
+  condition : require("../assets/setttingIcon/Term_Condition.png"),
+  back: require('../assets/setttingIcon/back_btn.png')
+}
+
 export{
   Brands,
   Categories,
   Favourites,
   homeLogo,
-  addressLogo
+  addressLogo,
+  Icons
 }
 
 /*export default {

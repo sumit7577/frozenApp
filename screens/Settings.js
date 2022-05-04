@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Image,
   StyleSheet,
   FlatList,
   TouchableOpacity,
@@ -14,7 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch } from "react-redux";
 import { updateUser } from "../store/user/actions";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { Icons } from "../constants/Images";
 
 export default function Settings(props) {
   const { navigation } = props;
@@ -30,7 +31,7 @@ export default function Settings(props) {
       </Block>
       <Block style={styles.container}>
         <Block style={styles.boxes} row middle>
-          <MaterialCommunityIcons style={styles.icons} size={35} name="account-circle-outline" />
+          <Image source={Icons.profile} />
           <TouchableOpacity onPress={() => {
             navigation.navigate("Favourites", {
               screen: "Profile"
@@ -41,7 +42,7 @@ export default function Settings(props) {
 
         </Block>
         <Block style={styles.boxes} row middle>
-          <FontAwesome style={styles.icons} size={30} name="address-book-o" />
+          <Image source={Icons.address} />
           <TouchableOpacity onPress={() => {
             navigation.navigate("Favourites", {
               screen: "ManageAddress"
@@ -53,7 +54,7 @@ export default function Settings(props) {
         </Block>
 
         <Block style={styles.boxes} row middle>
-          <MaterialCommunityIcons style={styles.icons} size={35} name="account-circle-outline" />
+          <Image Source={Icons.contact} />
           <TouchableOpacity onPress={() => {
             navigation.navigate("Favourites", {
               screen: "Contact"
@@ -65,7 +66,7 @@ export default function Settings(props) {
         </Block>
 
         <Block style={styles.boxes} row middle>
-          <MaterialCommunityIcons style={styles.icons} size={35} name="account-circle-outline" />
+          <Image source={Icons.condition} />
           <TouchableOpacity onPress={() => {
             navigation.navigate("Favourites", {
               screen: "Condition"
@@ -77,7 +78,7 @@ export default function Settings(props) {
         </Block>
 
         <Block style={styles.boxes} row middle>
-          <MaterialCommunityIcons style={styles.icons} size={35} name="account-circle-outline" />
+          <Image source={Icons.privacy} />
           <TouchableOpacity onPress={() => {
             navigation.navigate("Favourites", {
               screen: "Policy"
@@ -89,7 +90,7 @@ export default function Settings(props) {
         </Block>
 
         <Block style={styles.boxes} row middle>
-          <MaterialCommunityIcons style={styles.icons} size={35} name="logout" />
+          <Image source={Icons.logout} />
           <TouchableOpacity onPress={clearUser}>
             <Text style={styles.text}>Logout</Text>
           </TouchableOpacity>
