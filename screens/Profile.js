@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import { updateUser } from '../store/user/actions';
 import { useSelector } from 'react-redux';
 import { Block } from 'galio-framework';
+import { Icons } from '../constants/Images';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -30,7 +31,7 @@ const Profile = (props) => {
       </Block>
       <View style={{ alignItems: "center", height: "100%", padding: 8 }} >
         <View style={{ marginTop: 20, height: 150, width: 150, borderRadius: 150 / 2, overflow: "hidden", zIndex: 5 }}>
-          <Image source={homeLogo} alt="Profile image" style={{ height: 150, width: 150, borderRadius: 150 / 2, resizeMode: "contain" }} />
+          <Image source={Icons.profiePic} alt="Profile image" style={{ height: 150, width: 150, borderRadius: 150 / 2, resizeMode: "contain" }} />
         </View>
 
         <View style={{ flex: 2, alignItems: "center", marginLeft: 20, marginRight: 20 }}>

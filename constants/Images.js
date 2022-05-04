@@ -49,7 +49,7 @@ const Favourites = [
 const Icons = {
   profile : require("../assets/setttingIcon/Profile.png"),
   address: require("../assets/setttingIcon/Address.png"),
-  contact : require("../assets/setttingIcon/contact_us.png"),
+  contactUs : require("../assets/setttingIcon/contact_us3x.png"),
   logout: require("../assets/setttingIcon/Logout.png"),
   profile: require("../assets/setttingIcon/Profile.png"),
   profiePic: require("../assets/setttingIcon/profile_image.png"),

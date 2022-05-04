@@ -31,7 +31,7 @@ export default function Settings(props) {
       </Block>
       <Block style={styles.container}>
         <Block style={styles.boxes} row middle>
-          <Image source={Icons.profile} />
+          <Image source={Icons.profile} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={() => {
             navigation.navigate("Favourites", {
               screen: "Profile"
@@ -42,7 +42,7 @@ export default function Settings(props) {
 
         </Block>
         <Block style={styles.boxes} row middle>
-          <Image source={Icons.address} />
+          <Image source={Icons.address} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={() => {
             navigation.navigate("Favourites", {
               screen: "ManageAddress"
@@ -54,7 +54,7 @@ export default function Settings(props) {
         </Block>
 
         <Block style={styles.boxes} row middle>
-          <Image Source={Icons.contact} />
+          <Image source={Icons.contactUs} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={() => {
             navigation.navigate("Favourites", {
               screen: "Contact"
@@ -66,7 +66,7 @@ export default function Settings(props) {
         </Block>
 
         <Block style={styles.boxes} row middle>
-          <Image source={Icons.condition} />
+          <Image source={Icons.privacy} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={() => {
             navigation.navigate("Favourites", {
               screen: "Condition"
@@ -78,7 +78,7 @@ export default function Settings(props) {
         </Block>
 
         <Block style={styles.boxes} row middle>
-          <Image source={Icons.privacy} />
+          <Image source={Icons.privacy} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={() => {
             navigation.navigate("Favourites", {
               screen: "Policy"
@@ -90,7 +90,7 @@ export default function Settings(props) {
         </Block>
 
         <Block style={styles.boxes} row middle>
-          <Image source={Icons.logout} />
+          <Image source={Icons.logout} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={clearUser}>
             <Text style={styles.text}>Logout</Text>
           </TouchableOpacity>
