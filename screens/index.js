@@ -15,6 +15,7 @@ class AppHome extends React.Component {
     async componentDidMount() {
         const { updateUser } = this.props;
         const user = await AsyncStorage.getItem('user');
+        console.log(user);
         if (user)
             updateUser(JSON.parse(user));
     }

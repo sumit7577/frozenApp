@@ -6,15 +6,17 @@ import _ from 'lodash';
 import { Button } from "../components";
 import { nowTheme } from '../constants';
 import { useSelector } from "react-redux";
-import { getCart, getCartProduct } from "../network/products";
+import { getCart, getCartProduct, resetPassword, updateCartItems } from "../network/products";
 import { createCheckout, getSymbol } from "../network/checkout";
 import Loader from "../components/Loader";
+import { noProduct } from "../constants/Images";
 
 
 function Stores(props) {
     const { route, navigation } = props;
     const updatedCart = route?.params?.property;
     const cart = useSelector(state => state.product.list);
+    const [quantity, setQuantity] = useState(0);
     const users = useSelector(state => state.user.user);
     const addresses = users.address.edges[0].node;
     const [response, setResponse] = useState(() => {
@@ -38,7 +40,6 @@ function Stores(props) {
         getCart(cart?.data?.cartCreate.cart.id).then(res => {
 
             setCart(res?.data?.data.cart?.lines?.edges);
-
             setTotalAmount(() => {
                 const baseObject = res?.data?.data.cart;
                 return [baseObject.estimatedCost.subtotalAmount.amount,
@@ -54,6 +55,8 @@ function Stores(props) {
                 getSymbol(baseObject.estimatedCost.totalAmount.currencyCode)];
             });
 
+
+
             let base = res?.data?.data.cart?.lines?.edges;
 
             if (base.length >= 1) {
@@ -64,6 +67,7 @@ function Stores(props) {
                             return false;
                         })
                         res.quantity = value.node.quantity;
+                        res.variantId = value.node.id;
                         setProds((prevProd) => {
                             return [...prevProd, res];
                         })
@@ -94,7 +98,7 @@ function Stores(props) {
         return () => {
             setProds([]);
         }
-    }, [updatedCart]);
+    }, [updatedCart, quantity]);
 
     const createCart = () => {
         setResponse(() => {
@@ -137,7 +141,7 @@ function Stores(props) {
 
                     }
                 ).catch(error => {
-                    setResponse(()=>{
+                    setResponse(() => {
                         return false;
                     })
                     console.log(error);
@@ -146,16 +150,46 @@ function Stores(props) {
 
     }
 
+    const increaseCounter = (merchandiseId, prodouctId, variantId, index, quantity) => {
+        if (quantity < 999) {
+            updateCartItems(merchandiseId, prodouctId, quantity + 1, variantId, cart?.data?.cartCreate.cart.id).then(res => {
+                if (res.data.data.cartLinesUpdate.userErrors == 0) {
+                    setQuantity(quantity + 1);
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        }
+        else {
+            Alert.alert("Server Error", "Cart Limit Exceeded!")
+        }
+    }
+
+    const decraseCounter = (merchandiseId, prodouctId, variantId, index, quantity) => {
+        if (quantity >= 2) {
+            updateCartItems(merchandiseId, prodouctId, quantity - 1, variantId, cart?.data?.cartCreate.cart.id).then(res => {
+                if (res.data.data.cartLinesUpdate.userErrors == 0) {
+                    setQuantity(quantity - 1);
+                }
+            }).catch(error => {
+                console.log(error);
+            })
+        }
+        else {
+            Alert.alert("Server Error", "Can`t Add Less Than 0 Products")
+        }
+    }
+
     if (cartdetail === null) {
         return (
-            <SafeAreaView>
-                <Text> No product in carts</Text>
+            <SafeAreaView style={{alignItems:"center",position:"absolute",top:height/4,left:width/8}}>
+                <Image source={noProduct} style={{resizeMode:"contain",height:300,width:300}}/>
             </SafeAreaView>
         )
     }
     else {
         return (
-            <SafeAreaView style={{backgroundColor:nowTheme.COLORS.WHITE}}>
+            <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
                 <Loader response={response} />
                 <Block style={styles.container}>
                     <Block style={styles.header} middle>
@@ -167,25 +201,29 @@ function Stores(props) {
                                         <Text style={{ maxWidth: width * 0.4, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10, paddingLeft: 5 }}>
                                             {value?.title}{'\n'} {getSymbol(value.variants[0].priceV2.currencyCode)}{value.variants[0]?.price}</Text>
 
-                                        <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 30, height: 40 }}>
-                                            <Text
-                                                style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
-                                                size={14}
-                                                color={nowTheme.COLORS.WHITE}
-                                            >
-                                                +
-                                            </Text>
-                                        </Button>
-
-                                        <Text style={styles.text}>{value.quantity}</Text>
-
-                                        <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 30, height: 40 }}>
+                                        <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 30, height: 40 }} onPress={() => {
+                                            decraseCounter(value.variants[0].id, value.id, value.variantId, index, value.quantity);
+                                        }}>
                                             <Text
                                                 style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
                                                 size={14}
                                                 color={nowTheme.COLORS.WHITE}
                                             >
                                                 -
+                                            </Text>
+                                        </Button>
+
+                                        <Text style={styles.text}>{value.quantity}</Text>
+
+                                        <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 30, height: 40 }} onPress={() => {
+                                            increaseCounter(value.variants[0].id, value.id, value.variantId, index, value.quantity);
+                                        }}>
+                                            <Text
+                                                style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
+                                                size={14}
+                                                color={nowTheme.COLORS.WHITE}
+                                            >
+                                                +
                                             </Text>
                                         </Button>
 

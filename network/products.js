@@ -164,6 +164,7 @@ const getCart = async(id) =>{
                             value
                         }
                         quantity
+                        id
                     }
                 }
             }
@@ -234,4 +235,35 @@ const updateCart = async(id,key,value,variantId,quantity)=>{
     return response;
 }
 
-export { getCollections, getProducts, getUser, creatToken, createCart,getCart,getCartProduct,updateCart,axios,client,resetPassword };
+
+const updateCartItems = async(merchandiseId,id,quantity,lineId,cartId)=>{
+    const variable = `
+        lines: {
+          attributes: [
+            {
+              key: "id",
+              value: \"${id}"\
+            }
+          ],
+          id:\"${lineId}"\,
+          merchandiseId:\"${merchandiseId}"\,
+          quantity: ${quantity}
+        }
+    `
+    const data = `
+    mutation cartLinesUpdate{
+        cartLinesUpdate(cartId: \"${cartId}"\, ${variable}) {
+          cart {
+            id
+          }
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+    `
+    const response = await axios.post(SHOPIFY_STORE,JSON.stringify({query:data}));
+    return response;
+}
+export { getCollections, getProducts, getUser, creatToken, createCart,getCart,getCartProduct,updateCart,axios,client,resetPassword,updateCartItems };

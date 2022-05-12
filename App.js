@@ -6,7 +6,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import AppHome from './screens/index';
 import store from './store/index';
 import { StripeProvider } from '@stripe/stripe-react-native';
-import { STRIPE_KEY } from "@env";
 
 
 

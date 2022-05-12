@@ -9,9 +9,6 @@ import {
 import { Block, Text, theme, Icon } from "galio-framework";
 import nowTheme from "../constants/Theme";
 import { SafeAreaView } from "react-native-safe-area-context";
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch } from "react-redux";
 import { updateUser } from "../store/user/actions";
 import AsyncStorage from '@react-native-async-storage/async-storage';

@@ -21,6 +21,7 @@ const Viewed = [
 ];*/
 const homeLogo = require("../assets/branding/homepage.png");
 const addressLogo = require("../assets/branding/address.jpg");
+const noProduct = require("../assets/branding/no-product.png");
 
 const Brands = [
   {text: 'COKE & FANTA',path: require('../assets/branding/coke.png'),tag:"All Coca-Cola"},
@@ -64,7 +65,8 @@ export{
   Favourites,
   homeLogo,
   addressLogo,
-  Icons
+  Icons,
+  noProduct
 }
 
 /*export default {
