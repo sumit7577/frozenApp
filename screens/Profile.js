@@ -16,6 +16,7 @@ const { width, height } = Dimensions.get('screen');
 
 const Profile = (props) => {
   let user = useSelector(state => state.user.user);
+  console.log(user.token);
   const baseAddr = user.address.edges[0].node;
   const fullName = user.firstName + " " + user.lastName;
   const fullAddress = user.firstName + " (Default)" + "\n" + baseAddr.address1 + baseAddr?.address2 + "\n" + baseAddr.city + "\n" + baseAddr.country + "\n" + baseAddr.zip

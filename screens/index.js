@@ -10,21 +10,45 @@ import { updateUser } from '../store/user/actions';
 import Loader from '../components/Loader';
 import Notification from '../components/Notification';
 import { navigationRef } from '../navigation/RootNavigation';
+import { getUser } from '../network/products';
+import * as Localization from 'expo-localization';
 
 class AppHome extends React.Component {
+    constructor(){
+        super();
+        this.state={
+            localize: Localization.locale,
+            response:false,
+        }
+    }
     async componentDidMount() {
+        this.setState({response:true})
         const { updateUser } = this.props;
         const user = await AsyncStorage.getItem('user');
-        console.log(user);
-        if (user)
-            updateUser(JSON.parse(user));
+        if (user !== null || user !== undefined)
+            getUser(user).then(res => {
+                if (res.data.data.customer != null) {
+                    this.setState({response:false})
+                    const base = res.data.data;
+                    updateUser({
+                        id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone,
+                        email: base.customer.email, token: user, defaultAddress: base.customer.defaultAddress,localization: this.state.localize
+                    })
+                }
+                else{
+                    this.setState({response:false})
+                }
+            }).catch(error => {
+                this.setState({response:false})
+                console.log(error);
+            })
     }
 
     render() {
         const { user } = this.props;
         return (
             <>
-                <Loader />
+                <Loader response={this.state.response}/>
                 <Notification />
                 <NavigationContainer ref={navigationRef}>
                     <GalioProvider theme={nowTheme}>

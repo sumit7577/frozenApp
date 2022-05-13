@@ -9,6 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getUser, creatToken } from "../network/products";
 import * as Localization from 'expo-localization';
 import Loader from '../components/Loader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -79,6 +80,14 @@ class Login extends React.Component {
               else {
                 this.setState({response:false});
                 const base = data.data.data;
+                const setUser= async()=>{
+                  try{
+                    await AsyncStorage.setItem("user",this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken);
+                  }catch(e){
+                    console.log(e);
+                  }
+                }
+                setUser();
                 updateUser({
                   id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone,
                   email: base.customer.email, token: this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken, defaultAddress: base.customer.defaultAddress
