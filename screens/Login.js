@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Dimensions, Alert, ShadowPropTypesIOS } from 'react-native';
+import { StyleSheet, Dimensions, Alert, } from 'react-native';
 import { Block, Text, Link } from 'galio-framework';
 import { connect } from 'react-redux';
 import { Button, Input } from '../components';

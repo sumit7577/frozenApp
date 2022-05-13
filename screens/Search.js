@@ -72,7 +72,8 @@ export default function Search(props) {
                                                 return (
                                                     <Card name={item.title} navigation={navigation} item={{
                                                         id: item?.id, detail: item?.description, price: item?.variants[0]?.price, code: item.variants[0].priceV2,
-                                                        variantId: item?.variants[0]?.id
+                                                        variantId: item?.variants[0]?.id,
+                                                        available:item.availableForSale
                                                     }} imageUri={item.images[0].src} uri horizontal style={{ margin: 8, }} key={i} isText={true} isImage />
                                                 )
                                             })}

@@ -132,8 +132,9 @@ function Stores(props) {
                         })
                         if (res.id) {
                             navigation.navigate("Cart", {
-                                screen: "Payment", params: {
+                                screen: "Summary", params: {
                                     id: res.id,
+                                    cartId:cart.data.cartCreate.cart.id,
                                     totalPrice: res.totalPrice,
                                 }
                             })
@@ -246,11 +247,6 @@ function Stores(props) {
                             <Block row style={styles.bill}>
                                 <Text style={styles.texts}>VAT</Text>
                                 <Text style={styles.texts}>{currencyCode[1]}{totalAmount[1]}</Text>
-                            </Block>
-
-                            <Block row style={styles.bill}>
-                                <Text style={styles.texts}>DELIVERY </Text>
-                                <Text style={styles.texts}>{currencyCode[0]}</Text>
                             </Block>
 
                             <Block row style={styles.bill}>

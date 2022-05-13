@@ -22,7 +22,11 @@ class Home extends React.Component {
   render() {
     const { ...property } = this.props;
     return (
-      <Block flex style={{ marginTop: "10%",backgroundColor:nowTheme.COLORS.WHITE }}>
+      <Block flex style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
+        <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8,marginTop:"8%" }}>
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4 }}>Home</Text>
+        </Block>
+        {/*
         <Block style={styles.top}>
           <AntDesign name="notification" size={50} color="black" style={{ transform: [{ rotateY: '180deg' }], marginLeft: 8 }} />
           <Block style={{ marginRight: "20%" }}>
@@ -35,14 +39,14 @@ class Home extends React.Component {
               )
             })}
           </Block>
-        </Block>
+          </Block>*/}
         <Block style={{ flex: 8 }}>
           {Brands.length === 0 ? (<Text>Loading...</Text>) :
             <ScrollView showsVerticalScrollIndicator={false}>
               {_.map(_.chunk(Brands, 2), (element, index) => (
                 <Block flex row center key={index} style={styles.home}>
                   {_.map(element, (item, i) => (
-                    <Card name={item.text} tags={item.tag} imageUri={item.path} navigation={property.navigation} horizontal style={{ margin: 8,maxWidth:width }} button key={i} isText={false} isImage />
+                    <Card name={item.text} tags={item.tag} imageUri={item.path} navigation={property.navigation} horizontal style={{ margin: 8, maxWidth: width }} button key={i} isText={false} isImage />
                   ))}
                 </Block>
               ))}

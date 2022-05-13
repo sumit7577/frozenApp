@@ -46,6 +46,7 @@ class Card extends React.Component {
                 code:item.code.currencyCode,
                 variantId:item.variantId,
                 id:item.id,
+                available:item.available
               })}>
                 <Text style={styles.title} bold>
                   {name}

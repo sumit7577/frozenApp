@@ -18,7 +18,6 @@ const createCheckout = async (lineItems, address1, address2, city, company, firs
       updateShippingCost(response.id,res?.data?.data.node.availableShippingRates.shippingRates[0].handle);
     });
   }
-
   return getCheckout(response.id);
 }
 
@@ -167,4 +166,4 @@ const getSymbol = (currencyCode)=>{
   return symbol;
 }
 
-export { createCheckout, getCheckout, getStripeToken, completeCheckout,updateShippingAddress,getSymbol };
+export { createCheckout, getCheckout, getStripeToken, completeCheckout,updateShippingAddress,getSymbol,getShippingCost };

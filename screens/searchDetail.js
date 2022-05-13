@@ -1,4 +1,4 @@
-import { Text, StyleSheet, Image, Dimensions } from 'react-native';
+import { Text, StyleSheet, Image, Dimensions,Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React from 'react';
 import { Block } from "galio-framework";
@@ -94,7 +94,7 @@ export default function SearchDetail(props) {
 
   }
   return (
-    <SafeAreaView style={{backgroundColor:nowTheme.COLORS.WHITE}}>
+    <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
       <Loader response={response} />
       <Block middle style={styles.container}>
         <Block style={styles.header} middle row>
@@ -131,14 +131,28 @@ export default function SearchDetail(props) {
             </Button>
 
           </Block>
+          {route.params.available ?
+            <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }} onPress={addtoCart}>
+              <Text
+                style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, color: nowTheme.COLORS.THEME }}
+              >
+                ADD TO CART
+              </Text>
+            </Button> :
+            <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }} onPress={()=>{
+              Alert.alert("Server Error","Sorry This Product is Not Available Now!")
+            }}>
+              <Text
+                style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, color: nowTheme.COLORS.THEME }}
+              >
+                Out Of Stock
+              </Text>
+            </Button>
+          }
 
-          <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }} onPress={addtoCart}>
-            <Text
-              style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, color: nowTheme.COLORS.THEME }}
-            >
-              ADD TO CART
-            </Text>
-          </Button>
+
+
+
 
         </Block>
 

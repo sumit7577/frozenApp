@@ -19,6 +19,7 @@ import Settings from '../screens/Settings';
 import Policy from '../screens/policy';
 import Contact from '../screens/contact';
 import Condition from '../screens/condition';
+import Summary from '../screens/summary';
 
 
 const Stack = createStackNavigator();
@@ -71,6 +72,7 @@ function StoreStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen" initialRouteName='Stores'>
       <Stack.Screen name="Stores" component={Stores} options={{ headerShown: false }} />
+      <Stack.Screen name="Summary" component={Summary} options={{ headerShown: false }} />
       <Stack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
     </Stack.Navigator>
   )

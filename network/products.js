@@ -266,4 +266,23 @@ const updateCartItems = async(merchandiseId,id,quantity,lineId,cartId)=>{
     const response = await axios.post(SHOPIFY_STORE,JSON.stringify({query:data}));
     return response;
 }
+
+const getSingleProduct = async(id)=>{
+    const data = `
+    {
+        product(id:"Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQzOTg1MTcxMjUyNTc="){
+            id
+            title
+            images(first:10){
+                edges{
+                    node{
+                        id
+                        url
+                    }
+                }
+            }
+        }
+    }
+    `
+}
 export { getCollections, getProducts, getUser, creatToken, createCart,getCart,getCartProduct,updateCart,axios,client,resetPassword,updateCartItems };
