@@ -37,25 +37,33 @@ const getUser = async (password) => {
             email
             phone
             defaultAddress{
+                id
                 address1
                 address2 
                 city
                 company
                 country
+                phone
+                firstName
+                lastName
                 countryCodeV2
                 zip
                 province
                 provinceCode
             }
-            addresses(first:5){
+            addresses(first:10){
                 edges{
                     node{
+                        id
                         address1
                         address2
                         city
+                        phone
                         company
                         country
                         countryCodeV2
+                        firstName
+                        lastName
                         zip
                         province
                         provinceCode
@@ -267,22 +275,87 @@ const updateCartItems = async(merchandiseId,id,quantity,lineId,cartId)=>{
     return response;
 }
 
-const getSingleProduct = async(id)=>{
-    const data = `
-    {
-        product(id:"Z2lkOi8vc2hvcGlmeS9Qcm9kdWN0LzQzOTg1MTcxMjUyNTc="){
-            id
-            title
-            images(first:10){
-                edges{
-                    node{
-                        id
-                        url
-                    }
-                }
-            }
+
+const addressCreate = async(customerToken,address1,address2,city,company,country,firstName,lastName,phone,province,zip)=>{
+    const variable = `
+        address: {
+          address1: \"${address1}"\,
+          address2: \"${address2}"\,
+          city:\"${city}"\,
+          company: \"${company}"\,
+          country: \"${country}"\,
+          firstName: \"${firstName}"\,
+          lastName: \"${lastName}"\,
+          phone: \"${phone}"\,
+          province: \"${province}"\,
+          zip: \"${zip}"\
         }
-    }
     `
+    const data = `
+    mutation customerAddressCreate {
+        customerAddressCreate(${variable}, customerAccessToken: \"${customerToken}"\) {
+          customerAddress {
+            id
+          }
+          customerUserErrors {
+            field
+            message
+          }
+        }
+      }
+    `
+    const response = await axios.post(SHOPIFY_STORE,JSON.stringify({query:data}));
+    return response;
 }
-export { getCollections, getProducts, getUser, creatToken, createCart,getCart,getCartProduct,updateCart,axios,client,resetPassword,updateCartItems };
+
+const addressUpdate = async(customerToken,addressId,address1,address2,city,company,country,firstName,lastName,phone,province,zip) =>{
+    const variable = `
+        address: {
+          address1: \"${address1}"\,
+          address2: \"${address2}"\,
+          city: \"${city}"\,
+          company: \"${company}"\,
+          country: \"${country}"\,
+          firstName: \"${firstName}"\,
+          lastName: \"${lastName}"\,
+          phone: \"${phone}"\,
+          province: \"${province}"\,
+          zip: \"${zip}"\
+        }
+    `;
+    const data = `
+    mutation customerAddressUpdate {
+        customerAddressUpdate(${variable}, customerAccessToken: \"${customerToken}"\, id: \"${addressId}"\) {
+          customerAddress {
+            id
+          }
+          customerUserErrors {
+            field
+            message
+          }
+        }
+      }
+    `;
+    const response = await axios.post(SHOPIFY_STORE,JSON.stringify({query:data}));
+    return response;
+
+}
+
+const defaultAddressUpdate = async(customerToken,addressId)=>{
+    const data = `
+    mutation customerDefaultAddressUpdate {
+        customerDefaultAddressUpdate(addressId: \"${addressId}"\, customerAccessToken: \"${customerToken}"\) {
+          customer {
+            id
+          }
+          customerUserErrors {
+            field
+            message
+          }
+        }
+      }`;
+    const response = await axios.post(SHOPIFY_STORE,JSON.stringify({query:data}));
+    return response;
+}
+export { getCollections, getProducts, getUser, creatToken, createCart,getCart,getCartProduct,updateCart,axios,client,resetPassword,updateCartItems,
+defaultAddressUpdate,addressCreate,addressUpdate };

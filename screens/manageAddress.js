@@ -10,11 +10,12 @@ import { addressLogo } from '../constants/Images';
 export default function ManageAddress(props) {
     const { navigation } = props;
     const { user } = useSelector(state => state);
-    const editAddress = (index) => {
+    const editAddress = (index,addressId) => {
         navigation.navigate("Favourites", {
             screen: "EditAddress",
             params: {
                 id: index,
+                addressId:addressId
             }
 
         })
@@ -38,7 +39,7 @@ export default function ManageAddress(props) {
                                     <Text style={{ marginLeft: 15, fontSize: 12, maxWidth: 200, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{fullAddress}</Text>
                                     <Text style={{ marginLeft: 15, fontSize: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{user.user.number ? user.user.number : ""}</Text>
                                     <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }} onPress={() => {
-                                        editAddress(index);
+                                        editAddress(index,value.node.id);
                                     }}>
                                         <Text
                                             style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
