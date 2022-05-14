@@ -18,13 +18,16 @@ function Stores(props) {
     const cart = useSelector(state => state.product.list);
     const [quantity, setQuantity] = useState(0);
     const users = useSelector(state => state.user.user);
-    const addresses = users.address.edges[0].node;
+    const addresses = users.defaultAddress;
     const [response, setResponse] = useState(() => {
         return false;
     })
     const [cartdetail, setCart] = useState(() => {
         return null;
     });
+    const [addressIndex,setIndex] = useState(()=>{
+        return 0;
+    })
     const [allProds, setProds] = useState([]);
     const [totalAmount, setTotalAmount] = useState(() => {
         return []
@@ -264,20 +267,28 @@ function Stores(props) {
 
                             <Block>
                                 <Text style={styles.texts}>SHIPPING ADDRESS</Text>
-                                <Text style={styles.text}>{users.firstName} {users.lastName}</Text>
+                                <Text style={styles.text}>{users.defaultAddress.firstName} {users.defaultAddress.lastName}</Text>
                                 <Text style={styles.text}>{addresses.address1}</Text>
                                 <Text style={styles.text}>{addresses.city} {addresses.zip}</Text>
                                 <Text style={styles.text}>{addresses.country}</Text>
                                 <Text style={{ marginTop: 12, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10 }}>
-                                    {users.number ? users.number : "Phone Number Not Exists!"}</Text>
+                                    {users.defaultAddress.phone ? users.defaultAddress.phone : "Phone Number Not Exists!"}</Text>
                             </Block>
 
                             <Block style={{ alignItems: "center" }}>
                                 <Button border style={{ backgroundColor: nowTheme.COLORS.WHITE, height: 50, width: width / 3, marginTop: "20%" }}
                                     onPress={() => {
+                                        users.address.edges.map((value,index)=>{
+                                            if(value.node.id === users.defaultAddress.id){
+                                                setIndex(()=>{
+                                                    return index;
+                                                })
+                                            }
+                                        })
                                         navigation.navigate("Account", {
                                             screen: "EditAddress", params: {
-                                                id: 0
+                                                addressId:users.defaultAddress.id,
+                                                id:addressIndex,
                                             }
                                         })
                                     }}>

@@ -33,11 +33,11 @@ export default function ManageAddress(props) {
                             let fullAddress = value.node.address1 + value.node.address2 + "\n" + value.node.city + "\n" + value.node.country + "\n" + value.node.zip;
                             return (
                                 <Block key={index} style={{ padding: 8, marginTop: 20 }}>
-                                    {index === 0 ?
+                                    {value.node.id === user.user.defaultAddress.id ?
                                         <Text style={styles.text}>DEFAULT</Text> :
                                         <Text style={styles.text}>OTHER ADDRESS</Text>}
                                     <Text style={{ marginLeft: 15, fontSize: 12, maxWidth: 200, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{fullAddress}</Text>
-                                    <Text style={{ marginLeft: 15, fontSize: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{user.user.number ? user.user.number : ""}</Text>
+                                    <Text style={{ marginLeft: 15, fontSize: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{value.node.phone? value.node.phone : ""}</Text>
                                     <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }} onPress={() => {
                                         editAddress(index,value.node.id);
                                     }}>

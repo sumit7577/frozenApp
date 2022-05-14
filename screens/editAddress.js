@@ -1,5 +1,5 @@
-import { Text, StyleSheet, Image, Dimensions, ScrollView,Alert } from 'react-native';
-import React, { useState } from 'react';
+import { Text, StyleSheet, Image, Dimensions, ScrollView, Alert } from 'react-native';
+import React, { useState,useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { nowTheme } from "../constants";
 import { useSelector } from 'react-redux';
@@ -8,18 +8,26 @@ import { addressLogo } from '../constants/Images';
 import { Input } from '../components';
 import { Block } from 'galio-framework';
 import Checkbox from 'expo-checkbox';
-import { addressUpdate,defaultAddressUpdate } from '../network/products';
+import { addressUpdate, defaultAddressUpdate } from '../network/products';
 import Loader from '../components/Loader';
+import { connect } from 'react-redux';
+import { updateUser } from '../store/user/actions';
+import { getUser } from '../network/products';
+import * as Localization from 'expo-localization';
 
-export default function EditAddress({ navigation, route }) {
+function EditAddress(props) {
+    const { route, navigation, updateUser } = props;
     const { user } = useSelector(state => state);
+    const [locale, setLocale] = useState(() => {
+        return Localization.locale;
+    })
     const base = user.user.address.edges[route.params.id].node;
     const fullAddress = base.address1;
-    const [isChecked, setChecked] = useState(false);
+    const [isChecked, setChecked] = useState(true);
     const [firstName, setFirstName] = useState(() => {
         return base.firstName;
     });
-    const [response,setResponse] = useState(false);
+    const [response, setResponse] = useState(false);
     const [lastName, setLastName] = useState(() => {
         return base.lastName;
     })
@@ -42,30 +50,58 @@ export default function EditAddress({ navigation, route }) {
         return base.zip;
     })
 
-    const [phone,setPhone] = useState(()=>{
+    const [phone, setPhone] = useState(() => {
         return base.phone;
     })
 
-    const updateAddress = async()=>{
+
+    useEffect(()=>{
+        if(user.user.defaultAddress.id !== route.params.addressId){
+            setChecked(false);
+        }
+    },[user.user.defaultAddress.id]);
+
+
+    const updateAddress = async () => {
         setResponse(true);
-        if(isChecked === true){
-            await defaultAddressUpdate(user.user.token,route.params.addressId);
+        if (isChecked === true) {
+            await defaultAddressUpdate(user.user.token, route.params.addressId);
+            getUser(user.user.token).then(res => {
+                const base = res.data.data;
+                updateUser({
+                    id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone,
+                    email: base.customer.email, token: user.user.token, defaultAddress: base.customer.defaultAddress
+                    , localization: locale
+                });
+            }).catch((error) => {
+                Alert.alert("Server Error", "Something Error Happened! Please Try Again Later")
+            });
         }
-        if(firstName!= "" && lastName!="" && address!="" && country!="" && city!="" && zip!="" && phone!="" && provision!=""){
-            const response = await addressUpdate(user.user.token,route.params.addressId,address,"",city,company,country,firstName,lastName,phone,provision,zip);
-            if(response.data.data.customerAddressUpdate.customerUserErrors.length <1){
+        if (firstName != "" && lastName != "" && address != "" && country != "" && city != "" && zip != "" && phone != "" && provision != "") {
+            const response = await addressUpdate(user.user.token, route.params.addressId, address, "", city, company, country, firstName, lastName, phone, provision, zip);
+            if (response.data.data.customerAddressUpdate.customerUserErrors.length < 1) {
+                getUser(user.user.token).then(res => {
+                    const base = res.data.data;
+                    updateUser({
+                        id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone,
+                        email: base.customer.email, token: user.user.token, defaultAddress: base.customer.defaultAddress
+                        , localization: locale
+                    });
+                }).catch((error) => {
+                    Alert.alert("Server Error", "Something Error Happened! Please Try Again Later")
+                });
                 setResponse(false);
-                Alert.alert("Success","Address Successfully Updated")
-            }else{
+                Alert.alert("Success", "Address Successfully Updated")
+            } else {
                 setResponse(false);
-                Alert.alert("Server Error",response.data.data.customerAddressUpdate.customerUserErrors[0].message)
+                Alert.alert("Server Error", response.data.data.customerAddressUpdate.customerUserErrors[0].message)
             }
-        }else{
+        } else {
             setResponse(false);
-            Alert.alert("Form Error","Please Fill All Form Fields")
+            Alert.alert("Form Error", "Please Fill All Form Fields")
         }
-        
-        
+
+
     }
     return (
         <SafeAreaView>
@@ -79,16 +115,16 @@ export default function EditAddress({ navigation, route }) {
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>FIRST NAME</Text>
-                            <Input placeholder={base.firstName ?base.firstName :""} editable={true} style={styles.inputs} onChangeText={(text)=>{
-                                setFirstName(()=>{
+                            <Input placeholder={base.firstName ? base.firstName : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                                setFirstName(() => {
                                     return text;
                                 })
                             }} />
                         </Block>
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>LAST NAME</Text>
-                            <Input placeholder={base.lastName? base.lastName :""} editable={true} style={styles.inputs} onChangeText={(text)=>{
-                                setLastName(()=>{
+                            <Input placeholder={base.lastName ? base.lastName : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                                setLastName(() => {
                                     return text;
                                 })
                             }} />
@@ -96,8 +132,8 @@ export default function EditAddress({ navigation, route }) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>MOBILE NUMBER</Text>
-                            <Input placeholder={base.phone ?base.phone : ""} keyboardType= "numeric" editable={true} style={styles.inputs} onChangeText={(text)=>{
-                                setPhone(()=>{
+                            <Input placeholder={base.phone ? base.phone : ""} keyboardType="numeric" editable={true} style={styles.inputs} onChangeText={(text) => {
+                                setPhone(() => {
                                     return text;
                                 })
                             }} />
@@ -105,8 +141,8 @@ export default function EditAddress({ navigation, route }) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>COMPANY</Text>
-                            <Input placeholder={base.company ? base.company : " "} editable={true} style={styles.inputs} onChangeText={(text)=>{
-                                setCompany(()=>{
+                            <Input placeholder={base.company ? base.company : " "} editable={true} style={styles.inputs} onChangeText={(text) => {
+                                setCompany(() => {
                                     return text;
                                 })
                             }} />
@@ -114,8 +150,8 @@ export default function EditAddress({ navigation, route }) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>ADDRESS</Text>
-                            <Input placeholder={fullAddress ? fullAddress : ""} editable={true} style={styles.inputs} onChangeText={(text)=>{
-                                setAddress(()=>{
+                            <Input placeholder={fullAddress ? fullAddress : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                                setAddress(() => {
                                     return text;
                                 })
                             }} />
@@ -123,8 +159,8 @@ export default function EditAddress({ navigation, route }) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>COUNTRY</Text>
-                            <Input placeholder={base.country ? base.country : ""} editable={true} style={styles.inputs} onChangeText={(text)=>{
-                                setCountry(()=>{
+                            <Input placeholder={base.country ? base.country : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                                setCountry(() => {
                                     return text;
                                 })
                             }} />
@@ -132,8 +168,8 @@ export default function EditAddress({ navigation, route }) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>PROVISION</Text>
-                            <Input placeholder={base.province ? base.province : ""} editable={true} style={styles.inputs} onChangeText={(text)=>{
-                                setProvision(()=>{
+                            <Input placeholder={base.province ? base.province : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                                setProvision(() => {
                                     return text;
                                 })
                             }} />
@@ -141,8 +177,8 @@ export default function EditAddress({ navigation, route }) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>CITY</Text>
-                            <Input placeholder={base.city ? base.city : ""} editable={true} style={styles.inputs} onChangeText={(text)=>{
-                                setCity(()=>{
+                            <Input placeholder={base.city ? base.city : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                                setCity(() => {
                                     return text;
                                 })
                             }} />
@@ -150,13 +186,13 @@ export default function EditAddress({ navigation, route }) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>ZIP</Text>
-                            <Input placeholder={base.zip ? base.zip : ""} editable={true} style={styles.inputs} onChangeText={(text)=>{
-                                setZip(()=>{
+                            <Input placeholder={base.zip ? base.zip : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                                setZip(() => {
                                     return text;
                                 })
                             }} />
                         </Block>
-                        <Block row style={{alignItems:"center",marginLeft:5}}>
+                        <Block row style={{ alignItems: "center", marginLeft: 5 }}>
                             <Text style={styles.text}>DEFAULT</Text>
                             <Checkbox
                                 style={styles.checkbox}
@@ -218,7 +254,10 @@ const styles = StyleSheet.create({
         marginTop: 8
 
     },
-    checkbox:{
-        marginLeft:"12%"
+    checkbox: {
+        marginLeft: "12%"
     }
 })
+
+
+export default connect(state => ({ user: state.user }), { updateUser })(EditAddress);
