@@ -170,9 +170,9 @@ export default function AppStack(props) {
   return (
     <TabNav.Navigator tabBar={(props) => <CustomBar {...props} />}
       initialRouteName="Home">
+      <TabNav.Screen name="Home" component={HomeStack} />
       <TabNav.Screen name="Account" component={ProfileStack} />
       <TabNav.Screen name="Search" component={SearchStack} />
-      <TabNav.Screen name="Home" component={HomeStack} />
       <TabNav.Screen name="Favourites" component={SettingStack} />
       <TabNav.Screen name="Cart" component={StoreStack} />
     </TabNav.Navigator>

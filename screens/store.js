@@ -134,7 +134,7 @@ function Stores(props) {
                             navigation.navigate("Cart", {
                                 screen: "Summary", params: {
                                     id: res.id,
-                                    cartId:cart.data.cartCreate.cart.id,
+                                    cartId: cart.data.cartCreate.cart.id,
                                     totalPrice: res.totalPrice,
                                 }
                             })
@@ -183,14 +183,17 @@ function Stores(props) {
 
     if (cartdetail === null) {
         return (
-            <SafeAreaView style={{alignItems:"center",position:"absolute",top:height/4,left:width/8}}>
-                <Image source={noProduct} style={{resizeMode:"contain",height:300,width:300}}/>
+            <SafeAreaView style={{ alignItems: "center", position: "absolute", top: height / 4, left: width / 8 }}>
+                <Image source={noProduct} style={{ resizeMode: "contain", height: 300, width: 300 }} />
             </SafeAreaView>
         )
     }
     else {
         return (
             <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
+                <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
+                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4 }}>CART</Text>
+                </Block>
                 <Loader response={response} />
                 <Block style={styles.container}>
                     <Block style={styles.header} middle>
@@ -199,10 +202,13 @@ function Stores(props) {
                                 return (
                                     <Block middle row style={styles.prods} key={index}>
                                         <Image source={{ uri: value?.images[0]?.src }} style={{ height: 50, width: 50 }} />
-                                        <Text style={{ maxWidth: width * 0.4, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10, paddingLeft: 5 }}>
-                                            {value?.title}{'\n'} {getSymbol(value.variants[0].priceV2.currencyCode)}{value.variants[0]?.price}</Text>
+                                        <Block>
+                                            <Text style={{ maxWidth: width * 0.4, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10, paddingLeft: 5, paddingVertical: 10, }}>
+                                                {value?.title}</Text>
+                                                <Text style={{fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, paddingLeft: 5,}}>{getSymbol(value.variants[0].priceV2.currencyCode)}{value.variants[0]?.price}</Text>
+                                        </Block>
 
-                                        <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 30, height: 40 }} onPress={() => {
+                                        <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 40, height: 40 }} onPress={() => {
                                             decraseCounter(value.variants[0].id, value.id, value.variantId, index, value.quantity);
                                         }}>
                                             <Text
@@ -216,7 +222,7 @@ function Stores(props) {
 
                                         <Text style={styles.text}>{value.quantity}</Text>
 
-                                        <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 30, height: 40 }} onPress={() => {
+                                        <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 40, height: 40 }} onPress={() => {
                                             increaseCounter(value.variants[0].id, value.id, value.variantId, index, value.quantity);
                                         }}>
                                             <Text
@@ -227,8 +233,6 @@ function Stores(props) {
                                                 +
                                             </Text>
                                         </Button>
-
-                                        <Text style={styles.text}>{getSymbol(value.variants[0].priceV2.currencyCode)}{value.variants[0]?.price}</Text>
                                     </Block>
                                 )
                             })}
@@ -289,7 +293,7 @@ function Stores(props) {
 
                         </Block>
 
-                        <Block style={{ flex: 4, margin: 20, justifyContent: "space-between" }}>
+                        <Block style={{ flex: 4, margin: 10, justifyContent: "space-between" }}>
 
                             <Block style={{ borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: height / 8, justifyContent: "center", borderRadius: 5 }}>
                                 <Text style={{ textAlign: "center", color: nowTheme.COLORS.MUTED, fontSize: 9, fontFamily: nowTheme.FONTFAMILY.BOLD, paddingHorizontal: 20 }}>
@@ -304,7 +308,7 @@ function Stores(props) {
 
                     </Block>
 
-                    <Block style={styles.footer} middle>
+                    <Block style={styles.footer} center>
 
                         <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={createCart}>
                             <Text
@@ -330,22 +334,22 @@ const styles = StyleSheet.create({
     },
     header: {
         flex: 2,
-        marginTop: "10%",
         justifyContent: "center",
         padding: 8,
     },
     body: {
-        flex: 5.5,
+        flex: 5,
     },
     footer: {
-        flex: 1,
+        flex: 2,
     },
     prods: {
         width: "100%",
         justifyContent: "space-between",
         padding: 8,
+        borderBottomWidth: 0.5,
+        borderColor: nowTheme.COLORS.MUTED,
         borderRadius: 4,
-        backgroundColor: "#d3d3d3",
         marginTop: 8,
     },
     text: {

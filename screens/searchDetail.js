@@ -1,4 +1,4 @@
-import { Text, StyleSheet, Image, Dimensions,Alert } from 'react-native';
+import { Text, StyleSheet, Image, Dimensions, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React from 'react';
 import { Block } from "galio-framework";
@@ -95,11 +95,14 @@ export default function SearchDetail(props) {
   }
   return (
     <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
+      <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4,margin:8 }}>
+        <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4 }}>Product Detail</Text>
+      </Block>
       <Loader response={response} />
       <Block middle style={styles.container}>
-        <Block style={styles.header} middle row>
-          <Image source={{ uri: route.params.image }} style={{ height: 50, width: 50 }} />
-          <Text style={{ maxWidth: width * 0.7, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, paddingLeft: 5 }}> {route.params.name}{'\n'}
+        <Block style={styles.header}>
+          <Image source={{ uri: route.params.image }} style={{ height: 150, width: 150, alignSelf: "center" }} />
+          <Text style={{ maxWidth: width * 0.9, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, paddingLeft: 5 }}> {route.params.name}{'\n'}
             {getSymbol(route.params.code)}{price}</Text>
         </Block>
 
@@ -139,8 +142,8 @@ export default function SearchDetail(props) {
                 ADD TO CART
               </Text>
             </Button> :
-            <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }} onPress={()=>{
-              Alert.alert("Server Error","Sorry This Product is Not Available Now!")
+            <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE, borderColor: nowTheme.COLORS.ERROR }} onPress={() => {
+              Alert.alert("Server Error", "Sorry This Product is Not Available Now!")
             }}>
               <Text
                 style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, color: nowTheme.COLORS.THEME }}
@@ -149,10 +152,6 @@ export default function SearchDetail(props) {
               </Text>
             </Button>
           }
-
-
-
-
 
         </Block>
 
@@ -174,24 +173,23 @@ const { height, width } = Dimensions.get("screen");
 const styles = StyleSheet.create({
   container: {
     height: "100%",
-    marginTop: "20%",
+    marginTop: "5%",
   },
   header: {
-    flex: 0.8,
+    flex: 3,
     width: "90%",
     padding: 5,
     justifyContent: "space-between",
     borderRadius: 4,
-    backgroundColor: "#d3d3d3",
   },
   body: {
     flex: 1.5,
   },
   footer: {
-    flex: 6,
+    flex: 8,
     marginLeft: 15,
     maxWidth: width / 1.3,
-    paddingTop: height / 7,
+    paddingTop: height / 12,
   },
   details: {
     width: "90%",

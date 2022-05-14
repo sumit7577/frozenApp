@@ -3,7 +3,6 @@ import { StyleSheet, Dimensions, ScrollView } from "react-native";
 import { Block, Text } from 'galio-framework';
 import _ from 'lodash';
 import { Card } from "../components";
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import { nowTheme } from "../constants";
 import { Brands } from '../constants/Images';
 
@@ -46,7 +45,7 @@ class Home extends React.Component {
               {_.map(_.chunk(Brands, 2), (element, index) => (
                 <Block flex row center key={index} style={styles.home}>
                   {_.map(element, (item, i) => (
-                    <Card name={item.text} tags={item.tag} imageUri={item.path} navigation={property.navigation} horizontal style={{ margin: 8, maxWidth: width }} button key={i} isText={false} isImage />
+                    <Card full name={item.text} tags={item.tag} imageUri={item.path} navigation={property.navigation} horizontal style={{ margin: 8, maxWidth: width }} button key={i} isText={false} isImage />
                   ))}
                 </Block>
               ))}

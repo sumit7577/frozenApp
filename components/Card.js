@@ -1,7 +1,7 @@
 import React from 'react';
 import { withNavigation } from '@react-navigation/compat';
 import PropTypes from 'prop-types';
-import { StyleSheet, Image, View,TouchableOpacity } from 'react-native';
+import { StyleSheet, Image, View, TouchableOpacity } from 'react-native';
 import { Block, Text, theme } from 'galio-framework';
 import _ from 'lodash';
 import { nowTheme } from '../constants';
@@ -11,12 +11,13 @@ import { getSymbol } from "../network/checkout";
 
 class Card extends React.Component {
   render() {
-    const { navigation, horizontal, full, style, ctaColor, imageStyle, ctaRight, titleStyle, isText, isImage, button, name, imageUri, tags, uri,item } = this.props;
+    const { navigation, horizontal, full, style, ctaColor, imageStyle, ctaRight, titleStyle, isText, isImage, button, name, imageUri, tags, uri, item } = this.props;
     const imageStyles = [full ? styles.fullImage : styles.horizontalImage, imageStyle];
     const titleStyles = [styles.cardTitle, titleStyle];
     const cardContainer = [button ? styles.buttonCard : styles.card, style];
     const imgContainer = [
       styles.imageContainer,
+      full&& styles.homeContainer,
       horizontal ? styles.horizontalStyles : styles.verticalStyles,
     ];
 
@@ -38,15 +39,15 @@ class Card extends React.Component {
             </Block>}
           {isText == false ? <View /> :
             <Block flex style={titleStyles} >
-              <TouchableOpacity onPress={()=>navigation.navigate("SearchDetail",{
-                name:name,
-                desc:item.detail,
-                image:imageUri,
-                price:item.price,
-                code:item.code.currencyCode,
-                variantId:item.variantId,
-                id:item.id,
-                available:item.available
+              <TouchableOpacity onPress={() => navigation.navigate("SearchDetail", {
+                name: name,
+                desc: item.detail,
+                image: imageUri,
+                price: item.price,
+                code: item.code.currencyCode,
+                variantId: item.variantId,
+                id: item.id,
+                available: item.available
               })}>
                 <Text style={styles.title} bold>
                   {name}
@@ -57,7 +58,7 @@ class Card extends React.Component {
               </TouchableOpacity>
             </Block>
           }
-          {button ? <ArButton color={nowTheme.COLORS.THEME} border style={{ backgroundColor: nowTheme.COLORS.WHITE, width: "100%", height: 35, marginLeft: 0 }} onPress={() => {
+          {/*{button ? <ArButton color={nowTheme.COLORS.THEME} style={{ backgroundColor: nowTheme.COLORS.WHITE, width: "100%", height: 35, marginLeft: 0 }} onPress={() => {
             navigation.navigate("Search", {
               screen: "SearchHome", params: {
                 name: name,
@@ -74,6 +75,19 @@ class Card extends React.Component {
               {name}
             </Text>
           </ArButton> : null}
+        8*/}
+          {button ? <Block flex style={titleStyles} >
+            <TouchableOpacity onPress={() => navigation.navigate("Search", {
+              screen: "SearchHome", params: {
+                name: name,
+                tag: tags,
+              }
+            })}>
+              <Text style={{alignSelf:"center",color:nowTheme.COLORS.THEME,fontFamily:nowTheme.FONTFAMILY.BOLD,padding:8}} bold>
+                {name}
+              </Text>
+            </TouchableOpacity>
+          </Block> : null}
         </Block>
       </Block>
     );
@@ -105,7 +119,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   cardTitle: {
-    paddingHorizontal: 9,
+    paddingHorizontal: 8,
     paddingTop: 7,
   },
   title: {
@@ -113,15 +127,15 @@ const styles = StyleSheet.create({
     color: nowTheme.COLORS.BLACK,
     fontSize: 9,
     textAlign: 'center',
-    top:5,
+    top: 5,
     overflow: 'scroll',
   },
-  price:{
+  price: {
     fontFamily: nowTheme.FONTFAMILY.BOLD,
     color: nowTheme.COLORS.BLACK,
     fontSize: 10,
     textAlign: 'center',
-    top:5,
+    top: 5,
     overflow: 'scroll',
   },
   icon: {
@@ -134,6 +148,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     height: "100%",
     width: "100%",
+
   },
   image: {
     // borderRadius: 3,
@@ -152,10 +167,9 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0
   },
   fullImage: {
-    height: "100%",
-    width: "100%",
-    resizeMode: 'stretch',
-
+    height: 180,
+    width: 180,
+    resizeMode: 'contain',
   },
   shadow: {
     shadowColor: '#8898AA',
@@ -168,6 +182,9 @@ const styles = StyleSheet.create({
     fontFamily: 'montserrat-bold',
     paddingHorizontal: 9,
     paddingVertical: 7
+  },
+  homeContainer:{
+    flex:8,
   }
 });
 

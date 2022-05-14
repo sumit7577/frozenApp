@@ -129,7 +129,7 @@ export default function Summary(props) {
                     <Text style={styles.addressText}>Order Summary</Text>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {allProds.map((value, index) => (
-                            <Block row space="between" key={index} style={{ padding: 8,margin:8,marginTop:0, borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED }}>
+                            <Block row space="between" key={index} style={{ padding: 8,margin:10,marginTop:0, borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED }}>
                                 <Block center>
                                     <Image source={{ uri: value.images[0].src }} style={{ height: 50, width: 50 }} />
                                 </Block>
@@ -141,10 +141,8 @@ export default function Summary(props) {
                             </Block>
                         ))
                         }
-
-
-
                     </ScrollView>
+
                 </Block>
                 <Block style={styles.footer}>
                     <Text style={styles.addressText}>Price Details</Text>
