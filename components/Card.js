@@ -83,7 +83,7 @@ class Card extends React.Component {
                 tag: tags,
               }
             })}>
-              <Text style={{alignSelf:"center",color:nowTheme.COLORS.THEME,fontFamily:nowTheme.FONTFAMILY.BOLD,padding:8}} bold>
+              <Text style={{color:nowTheme.COLORS.THEME,fontFamily:nowTheme.FONTFAMILY.BOLD,padding:8,textAlign:"center"}} bold>
                 {name}
               </Text>
             </TouchableOpacity>
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
   },
   fullImage: {
     height: 180,
-    width: 180,
+    width: "100%",
     resizeMode: 'contain',
   },
   shadow: {

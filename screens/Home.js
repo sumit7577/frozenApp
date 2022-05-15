@@ -4,17 +4,29 @@ import { Block, Text } from 'galio-framework';
 import _ from 'lodash';
 import { Card } from "../components";
 import { nowTheme } from "../constants";
-import { Brands } from '../constants/Images';
+import { getCollections } from "../network/products";
 
 class Home extends React.Component {
   constructor() {
     super()
     this.delayDate = ["4 April 2022", "5 April 2022"]
     this.state = {
-      list: []
+      list: [],
+      index: 1
     }
   }
   componentDidMount() {
+    const resp = async () => {
+      const response = await getCollections();
+      response.map((value, index) => {
+        if (value.title.startsWith("All")) {
+          this.setState(prevState => ({
+            list: [...prevState.list, { id: value.id, name: value.title, image: value.image.src }]
+          }));
+        }
+      })
+    }
+    resp();
   }
   componentDidUpdate() {
   }
@@ -22,8 +34,8 @@ class Home extends React.Component {
     const { ...property } = this.props;
     return (
       <Block flex style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
-        <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8,marginTop:"8%" }}>
-          <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4,fontSize:18 }}>Home</Text>
+        <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8, marginTop: "8%" }}>
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 18 }}>Home</Text>
         </Block>
         {/*
         <Block style={styles.top}>
@@ -40,13 +52,15 @@ class Home extends React.Component {
           </Block>
           </Block>*/}
         <Block style={{ flex: 8 }}>
-          {Brands.length === 0 ? (<Text>Loading...</Text>) :
+          {this.state.list.length === 0 ? (<Text>Loading...</Text>) :
             <ScrollView showsVerticalScrollIndicator={false}>
-              {_.map(_.chunk(Brands, 2), (element, index) => (
+              <Card full name={this.state.list[0].name} tags={this.state.list[0]} imageUri={this.state.list[0].image} uri navigation={property.navigation} horizontal style={{ margin: 8, maxWidth: width }} button key={this.state.list[0].id} isText={false} isImage />
+              {_.map(_.chunk(this.state.list.slice(1), 2), (element, index) => (
                 <Block flex row center key={index} style={styles.home}>
                   {_.map(element, (item, i) => (
-                    <Card full name={item.text} tags={item.tag} imageUri={item.path} navigation={property.navigation} horizontal style={{ margin: 8, maxWidth: width }} button key={i} isText={false} isImage />
-                  ))}
+                    <Card full name={item.name} tags={item} imageUri={item.image} uri navigation={property.navigation} horizontal style={{ margin: 8, maxWidth: width }} button key={item.id} isText={false} isImage />
+                  )
+                  )}
                 </Block>
               ))}
             </ScrollView>

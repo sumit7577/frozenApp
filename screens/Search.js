@@ -23,14 +23,14 @@ export default function Search(props) {
                 return true;
             })
         }
-        getCollections().then(data => {
+        /*getCollections().then(data => {
             data.map((value) => {
                 if (value.title.includes(props.route?.params?.tag)) {
-                    setProduct(value.id)
+                    
                 }
             })
-        });
-
+        });*/
+        
         const setProduct = (value) => {
             getProducts(value, 30).then(data => {
                 setResponse(() => {
@@ -46,6 +46,7 @@ export default function Search(props) {
                 console.warn(error)
             })
         }
+        setProduct(props.route?.params?.tag?.id)
 
         return () => {
             setProducts([])
