@@ -34,10 +34,10 @@ const Profile = (props) => {
           <Image source={Icons.profiePic} alt="Profile image" style={{ height: 150, width: 150, borderRadius: 150 / 2, resizeMode: "contain" }} />
         </View>
 
-        <View style={{ flex: 2, alignItems: "center", marginLeft: 20, marginRight: 20 }}>
-          <Text style={{ fontSize: 22, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.BOLD, textAlign: "center" }}>{fullName ? fullName : "Username Not exists!"}</Text>
+        <View style={{ flex: 2, alignItems: "center", marginLeft: 10, marginRight: 10 }}>
+          <Text style={{ fontSize: 22, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.BOLD2, textAlign: "center" }}>{fullName ? fullName : "Username Not exists!"}</Text>
           <Text style={styles.text}>{user.email ? user.email : "Email not exists!"}</Text>
-          <Text style={styles.text}>{user.address ? fullAddress : "Address Not exists!"}</Text>
+          <Text style={{fontFamily:nowTheme.FONTFAMILY.REGULAR,textAlign:"center"}}>{user.address ? fullAddress : "Address Not exists!"}</Text>
           <Text style={{ fontSize: 15, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{user.number ? user.number : "Phone Number Not exists!"}</Text>
         </View>
 
@@ -61,7 +61,7 @@ const Profile = (props) => {
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 14, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.BOLD, textAlign: "center"
+    fontSize: 15, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.BOLD, textAlign: "center"
   },
   button: {
     backgroundColor: nowTheme.COLORS.WHITE, marginLeft: 4

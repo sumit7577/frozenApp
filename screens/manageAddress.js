@@ -14,7 +14,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 function ManageAddress(props) {
     const { navigation, updateUser, user } = props;
     const editAddress = (index, addressId) => {
-        navigation.navigate("Favourites", {
+        navigation.navigate("Setting", {
             screen: "EditAddress",
             params: {
                 id: index,

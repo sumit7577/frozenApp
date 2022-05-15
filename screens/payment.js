@@ -7,6 +7,7 @@ import { nowTheme } from '../constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getCheckout, getStripeToken, completeCheckout } from '../network/checkout';
 import getSymbolFromCurrency from 'currency-symbol-map'
+import Loader from '../components/Loader';
 
 export default function Payment(props) {
   const { route, navigation } = props;
@@ -18,6 +19,7 @@ export default function Payment(props) {
   const [checkout, setCheckout] = useState(() => {
     return null;
   })
+  const [response, setResponse] = useState(false);
 
   useEffect(() => {
     getCheckout(route.params.id).then(res => {
@@ -36,36 +38,42 @@ export default function Payment(props) {
   }, [route.params.id]);
 
   const Pay = () => {
-
-
     if (cardNumber.number && cardNumber.month, cardNumber.year && cardNumber.cvv) {
-
+      setResponse(true);
       getStripeToken(cardNumber.number, cardNumber.month, cardNumber.year, cardNumber.cvv).then(res => {
-
         if (res.error) {
+          setResponse(false);
           Alert.alert(res.error.message);
         }
         else {
-
           completeCheckout(route.params.id, res.id, checkout.totalPrice, checkout.totalPriceV2.currencyCode, checkout.shippingAddress).then(res => {
-
-            if (res.data?.data.checkoutCompleteWithTokenizedPaymentV3.checkout.id && res.data?.data.checkoutCompleteWithTokenizedPaymentV3.checkoutUserErrors.length == 0) {
+            if (res.data?.data.checkoutCompleteWithTokenizedPaymentV3.checkout.id &&
+              res.data?.data.checkoutCompleteWithTokenizedPaymentV3.checkoutUserErrors.length == 0 &&
+              res.data?.data.checkoutCompleteWithTokenizedPaymentV3.checkout.completedAt != null) {
+              setResponse(false);
               Alert.alert("Payment Successful");
+            }
+            if (res.data?.data.checkoutCompleteWithTokenizedPaymentV3.checkout.id && res.data?.data.checkoutCompleteWithTokenizedPaymentV3.payment.transaction.statusV2 === "ERROR") {
+              setResponse(false);
+              Alert.alert("Server Error", "Please Enable Stripe Payments in Your Shop To Accept Payments")
             }
 
           }).catch(error => {
+            setResponse(false);
             console.log(error);
           })
         }
 
       }).catch(error => {
+        setResponse(false);
         console.log(error);
       })
 
     }
     else {
+      setResponse(false);
       Alert.alert("Card Error",
-      "Please Enter Card Details")
+        "Please Enter Card Details")
     }
 
   }
@@ -73,7 +81,7 @@ export default function Payment(props) {
   return (
     <SafeAreaView>
       <Block style={styles.container}>
-
+        <Loader response={response} />
         <Block style={styles.header} row>
           <AntDesign name="arrowleft" size={22} color="black" style={{ marginLeft: 8, position: "absolute", left: 10, }} onPress={() => {
             navigation.pop();

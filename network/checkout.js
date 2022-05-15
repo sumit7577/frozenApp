@@ -94,6 +94,15 @@ const completeCheckout = async (checkoutId, paymentId, amount, currencyCode, add
       }
       payment {
         id
+        transaction{
+          kind
+          statusV2
+          test
+          amountV2{
+              amount
+              currencyCode
+          }
+      }
       }
     }
   }`;

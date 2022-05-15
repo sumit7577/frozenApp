@@ -30,7 +30,7 @@ export default function Settings(props) {
         <Block style={styles.boxes} row middle>
           <Image source={Icons.profile} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={() => {
-            navigation.navigate("Favourites", {
+            navigation.navigate("Setting", {
               screen: "Profile"
             });
           }}>
@@ -41,7 +41,7 @@ export default function Settings(props) {
         <Block style={styles.boxes} row middle>
           <Image source={Icons.address} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={() => {
-            navigation.navigate("Favourites", {
+            navigation.navigate("Setting", {
               screen: "ManageAddress"
             })
           }}>
@@ -53,7 +53,7 @@ export default function Settings(props) {
         <Block style={styles.boxes} row middle>
           <Image source={Icons.contactUs} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={() => {
-            navigation.navigate("Favourites", {
+            navigation.navigate("Setting", {
               screen: "Contact"
             })
           }}>
@@ -65,7 +65,7 @@ export default function Settings(props) {
         <Block style={styles.boxes} row middle>
           <Image source={Icons.privacy} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={() => {
-            navigation.navigate("Favourites", {
+            navigation.navigate("Setting", {
               screen: "Condition"
             })
           }}>
@@ -77,7 +77,7 @@ export default function Settings(props) {
         <Block style={styles.boxes} row middle>
           <Image source={Icons.privacy} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={() => {
-            navigation.navigate("Favourites", {
+            navigation.navigate("Setting", {
               screen: "Policy"
             })
           }}>

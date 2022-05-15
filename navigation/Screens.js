@@ -35,7 +35,6 @@ function ProfileStack(props) {
       <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
       <Stack.Screen name="ManageAddress" component={Address} options={{ headerShown: false }} />
       <Stack.Screen name="EditAddress" component={EditAddress} options={{ headerShown: false }} />
-      {/* <Stack.Screen name="ChangePassword" component={PageView} options={{ title: 'Page View', backgroundColor: '#FFFFFF' }} /> */}
     </Stack.Navigator>
   );
 }
@@ -60,7 +59,7 @@ function SearchStack(props) {
 
 function SettingStack(props) {
   return (
-    <Stack.Navigator mode="card" headerMode="screen" initialRouteName='Settings' >
+    <Stack.Navigator mode="card" headerMode="screen" initialRouteName='SettingHome' >
       <Stack.Screen name="SettingHome" component={Settings} options={{ headerShown: false }} />
       <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
       <Stack.Screen name="ManageAddress" component={Address} options={{ headerShown: false }} />
@@ -82,7 +81,7 @@ function StoreStack(props) {
   )
 }
 
-function CustomIcons(props) {
+/*function CustomIcons(props) {
   if (props.name == "Account") {
     return (
       <MaterialCommunityIcons name="account-outline" size={props.size} color={props.color} />
@@ -109,10 +108,10 @@ function CustomIcons(props) {
     )
   }
 }
+*/
 
 
-
-function CustomBar({ state, descriptors, navigation }) {
+/*function CustomBar({ state, descriptors, navigation }) {
   return (
     <View style={{ flexDirection: 'row', height: 78, backgroundColor: "black", justifyContent: "space-between" }}>
       {state.routes.map((route, index) => {
@@ -169,6 +168,7 @@ function CustomBar({ state, descriptors, navigation }) {
     </View>
   );
 }
+*/
 
 export default function AppStack(props) {
   return (
