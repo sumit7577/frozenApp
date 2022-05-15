@@ -6,7 +6,7 @@ import _ from 'lodash';
 import { Button } from "../components";
 import { nowTheme } from '../constants';
 import { useSelector } from "react-redux";
-import { getCart, getCartProduct, resetPassword, updateCartItems } from "../network/products";
+import { getCart, getCartProduct, updateCartItems } from "../network/products";
 import { createCheckout, getSymbol } from "../network/checkout";
 import Loader from "../components/Loader";
 import { noProduct } from "../constants/Images";

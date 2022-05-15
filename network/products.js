@@ -357,5 +357,21 @@ const defaultAddressUpdate = async(customerToken,addressId)=>{
     const response = await axios.post(SHOPIFY_STORE,JSON.stringify({query:data}));
     return response;
 }
+
+const addressDelete = async(addressId,customerToken)=>{
+  const data = `
+  mutation customerAddressDelete {
+    customerAddressDelete(customerAccessToken: \"${customerToken}"\, id: \"${addressId}"\) {
+      customerUserErrors {
+        field
+        message
+      }
+      deletedCustomerAddressId
+    }
+  }
+  `;
+  const response = await axios.post(SHOPIFY_STORE,JSON.stringify({query:data}));
+  return response;
+}
 export { getCollections, getProducts, getUser, creatToken, createCart,getCart,getCartProduct,updateCart,axios,client,resetPassword,updateCartItems,
-defaultAddressUpdate,addressCreate,addressUpdate };
+defaultAddressUpdate,addressCreate,addressUpdate,addressDelete };

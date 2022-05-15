@@ -26,15 +26,11 @@ export default class App extends React.Component {
       );
     } else {
       return (
-        <StripeProvider
-          publishableKey="pk_test_51HpQavLo9p3SVh7eOClO69TFk12K8XQAoDWwjoww6tPw8hsSJommJMfe2hMxtQef9DRArVwu1wrdeWTcXNtyjkOE00n0IgeqT4"
-          urlScheme="your-url-scheme" // required for 3D Secure and bank redirects
-          merchantIdentifier="merchant.com." // required for Apple Pay
-        >
+        
           <Provider store={store}>
             <AppHome store={store} />
           </Provider>
-        </StripeProvider>
+       
       );
     }
   }
