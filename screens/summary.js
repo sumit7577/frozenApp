@@ -9,6 +9,8 @@ import { getCart, getCartProduct } from "../network/products";
 import { getSymbol } from '../network/checkout'
 import Loader from "../components/Loader";
 import { getShippingCost } from '../network/checkout'
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Icons } from '../constants/Images'
 
 
 export default function Summary(props) {
@@ -30,7 +32,7 @@ export default function Summary(props) {
             screen: "Payment", params: {
                 id: id,
                 cartId: cartId,
-                totalPrice:totalAmount[2],
+                totalPrice: totalAmount[2],
             }
         })
     }
@@ -111,15 +113,20 @@ export default function Summary(props) {
     return (
         <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE, height: "100%" }}>
             <Loader response={response} />
-            <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
-                <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4 }}>Order Summary</Text>
+            <Block row style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
+                <TouchableOpacity onPress={() => {
+                    navigation.pop()
+                }}>
+                    <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 8 }} />
+                </TouchableOpacity>
+                <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4,marginLeft:"30%",fontSize:16 }}>Order Summary</Text>
             </Block>
             <Block style={styles.container}>
                 <Block style={styles.header}>
                     <Text style={styles.addressText}>Address</Text>
                     <Text style={{
                         fontFamily: nowTheme.FONTFAMILY.REGULAR,
-                        fontSize: 12,
+                        fontSize: 14,
                         padding: 8
                     }}>
                         {fullAddress}
@@ -129,14 +136,14 @@ export default function Summary(props) {
                     <Text style={styles.addressText}>Order Summary</Text>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {allProds.map((value, index) => (
-                            <Block row space="between" key={index} style={{ padding: 8,margin:10,marginTop:0, borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED }}>
+                            <Block row space="between" key={index} style={{ padding: 8, margin: 10, marginTop: 0, borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED }}>
                                 <Block center>
                                     <Image source={{ uri: value.images[0].src }} style={{ height: 50, width: 50 }} />
                                 </Block>
                                 <Block style={{ padding: 8 }}>
-                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 11 }}>{value.title}</Text>
-                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, paddingTop: 4 }}>{currencyCode[0]}{value.variants[0].price}</Text>
-                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 10, paddingTop: 4 }}>Quantity {value.quantity}</Text>
+                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14 }}>{value.title}</Text>
+                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 14, paddingTop: 4 }}>{currencyCode[0]}{value.variants[0].price}</Text>
+                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, paddingTop: 4 }}>Quantity {value.quantity}</Text>
                                 </Block>
                             </Block>
                         ))
@@ -149,22 +156,22 @@ export default function Summary(props) {
                     <Block>
                         <Block row space="between">
                             <Text style={styles.text}>Price(2 Item)</Text>
-                            <Text style={styles.text}>{currencyCode[0]}{totalAmount[0]}</Text>
+                            <Text style={{fontFamily:nowTheme.FONTFAMILY.BOLD}}>{currencyCode[0]}{totalAmount[0]}</Text>
                         </Block>
 
                         <Block row space="between">
                             <Text style={styles.text}>Tax</Text>
-                            <Text style={styles.text}>{currencyCode[0]}{totalAmount[1]}</Text>
+                            <Text style={{fontFamily:nowTheme.FONTFAMILY.BOLD}}>{currencyCode[0]}{totalAmount[1]}</Text>
                         </Block>
 
                         <Block row space="between">
                             <Text style={styles.text}>Delivery Charges</Text>
-                            <Text style={styles.text}>{currencyCode[1]}{shippingCost}</Text>
+                            <Text style={{fontFamily:nowTheme.FONTFAMILY.BOLD}}>{currencyCode[1]}{shippingCost}</Text>
                         </Block>
 
                         <Block row space="between" style={{ borderBottomWidth: 0.5, borderTopWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 8, marginTop: 8, paddingBottom: 12, marginBottom: 8 }}>
                             <Text style={styles.text2}>Total Amount</Text>
-                            <Text style={styles.text2}>{currencyCode[2]}{totalAmount[2]}</Text>
+                            <Text style={{fontFamily:nowTheme.FONTFAMILY.BOLD}}>{currencyCode[2]}{totalAmount[2]}</Text>
                         </Block>
                     </Block>
 
@@ -188,11 +195,12 @@ const styles = StyleSheet.create({
     },
     header: {
         flex: 1,
-        padding: 8
+        padding: 8,
+        marginBottom:10,
     },
     text: {
-        fontFamily: nowTheme.FONTFAMILY.BOLD,
-        fontSize: 12,
+        fontFamily: nowTheme.FONTFAMILY.REGULAR,
+        fontSize: 14,
         padding: 5
     },
     body: {
@@ -209,7 +217,8 @@ const styles = StyleSheet.create({
         borderBottomWidth: 0.5,
         margin: 4,
         paddingBottom: 8,
-        borderColor: nowTheme.COLORS.MUTED
+        borderColor: nowTheme.COLORS.MUTED,
+        fontSize:16
     },
     text2: {
         fontFamily: nowTheme.FONTFAMILY.BOLD,

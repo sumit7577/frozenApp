@@ -195,7 +195,7 @@ function Stores(props) {
         return (
             <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
                 <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
-                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4 }}>CART</Text>
+                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4,fontSize:16 }}>CART</Text>
                 </Block>
                 <Loader response={response} />
                 <Block style={styles.container}>
@@ -206,9 +206,9 @@ function Stores(props) {
                                     <Block middle row style={styles.prods} key={index}>
                                         <Image source={{ uri: value?.images[0]?.src }} style={{ height: 50, width: 50 }} />
                                         <Block>
-                                            <Text style={{ maxWidth: width * 0.4, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10, paddingLeft: 5, paddingVertical: 10, }}>
+                                            <Text style={{ maxWidth: width * 0.4, fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 12, paddingLeft: 5, paddingVertical: 10, }}>
                                                 {value?.title}</Text>
-                                                <Text style={{fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, paddingLeft: 5,}}>{getSymbol(value.variants[0].priceV2.currencyCode)}{value.variants[0]?.price}</Text>
+                                                <Text style={{fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, paddingLeft: 5,}}>{getSymbol(value.variants[0].priceV2.currencyCode)}{value.variants[0]?.price}</Text>
                                         </Block>
 
                                         <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 40, height: 40 }} onPress={() => {
@@ -271,7 +271,7 @@ function Stores(props) {
                                 <Text style={styles.text}>{addresses.address1}</Text>
                                 <Text style={styles.text}>{addresses.city} {addresses.zip}</Text>
                                 <Text style={styles.text}>{addresses.country}</Text>
-                                <Text style={{ marginTop: 12, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10 }}>
+                                <Text style={{ marginTop: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 13 }}>
                                     {users.defaultAddress.phone ? users.defaultAddress.phone : "Phone Number Not Exists!"}</Text>
                             </Block>
 
@@ -307,12 +307,12 @@ function Stores(props) {
                         <Block style={{ flex: 4, margin: 10, justifyContent: "space-between" }}>
 
                             <Block style={{ borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: height / 8, justifyContent: "center", borderRadius: 5 }}>
-                                <Text style={{ textAlign: "center", color: nowTheme.COLORS.MUTED, fontSize: 9, fontFamily: nowTheme.FONTFAMILY.BOLD, paddingHorizontal: 20 }}>
+                                <Text style={{ textAlign: "center", color: nowTheme.COLORS.MUTED, fontSize: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR, paddingHorizontal: 20 }}>
                                     include any purchase order numbers, notes or special instructions for your order here</Text>
                             </Block>
 
                             <Block>
-                                <Text style={{ textAlign: "center", fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 10, paddingHorizontal: 20 }}>
+                                <Text style={{ textAlign: "center", fontFamily: nowTheme.FONTFAMILY.MEDIUM, fontSize: 10, paddingHorizontal: 20 }}>
                                     By placing an order you agree to our terms & conditions of sale & use of equipment, to view them click here</Text>
                             </Block>
                         </Block>
@@ -364,12 +364,12 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
     text: {
-        fontFamily: nowTheme.FONTFAMILY.BOLD,
-        fontSize: 10,
+        fontFamily: nowTheme.FONTFAMILY.REGULAR,
+        fontSize: 12,
     },
     texts: {
         fontFamily: nowTheme.FONTFAMILY.BOLD,
-        fontSize: 12,
+        fontSize: 13,
         marginBottom: 5,
     },
     bill: {

@@ -23,7 +23,7 @@ class Home extends React.Component {
     return (
       <Block flex style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
         <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8,marginTop:"8%" }}>
-          <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4 }}>Home</Text>
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4,fontSize:18 }}>Home</Text>
         </Block>
         {/*
         <Block style={styles.top}>

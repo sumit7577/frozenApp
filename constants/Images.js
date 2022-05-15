@@ -66,7 +66,7 @@ export{
   homeLogo,
   addressLogo,
   Icons,
-  noProduct
+  noProduct,
 }
 
 /*export default {

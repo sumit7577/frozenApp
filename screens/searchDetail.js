@@ -11,7 +11,8 @@ import { addProduct } from '../store/products/actions';
 import { useDispatch } from "react-redux";
 import { getSymbol } from "../network/checkout";
 import Loader from '../components/Loader';
-
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Icons } from '../constants/Images';
 export default function SearchDetail(props) {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
@@ -95,15 +96,22 @@ export default function SearchDetail(props) {
   }
   return (
     <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
-      <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4,margin:8 }}>
-        <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4 }}>Product Detail</Text>
+      <Block row style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
+        <TouchableOpacity onPress={() => {
+          navigation.pop()
+        }}>
+          <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
+        </TouchableOpacity>
+        <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16,marginLeft:"30%" }}>Product Detail</Text>
       </Block>
       <Loader response={response} />
       <Block middle style={styles.container}>
         <Block style={styles.header}>
           <Image source={{ uri: route.params.image }} style={{ height: 150, width: 150, alignSelf: "center" }} />
-          <Text style={{ maxWidth: width * 0.9, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, paddingLeft: 5 }}> {route.params.name}{'\n'}
-            {getSymbol(route.params.code)}{price}</Text>
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, }}> {route.params.name}</Text>
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}>
+            {getSymbol(route.params.code)}{price}
+          </Text>
         </Block>
 
         <Block style={styles.body}>
@@ -137,7 +145,7 @@ export default function SearchDetail(props) {
           {route.params.available ?
             <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }} onPress={addtoCart}>
               <Text
-                style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, color: nowTheme.COLORS.THEME }}
+                style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 14, color: nowTheme.COLORS.THEME }}
               >
                 ADD TO CART
               </Text>
@@ -197,8 +205,8 @@ const styles = StyleSheet.create({
     fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12,
   },
   texts: {
-    fontFamily: nowTheme.FONTFAMILY.BOLD,
-    fontSize: 12,
+    fontFamily: nowTheme.FONTFAMILY.REGULAR,
+    fontSize: 13.5,
     marginBottom: 20,
   }
 });

@@ -10,6 +10,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Octicons from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import Address from "../screens/manageAddress";
 import EditAddress from '../screens/editAddress';
 import Search from '../screens/Search';
@@ -20,10 +21,13 @@ import Policy from '../screens/policy';
 import Contact from '../screens/contact';
 import Condition from '../screens/condition';
 import Summary from '../screens/summary';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+
 
 
 const Stack = createStackNavigator();
 const TabNav = createBottomTabNavigator();
+const Tab = createMaterialBottomTabNavigator();
 
 function ProfileStack(props) {
   return (
@@ -168,14 +172,36 @@ function CustomBar({ state, descriptors, navigation }) {
 
 export default function AppStack(props) {
   return (
-    <TabNav.Navigator tabBar={(props) => <CustomBar {...props} />}
-      initialRouteName="Home">
-      <TabNav.Screen name="Home" component={HomeStack} />
-      <TabNav.Screen name="Account" component={ProfileStack} />
-      <TabNav.Screen name="Search" component={SearchStack} />
-      <TabNav.Screen name="Favourites" component={SettingStack} />
-      <TabNav.Screen name="Cart" component={StoreStack} />
-    </TabNav.Navigator>
+    <Tab.Navigator initialRouteName="Home" barStyle={{ backgroundColor: nowTheme.COLORS.WHITE }}
+      activeColor={nowTheme.COLORS.THEME}
+      inactiveColor={nowTheme.COLORS.MUTED} 
+      labeled={false}>
+      <Tab.Screen name="Home" component={HomeStack} options={{
+        tabBarLabel: 'Home',
+        tabBarIcon: ({ color }) => (
+          <Entypo name="home" color={color} size={24} />
+        ),
+      }} />
+      <Tab.Screen name="Search" component={SearchStack} options={{
+        tabBarLabel: 'Search',
+        tabBarIcon: ({ color }) => (
+          <Octicons name="search" color={color} size={23} />
+        ),
+      }} />
+
+      <Tab.Screen name="Cart" component={StoreStack} options={{
+        tabBarLabel: 'Cart',
+        tabBarIcon: ({ color }) => (
+          <MaterialCommunityIcons name="cart" size={24} color={color} />
+        ),
+      }} />
+      <Tab.Screen name="Setting" component={SettingStack} options={{
+        tabBarLabel: 'Setting',
+        tabBarIcon: ({ color }) => (
+          <Octicons name="three-bars" color={color} size={24} />
+        ),
+      }} />
+    </Tab.Navigator>
   );
 }
 

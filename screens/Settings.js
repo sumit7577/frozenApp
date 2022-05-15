@@ -24,7 +24,7 @@ export default function Settings(props) {
   return (
     <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE, height: "100%" }}>
       <Block middle style={{ borderBottomWidth: 1, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
-        <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4 }}>SETTINGS</Text>
+        <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4,fontSize:16 }}>SETTINGS</Text>
       </Block>
       <Block style={styles.container}>
         <Block style={styles.boxes} row middle>
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   text: {
-    fontFamily: nowTheme.FONTFAMILY.REGULAR,
+    fontFamily: nowTheme.FONTFAMILY.BOLD2,
     fontSize: 16,
     paddingLeft: 12,
   },

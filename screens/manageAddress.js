@@ -5,10 +5,11 @@ import { StyleSheet, Image, ScrollView, Alert } from 'react-native';
 import { useSelector } from 'react-redux';
 import { nowTheme } from '../constants';
 import { Button } from '../components';
-import { addressLogo } from '../constants/Images';
+import { addressLogo, Icons } from '../constants/Images';
 import { addressDelete, getUser } from '../network/products';
 import { connect } from 'react-redux';
 import { updateUser } from '../store/user/actions';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 function ManageAddress(props) {
     const { navigation, updateUser, user } = props;
@@ -44,6 +45,14 @@ function ManageAddress(props) {
     }
     return (
         <SafeAreaView>
+            <Block row style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
+                <TouchableOpacity onPress={()=>{
+                    navigation.pop()
+                }}>
+                    <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
+                </TouchableOpacity>
+                <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, marginLeft: "25%" }}>MANAGE ADDRESS</Text>
+            </Block>
             <Block style={styles.container}>
                 <Block style={{ flex: 1.3, alignItems: "center" }}>
                     <Image source={addressLogo} alt="Brand Image" style={{ height: 150, width: 150, resizeMode: "contain" }} />
@@ -55,12 +64,12 @@ function ManageAddress(props) {
                             let fullAddress = value.node.address1 + " " + value.node.address2 + " " + value.node.city + " " + value.node.country + " " + value.node.zip;
                             return (
                                 <Block key={index} style={{ padding: 8, marginBottom: 10, marginLeft: -10 }}>
-                                    {value.node.id === user.user.defaultAddress.id ?
+                                    {/*{value.node.id === user.user.defaultAddress.id ?
                                         <Text style={styles.text}>DEFAULT</Text> :
-                                        <Text style={styles.text}>OTHER ADDRESS</Text>}
-                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, marginTop: 8, marginLeft: 15 }}>{Name}</Text>
-                                    <Text style={{ marginLeft: 15, fontSize: 12, maxWidth: 350, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{fullAddress}</Text>
-                                    <Text style={{ marginLeft: 15, fontSize: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{value.node.phone ? value.node.phone : ""}</Text>
+                                    <Text style={styles.text}>OTHER ADDRESS</Text>}*/}
+                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 14, marginTop: 8, marginLeft: 15 }}>{Name}</Text>
+                                    <Text style={{ marginLeft: 15, fontSize: 14, maxWidth: 350, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{fullAddress}</Text>
+                                    <Text style={{ marginLeft: 15, fontSize: 14, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{value.node.phone ? value.node.phone : ""}</Text>
                                     <Block row>
                                         <Button border style={{ backgroundColor: nowTheme.COLORS.WHITE, width: 80, height: 40 }} onPress={() => {
                                             editAddress(index, value.node.id);
@@ -92,16 +101,6 @@ function ManageAddress(props) {
                         })}
                     </ScrollView>
                 </Block>
-
-                <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={() => navigation.pop()}>
-                    <Text
-                        style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
-                        size={12}
-                        color={nowTheme.COLORS.WHITE}
-                    >
-                        CLOSE
-                    </Text>
-                </Button>
             </Block>
         </SafeAreaView>
     )

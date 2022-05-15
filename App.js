@@ -38,8 +38,11 @@ export default class App extends React.Component {
   _loadResourcesAsync = async () => {
     await SplashScreen.preventAutoHideAsync();
     await Font.loadAsync({
-      'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'),
-      'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf')
+      'montserrat-regular': require('./assets/font/Roboto-Regular.ttf'),
+      'montserrat-bold': require('./assets/font/Roboto-Bold.ttf'),
+      'montserrat-medium': require('./assets/font/Roboto-Medium.ttf'),
+      'comforta-bold': require('./assets/font/Comfortaa-Bold.ttf'),
+      'comforta-regular': require('./assets/font/Comfortaa-Regular.ttf')
     });
 
     this.setState({ fontLoaded: true });

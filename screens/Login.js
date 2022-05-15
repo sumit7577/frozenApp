@@ -48,7 +48,7 @@ class Login extends React.Component {
         creatToken(this.state.username, this.state.password).then(response => {
           this.setState({ value: response.data.data })
           if (this.state.value.customerAccessTokenCreate.customerAccessToken === null || !this.state.value.customerAccessTokenCreate.customerAccessToken) {
-            this.setState({response:false});
+            this.setState({ response: false });
             Alert.alert(
               "Invalid Login",
               "Username or Password Incorrect",
@@ -64,7 +64,7 @@ class Login extends React.Component {
           else {
             getUser(this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken).then(data => {
               if (data.data.data.customer === undefined || data.data.data.customer.email !== this.state.username) {
-                this.setState({response:false});
+                this.setState({ response: false });
                 Alert.alert(
                   "Server Error",
                   "Oops! Something Wrong",
@@ -78,12 +78,12 @@ class Login extends React.Component {
                 );
               }
               else {
-                this.setState({response:false});
+                this.setState({ response: false });
                 const base = data.data.data;
-                const setUser= async()=>{
-                  try{
-                    await AsyncStorage.setItem("user",this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken);
-                  }catch(e){
+                const setUser = async () => {
+                  try {
+                    await AsyncStorage.setItem("user", this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken);
+                  } catch (e) {
                     console.log(e);
                   }
                 }
@@ -108,10 +108,10 @@ class Login extends React.Component {
 
     return (
       <SafeAreaView>
-        <Loader response={this.state.response}/>
+        <Loader response={this.state.response} />
         <Block style={styles.container}>
           <Block style={styles.headingBlock}>
-            <Text style={{ fontSize: nowTheme.SIZES.FONT * 2, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>Log in</Text>
+            <Text style={{ fontSize: nowTheme.SIZES.FONT * 2, fontFamily: nowTheme.FONTFAMILY.REGULAR2 }}>Log in</Text>
           </Block>
           <Block style={{ marginTop: 10, }}>
             <Input placeholder='Username' maxLength={50} style={{ borderWidth: 1, borderColor: nowTheme.COLORS.THEME, height: 55 }} onChangeText={text => {
@@ -132,7 +132,10 @@ class Login extends React.Component {
               LOG IN
             </Text>
           </Button>
-          <Link style={{ color: "black", textAlign: "right", marginRight: 5 }} onPress={() => navigation.navigate("ForgetPassword")}>Forgotten Password</Link>
+          <Block>
+            <Link style={{ color: "black", textAlign: "right", marginRight: 5,fontSize:16}} onPress={() => navigation.navigate("ForgetPassword")}>Forgotten Password</Link>
+          </Block>
+
         </Block>
 
       </SafeAreaView>

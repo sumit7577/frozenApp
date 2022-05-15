@@ -38,13 +38,13 @@ export default function Contact() {
         <Block center style={{ marginTop: 20 }}>
           <Text style={styles.text}>For more information see</Text>
           <TouchableOpacity onPress={openUrl}>
-            <Text style={{ color: nowTheme.COLORS.THEME, fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12 }}>{url}</Text>
+            <Text style={{ color: "blue", fontFamily: nowTheme.FONTFAMILY.REGULAR , fontSize: 14 }}>{url}</Text>
           </TouchableOpacity>
         </Block>
         <Block center style={{ marginTop: 20 }}>
           <Text style={styles.text}>Customer Service</Text>
           <TouchableOpacity onPress={openPhone}>
-            <Text style={{ color: nowTheme.COLORS.THEME, fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 12 }}>01234 456 789</Text>
+            <Text style={{ color:"blue", fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14 }}>01234 456 789</Text>
           </TouchableOpacity>
 
         </Block>

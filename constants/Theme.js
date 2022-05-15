@@ -53,7 +53,10 @@ const SIZES = {
 };
 const FONTFAMILY ={
   REGULAR:"montserrat-regular",
-  BOLD:"montserrat-bold"
+  BOLD:"montserrat-bold",
+  MEDIUM:"montserrat-medium",
+  REGULAR2:"comforta-regular",
+  BOLD2:"comforta-bold",
 }
 
 export default {

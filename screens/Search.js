@@ -54,14 +54,16 @@ export default function Search(props) {
 
     const { navigation } = props;
     return (
-        <SafeAreaView style={{backgroundColor:nowTheme.COLORS.WHITE}}>
+        <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
+            <Block row middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
+                <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16 }}>SEARCH</Text>
+            </Block>
             <Loader response={response} />
             <Block style={styles.container}>
                 <Block flex style={styles.header}>
-                    <Text style={{ fontSize: nowTheme.SIZES.FONT * 2, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>Search</Text>
                     <Input placeholder="Search all Products" style={styles.inputs} value={props.route?.params?.name ? props.route.params.name : ""} />
                 </Block>
-                <Block style={{ flex: 3.8 }}>
+                <Block style={{ flex: 6 }}>
                     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                         {allprods.map((value, index) => {
                             return (
@@ -73,7 +75,7 @@ export default function Search(props) {
                                                     <Card name={item.title} navigation={navigation} item={{
                                                         id: item?.id, detail: item?.description, price: item?.variants[0]?.price, code: item.variants[0].priceV2,
                                                         variantId: item?.variants[0]?.id,
-                                                        available:item.availableForSale
+                                                        available: item.availableForSale
                                                     }} imageUri={item.images[0].src} uri horizontal style={{ margin: 8, }} key={i} isText={true} isImage />
                                                 )
                                             })}
@@ -109,11 +111,11 @@ const styles = StyleSheet.create({
     },
     header: {
         flex: 1,
-        marginTop: 10,
+        marginTop:-20
     },
     home: {
         width: width * .95,
-        height:height/4.2,
+        height: height / 4.2,
     },
     inputs: {
         borderWidth: 1,

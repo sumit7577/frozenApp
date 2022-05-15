@@ -1,10 +1,10 @@
 import { Text, StyleSheet, Image, Dimensions, ScrollView, Alert } from 'react-native';
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { nowTheme } from "../constants";
 import { useSelector } from 'react-redux';
 import { Button } from '../components';
-import { addressLogo } from '../constants/Images';
+import { addressLogo,Icons } from '../constants/Images';
 import { Input } from '../components';
 import { Block } from 'galio-framework';
 import Checkbox from 'expo-checkbox';
@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import { updateUser } from '../store/user/actions';
 import { getUser } from '../network/products';
 import * as Localization from 'expo-localization';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 function EditAddress(props) {
     const { route, navigation, updateUser } = props;
@@ -55,11 +56,11 @@ function EditAddress(props) {
     })
 
 
-    useEffect(()=>{
-        if(user.user.defaultAddress.id !== route.params.addressId){
+    useEffect(() => {
+        if (user.user.defaultAddress.id !== route.params.addressId) {
             setChecked(false);
         }
-    },[user.user.defaultAddress.id]);
+    }, [user.user.defaultAddress.id]);
 
 
     const updateAddress = async () => {
@@ -105,13 +106,21 @@ function EditAddress(props) {
     }
     return (
         <SafeAreaView>
+            <Block row style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
+                <TouchableOpacity onPress={() => {
+                    navigation.pop()
+                }}>
+                    <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
+                </TouchableOpacity>
+                <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16,marginLeft:"25%" }}>ADD/EDIT ADDRESSES</Text>
+            </Block>
             <Loader response={response} />
             <Block style={styles.container}>
                 <Block style={{ alignItems: "center" }}>
                     <Image source={addressLogo} alt='Brand Image' style={{ height: 150, width: 150, resizeMode: "contain" }} />
                 </Block>
 
-                <Block flex row style={{ marginTop: 5, flex: 9 }}>
+                <Block flex row style={{ marginTop: 5, flex: 5 }}>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>FIRST NAME</Text>
@@ -206,15 +215,19 @@ function EditAddress(props) {
                     </ScrollView>
                 </Block>
 
+                <Block style={{ flex: 2 }}>
+                    <Button full color={nowTheme.COLORS.WHITE} style={styles.buttons} onPress={updateAddress}>
+                        <Text
+                            style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, color: nowTheme.COLORS.WHITE }}
+                            size={14}
+                        >
+                            UPDATE
+                        </Text>
+                    </Button>
+                </Block>
 
-                <Button full color={nowTheme.COLORS.WHITE} style={styles.buttons} onPress={updateAddress}>
-                    <Text
-                        style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, color: nowTheme.COLORS.WHITE }}
-                        size={14}
-                    >
-                        SAVE
-                    </Text>
-                </Button>
+
+
 
             </Block>
         </SafeAreaView>

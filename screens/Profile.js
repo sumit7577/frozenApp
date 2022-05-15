@@ -27,7 +27,7 @@ const Profile = (props) => {
   return (
     <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
       <Block middle style={{ borderBottomWidth: 1, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
-        <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4 }}>Profile</Text>
+        <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4,fontSize:16 }}>Profile</Text>
       </Block>
       <View style={{ alignItems: "center", height: "100%", padding: 8 }} >
         <View style={{ marginTop: 20, height: 150, width: 150, borderRadius: 150 / 2, overflow: "hidden", zIndex: 5 }}>
