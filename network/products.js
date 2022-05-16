@@ -28,6 +28,12 @@ const getProducts = async (id, number) => {
     return products;
 }
 
+const getAllProducts = async()=>{
+  const response = await client.collection.fetchAllWithProducts();
+  return response;
+}
+
+
 const getUser = async (password) => {
     const data = `{
         customer(customerAccessToken: \"${password}") {
@@ -374,4 +380,4 @@ const addressDelete = async(addressId,customerToken)=>{
   return response;
 }
 export { getCollections, getProducts, getUser, creatToken, createCart,getCart,getCartProduct,updateCart,axios,client,resetPassword,updateCartItems,
-defaultAddressUpdate,addressCreate,addressUpdate,addressDelete };
+defaultAddressUpdate,addressCreate,addressUpdate,addressDelete,getAllProducts };

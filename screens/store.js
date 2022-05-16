@@ -285,7 +285,7 @@ function Stores(props) {
                                                 })
                                             }
                                         })
-                                        navigation.navigate("Account", {
+                                        navigation.navigate("Setting", {
                                             screen: "EditAddress", params: {
                                                 addressId:users.defaultAddress.id,
                                                 id:addressIndex,

@@ -12,7 +12,6 @@ class Home extends React.Component {
     this.delayDate = ["4 April 2022", "5 April 2022"]
     this.state = {
       list: [],
-      index: 1
     }
   }
   componentDidMount() {

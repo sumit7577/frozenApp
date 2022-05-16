@@ -1,8 +1,7 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Block, Text } from 'galio-framework';
 import { StyleSheet, Image, ScrollView, Alert } from 'react-native';
-import { useSelector } from 'react-redux';
 import { nowTheme } from '../constants';
 import { Button } from '../components';
 import { addressLogo, Icons } from '../constants/Images';
@@ -10,9 +9,12 @@ import { addressDelete, getUser } from '../network/products';
 import { connect } from 'react-redux';
 import { updateUser } from '../store/user/actions';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Loader from '../components/Loader';
 
 function ManageAddress(props) {
     const { navigation, updateUser, user } = props;
+    const [response, setResponse] = useState(false);
     const editAddress = (index, addressId) => {
         navigation.navigate("Setting", {
             screen: "EditAddress",
@@ -25,8 +27,10 @@ function ManageAddress(props) {
     }
 
     const deleteAddress = async (addressId) => {
+        setResponse(true);
         const response = await addressDelete(addressId, user.user.token);
         if (response.data.data.customerAddressDelete.customerUserErrors.length < 1) {
+            setResponse(false);
             getUser(user.user.token).then(resp => {
                 let base = resp.data.data;
                 updateUser({
@@ -35,38 +39,46 @@ function ManageAddress(props) {
                     , localization: user.user.localization
                 });
             }).catch(error => {
+                setResponse(false);
                 console.log(error);
             })
             Alert.alert("Success!", "Address Successfully Deleted")
         }
         else {
+            setResponse(false);
             Alert.alert("Server Error", "Can`t Delete The Address Now")
         }
     }
     return (
         <SafeAreaView>
-            <Block row style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
-                <TouchableOpacity onPress={()=>{
+            <Loader response={response} />
+            <Block row space="between" style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
+                <TouchableOpacity onPress={() => {
                     navigation.pop()
                 }}>
                     <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
                 </TouchableOpacity>
-                <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, marginLeft: "25%" }}>MANAGE ADDRESS</Text>
+                <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, }}>MANAGE ADDRESS</Text>
+                <TouchableOpacity>
+                    <MaterialIcons name="add" size={26} style={{ alignSelf: "center", color: nowTheme.COLORS.THEME }} onPress={() => {
+                        navigation.navigate("Setting", {
+                            screen: "AddAddress"
+                        })
+                    }
+                    } />
+                </TouchableOpacity>
             </Block>
             <Block style={styles.container}>
                 <Block style={{ flex: 1.3, alignItems: "center" }}>
                     <Image source={addressLogo} alt="Brand Image" style={{ height: 150, width: 150, resizeMode: "contain" }} />
                 </Block>
-                <Block style={{ flex: 5, alignItems: "center" }}>
+                <Block style={{ flex: 5, alignItems: "center", marginBottom: "30%" }}>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {user.user.address.edges.map((value, index) => {
                             let Name = value.node.firstName;
                             let fullAddress = value.node.address1 + " " + value.node.address2 + " " + value.node.city + " " + value.node.country + " " + value.node.zip;
                             return (
                                 <Block key={index} style={{ padding: 8, marginBottom: 10, marginLeft: -10 }}>
-                                    {/*{value.node.id === user.user.defaultAddress.id ?
-                                        <Text style={styles.text}>DEFAULT</Text> :
-                                    <Text style={styles.text}>OTHER ADDRESS</Text>}*/}
                                     <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 14, marginTop: 8, marginLeft: 15 }}>{Name}</Text>
                                     <Text style={{ marginLeft: 15, fontSize: 14, maxWidth: 350, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{fullAddress}</Text>
                                     <Text style={{ marginLeft: 15, fontSize: 14, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{value.node.phone ? value.node.phone : ""}</Text>

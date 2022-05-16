@@ -11,6 +11,7 @@ import { updateUser } from '../store/user/actions';
 import { useSelector } from 'react-redux';
 import { Block } from 'galio-framework';
 import { Icons } from '../constants/Images';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -26,8 +27,13 @@ const Profile = (props) => {
   }
   return (
     <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
-      <Block middle style={{ borderBottomWidth: 1, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
-        <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4,fontSize:16 }}>Profile</Text>
+      <Block row style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
+        <TouchableOpacity onPress={() => {
+          props.navigation.pop()
+        }}>
+          <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
+        </TouchableOpacity>
+        <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, marginLeft: "40%" }}>Profile</Text>
       </Block>
       <View style={{ alignItems: "center", height: "100%", padding: 8 }} >
         <View style={{ marginTop: 20, height: 150, width: 150, borderRadius: 150 / 2, overflow: "hidden", zIndex: 5 }}>
@@ -37,7 +43,7 @@ const Profile = (props) => {
         <View style={{ flex: 2, alignItems: "center", marginLeft: 10, marginRight: 10 }}>
           <Text style={{ fontSize: 22, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.BOLD2, textAlign: "center" }}>{fullName ? fullName : "Username Not exists!"}</Text>
           <Text style={styles.text}>{user.email ? user.email : "Email not exists!"}</Text>
-          <Text style={{fontFamily:nowTheme.FONTFAMILY.REGULAR,textAlign:"center"}}>{user.address ? fullAddress : "Address Not exists!"}</Text>
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, textAlign: "center" }}>{user.address ? fullAddress : "Address Not exists!"}</Text>
           <Text style={{ fontSize: 15, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{user.number ? user.number : "Phone Number Not exists!"}</Text>
         </View>
 

@@ -1,55 +1,25 @@
-import { StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
+import { StyleSheet, ScrollView, Dimensions,Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
 import { Block, Text } from 'galio-framework';
 import { nowTheme } from "../constants";
-import { Button, Input } from '../components';
-import { getAllProducts, getProducts } from "../network/products";
+import { Button } from '../components';
+import { getCollections, getProducts } from "../network/products";
 import _ from 'lodash';
 import { Card } from "../components";
 import { useSelector } from 'react-redux';
 import Loader from '../components/Loader';
-import { Icons } from '../constants/Images';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Icons } from '../constants/Images';
 
 
-export default function Search(props) {
+export default function Collection(props) {
     const [allprods, setProducts] = useState([]);
     const [response, setResponse] = useState(() => {
         return false;
     })
-    const [text, setText] = useState(() => {
-        return undefined;
-    })
     const users = useSelector(state => state.user.user);
-    const SearchProduct = async () => {
-        if (allprods.length > 1) {
-            setProducts([])
-        }
-        setResponse(true);
-        try {
-            const resp = await getAllProducts();
-            resp.map(value => {
-                if (value.title.includes(text)) {
-                    getProducts(value.id, 30).then(data => {
-                        setProducts((prevProd) => {
-                            return [...prevProd, data]
-                        })
-                    })
-                }
-
-
-            })
-            setResponse(false)
-        }
-        catch (e) {
-            console.log(e);
-        }
-    }
     useEffect(() => {
-
-    })
-    /*useEffect(() => {
         if (props.route?.params?.tag) {
             setResponse(() => {
                 return true;
@@ -61,7 +31,7 @@ export default function Search(props) {
                     
                 }
             })
-        });
+        });*/
         const setProduct = (value) => {
             getProducts(value, 30).then(data => {
                 setResponse(() => {
@@ -78,31 +48,26 @@ export default function Search(props) {
             })
         }
         setProduct(props.route?.params?.tag?.id)
-    
+
         return () => {
             setProducts([])
         }
-    }, []);*/
+    }, [props.route?.params?.tag]);
 
     const { navigation } = props;
     return (
         <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
-            <Block row middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
-                <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16 }}>SEARCH</Text>
+            <Block row space="between" style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
+                <TouchableOpacity onPress={() => {
+                    navigation.goBack();
+                }}>
+                    <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
+                </TouchableOpacity>
+                <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16,textAlign:"center" }}>{props.route.params.tag.name}</Text>
+                <Block></Block>
             </Block>
             <Loader response={response} />
             <Block style={styles.container}>
-                <Block flex row middle space="between" style={styles.header}>
-                    <Input placeholder="Search all Products" style={styles.inputs} onChangeText={(text) => {
-                        setText(() => {
-                            return text
-                        })
-                    }} />
-                    <TouchableOpacity onPress={SearchProduct}>
-                        <Image source={Icons.search} style={{ height: 30, width: 30, alignSelf: "center", marginRight: 8 }} />
-                    </TouchableOpacity>
-
-                </Block>
                 <Block style={{ flex: 6 }}>
                     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                         {allprods.map((value, index) => {
@@ -151,18 +116,16 @@ const styles = StyleSheet.create({
     },
     header: {
         flex: 1,
-        borderWidth: 1,
-        borderColor: nowTheme.COLORS.THEME,
-        maxHeight: 60,
-        borderRadius: 8,
+        marginTop: -20
     },
     home: {
         width: width * .95,
         height: height / 4.2,
     },
     inputs: {
-        borderWidth: 0,
+        borderWidth: 1,
+        borderColor: nowTheme.COLORS.THEME,
         height: 55,
-        width: width * 0.85
+        marginTop: 15
     }
 })

@@ -17,7 +17,7 @@ class Card extends React.Component {
     const cardContainer = [button ? styles.buttonCard : styles.card, style];
     const imgContainer = [
       styles.imageContainer,
-      full&& styles.homeContainer,
+      full && styles.homeContainer,
       horizontal ? styles.horizontalStyles : styles.verticalStyles,
     ];
 
@@ -39,15 +39,18 @@ class Card extends React.Component {
             </Block>}
           {isText == false ? <View /> :
             <Block flex style={titleStyles} >
-              <TouchableOpacity onPress={() => navigation.navigate("SearchDetail", {
-                name: name,
-                desc: item.detail,
-                image: imageUri,
-                price: item.price,
-                code: item.code.currencyCode,
-                variantId: item.variantId,
-                id: item.id,
-                available: item.available
+              <TouchableOpacity onPress={() => navigation.navigate("Search", {
+                screen: "SearchDetail", params: {
+                  name: name,
+                  desc: item.detail,
+                  image: imageUri,
+                  price: item.price,
+                  code: item.code.currencyCode,
+                  variantId: item.variantId,
+                  id: item.id,
+                  available: item.available
+                }
+
               })}>
                 <Text style={styles.title} bold>
                   {name}
@@ -77,13 +80,13 @@ class Card extends React.Component {
           </ArButton> : null}
         8*/}
           {button ? <Block flex style={titleStyles} >
-            <TouchableOpacity onPress={() => navigation.navigate("Search", {
-              screen: "SearchHome", params: {
+            <TouchableOpacity onPress={() => navigation.navigate("Home", {
+              screen: "Collection", params: {
                 name: name,
                 tag: tags,
               }
             })}>
-              <Text style={{color:nowTheme.COLORS.THEME,fontFamily:nowTheme.FONTFAMILY.BOLD,padding:8,textAlign:"center"}} bold>
+              <Text style={{ color: nowTheme.COLORS.THEME, fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 8, textAlign: "center" }} bold>
                 {name}
               </Text>
             </TouchableOpacity>
@@ -183,8 +186,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 9,
     paddingVertical: 7
   },
-  homeContainer:{
-    flex:8,
+  homeContainer: {
+    flex: 8,
   }
 });
 

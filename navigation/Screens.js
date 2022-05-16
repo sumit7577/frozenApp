@@ -22,6 +22,8 @@ import Contact from '../screens/contact';
 import Condition from '../screens/condition';
 import Summary from '../screens/summary';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+import AddAddress from '../screens/addAddress';
+import Collection from '../screens/collection';
 
 
 
@@ -43,6 +45,7 @@ function HomeStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen" initialRouteName='Homepage'>
       <Stack.Screen name="Homepage" component={Home} options={{ headerShown: false }} />
+      <Stack.Screen name="Collection" component={Collection} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }
@@ -64,6 +67,7 @@ function SettingStack(props) {
       <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
       <Stack.Screen name="ManageAddress" component={Address} options={{ headerShown: false }} />
       <Stack.Screen name="EditAddress" component={EditAddress} options={{ headerShown: false }} />
+      <Stack.Screen name="AddAddress" component={AddAddress} options={{ headerShown: false }} />
       <Stack.Screen name="Contact" component={Contact} options={{ headerShown: false }} />
       <Stack.Screen name="Policy" component={Policy} options={{ headerShown: false }} />
       <Stack.Screen name="Condition" component={Condition} options={{ headerShown: false }} />

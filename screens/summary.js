@@ -115,7 +115,7 @@ export default function Summary(props) {
             <Loader response={response} />
             <Block row style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
                 <TouchableOpacity onPress={() => {
-                    navigation.pop()
+                    props.navigation.pop()
                 }}>
                     <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 8 }} />
                 </TouchableOpacity>

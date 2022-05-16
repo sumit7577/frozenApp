@@ -5,9 +5,10 @@ import { nowTheme } from '../constants'
 import { Block } from 'galio-framework'
 import { addressLogo } from '../constants/Images'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Icons } from '../constants/Images'
 
 const { height, width } = Dimensions.get("screen")
-export default function Contact() {
+export default function Contact(props) {
   const url = "https://frozenbrothers.com/help";
   const openUrl = async () => {
     const response = await Linking.canOpenURL(url);
@@ -30,21 +31,26 @@ export default function Contact() {
   }
   return (
     <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE, height: "100%", width: "100%" }}>
-      <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
-        <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4 }}>CUSTOMER SERVICE</Text>
+      <Block row style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
+        <TouchableOpacity onPress={() => {
+          props.navigation.pop()
+        }}>
+          <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
+        </TouchableOpacity>
+        <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, marginLeft: "30%" }}>CUSTOMER SERVICE</Text>
       </Block>
       <Block center >
         <Image source={addressLogo} style={{ height: height / 4, width: width / 1.8, resizeMode: "contain" }} />
         <Block center style={{ marginTop: 20 }}>
           <Text style={styles.text}>For more information see</Text>
           <TouchableOpacity onPress={openUrl}>
-            <Text style={{ color: "blue", fontFamily: nowTheme.FONTFAMILY.REGULAR , fontSize: 14 }}>{url}</Text>
+            <Text style={{ color: "blue", fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14 }}>{url}</Text>
           </TouchableOpacity>
         </Block>
         <Block center style={{ marginTop: 20 }}>
           <Text style={styles.text}>Customer Service</Text>
           <TouchableOpacity onPress={openPhone}>
-            <Text style={{ color:"blue", fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14 }}>01234 456 789</Text>
+            <Text style={{ color: "blue", fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14 }}>01234 456 789</Text>
           </TouchableOpacity>
 
         </Block>

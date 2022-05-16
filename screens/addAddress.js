@@ -1,86 +1,89 @@
-import { Text, StyleSheet, Image, Dimensions, ScrollView, Alert } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { nowTheme } from "../constants";
-import { useSelector } from 'react-redux';
-import { Button } from '../components';
-import { addressLogo,Icons } from '../constants/Images';
-import { Input } from '../components';
-import { Block } from 'galio-framework';
-import Checkbox from 'expo-checkbox';
-import { addressUpdate, defaultAddressUpdate } from '../network/products';
-import Loader from '../components/Loader';
-import { connect } from 'react-redux';
-import { updateUser } from '../store/user/actions';
-import { getUser } from '../network/products';
+import { View, Text, Dimensions, StyleSheet, Image, ScrollView, Alert } from 'react-native'
+import { addressLogo, Icons } from '../constants/Images';
+import React, { useState, useEffect } from 'react'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { Block } from 'galio-framework'
+import { updateUser } from '../store/user/actions'
+import { connect, useSelector } from 'react-redux'
+import Loader from '../components/Loader'
+import { nowTheme } from '../constants'
 import * as Localization from 'expo-localization';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Input } from '../components';
+import Checkbox from 'expo-checkbox';
+import { Button } from '../components';
+import { addressCreate } from '../network/products';
+import { getUser } from '../network/products';
 
-function EditAddress(props) {
-    const { route, navigation, updateUser } = props;
-    const { user } = useSelector(state => state);
+function AddAddress(props) {
+    const { navigation, updateUser, user } = props;
     const [locale, setLocale] = useState(() => {
         return Localization.locale;
     })
-    let base = user.user.address.edges[route.params.id].node;
-    let fullAddress = base.address1;
-    const [isChecked, setChecked] = useState(true);
+    const [isChecked, setChecked] = useState(false);
     const [firstName, setFirstName] = useState(() => {
-        return base.firstName;
+        return "";
     });
+    const [addressId,setAddressId] = useState(()=>{
+        return null;
+    })
     const [response, setResponse] = useState(false);
     const [lastName, setLastName] = useState(() => {
-        return base.lastName;
+        return "";
     })
     const [company, setCompany] = useState(() => {
-        return base.company;
+        return "";
     })
     const [address, setAddress] = useState(() => {
-        return fullAddress;
+        return "";
     })
     const [country, setCountry] = useState(() => {
-        return base.country;
+        return "";
     })
     const [provision, setProvision] = useState(() => {
-        return base.province;
+        return "";
     })
     const [city, setCity] = useState(() => {
-        return base.city;
+        return "";
     })
     const [zip, setZip] = useState(() => {
-        return base.zip;
+        return "";
     })
 
     const [phone, setPhone] = useState(() => {
-        return base.phone;
+        return "";
     })
 
 
-    useEffect(() => {
-        if (user.user.defaultAddress.id !== route.params.addressId) {
-            setChecked(false);
-        }
-    }, [user.user.defaultAddress.id]);
-
-
-    const updateAddress = async () => {
+    const AddAddress = async () => {
         setResponse(true);
-        if (isChecked === true) {
-            await defaultAddressUpdate(user.user.token, route.params.addressId);
-            getUser(user.user.token).then(res => {
-                const base = res.data.data;
-                updateUser({
-                    id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone,
-                    email: base.customer.email, token: user.user.token, defaultAddress: base.customer.defaultAddress
-                    , localization: locale
-                });
-            }).catch((error) => {
-                Alert.alert("Server Error", "Something Error Happened! Please Try Again Later")
-            });
-        }
+
         if (firstName != "" && lastName != "" && address != "" && country != "" && city != "" && zip != "" && phone != "" && provision != "") {
-            const response = await addressUpdate(user.user.token, route.params.addressId, address, "", city, company, country, firstName, lastName, phone, provision, zip);
-            if (response.data.data.customerAddressUpdate.customerUserErrors.length < 1) {
+            const response = await addressCreate(user.user.token, address, "", city, company, country, firstName, lastName, phone, provision, zip);
+            if (response.data.data.customerAddressCreate.customerUserErrors.length < 1) {
+                setAddressId(()=>{
+                    return response.data.data.customerAddressCreate.id;
+                })
+                getUser(user.user.token).then(res => {
+                    const base = res.data.data;
+                    updateUser({
+                        id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone,
+                        email: base.customer.email, token: user.user.token, defaultAddress: base.customer.defaultAddress
+                        , localization: locale
+                    });
+                }).catch((error) => {
+                    setResponse(false);
+                    Alert.alert("Server Error", "Something Error Happened! Please Try Again Later")
+                });
+                setResponse(false);
+                Alert.alert("Success", "Address Successfully Added")
+            }
+            else {
+                setResponse(false);
+                Alert.alert("Server Error", response.data.data.customerAddressCreate.customerUserErrors[0].message)
+            }
+            if (isChecked === true) {
+                await defaultAddressUpdate(user.user.token,addressId);
                 getUser(user.user.token).then(res => {
                     const base = res.data.data;
                     updateUser({
@@ -91,18 +94,14 @@ function EditAddress(props) {
                 }).catch((error) => {
                     Alert.alert("Server Error", "Something Error Happened! Please Try Again Later")
                 });
-                setResponse(false);
-                Alert.alert("Success", "Address Successfully Updated")
-            } else {
-                setResponse(false);
-                Alert.alert("Server Error", response.data.data.customerAddressUpdate.customerUserErrors[0].message)
             }
-        } else {
+
+        }
+
+        else {
             setResponse(false);
             Alert.alert("Form Error", "Please Fill All Form Fields")
         }
-
-
     }
     return (
         <SafeAreaView>
@@ -112,7 +111,7 @@ function EditAddress(props) {
                 }}>
                     <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
                 </TouchableOpacity>
-                <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16,marginLeft:"25%" }}>ADD/EDIT ADDRESSES</Text>
+                <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, marginLeft: "25%" }}>ADD/EDIT ADDRESSES</Text>
             </Block>
             <Loader response={response} />
             <Block style={styles.container}>
@@ -124,7 +123,7 @@ function EditAddress(props) {
                     <ScrollView showsVerticalScrollIndicator={false}>
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>FIRST NAME</Text>
-                            <Input placeholder={base.firstName ? base.firstName : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                            <Input placeholder="Enter Name" editable={true} style={styles.inputs} onChangeText={(text) => {
                                 setFirstName(() => {
                                     return text;
                                 })
@@ -132,7 +131,7 @@ function EditAddress(props) {
                         </Block>
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>LAST NAME</Text>
-                            <Input placeholder={base.lastName ? base.lastName : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                            <Input placeholder="Enter Name" editable={true} style={styles.inputs} onChangeText={(text) => {
                                 setLastName(() => {
                                     return text;
                                 })
@@ -141,7 +140,7 @@ function EditAddress(props) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>MOBILE NUMBER</Text>
-                            <Input placeholder={base.phone ? base.phone : ""} keyboardType="numeric" editable={true} style={styles.inputs} onChangeText={(text) => {
+                            <Input placeholder="Enter Mobile Number" keyboardType="numeric" editable={true} style={styles.inputs} onChangeText={(text) => {
                                 setPhone(() => {
                                     return text;
                                 })
@@ -150,7 +149,7 @@ function EditAddress(props) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>COMPANY</Text>
-                            <Input placeholder={base.company ? base.company : " "} editable={true} style={styles.inputs} onChangeText={(text) => {
+                            <Input placeholder="Enter Company" editable={true} style={styles.inputs} onChangeText={(text) => {
                                 setCompany(() => {
                                     return text;
                                 })
@@ -159,7 +158,7 @@ function EditAddress(props) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>ADDRESS</Text>
-                            <Input placeholder={fullAddress ? fullAddress : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                            <Input placeholder="Enter Address" editable={true} style={styles.inputs} onChangeText={(text) => {
                                 setAddress(() => {
                                     return text;
                                 })
@@ -168,7 +167,7 @@ function EditAddress(props) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>COUNTRY</Text>
-                            <Input placeholder={base.country ? base.country : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                            <Input placeholder='Enter Country' editable={true} style={styles.inputs} onChangeText={(text) => {
                                 setCountry(() => {
                                     return text;
                                 })
@@ -177,7 +176,7 @@ function EditAddress(props) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>PROVISION</Text>
-                            <Input placeholder={base.province ? base.province : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                            <Input placeholder='Enter Provision' editable={true} style={styles.inputs} onChangeText={(text) => {
                                 setProvision(() => {
                                     return text;
                                 })
@@ -186,7 +185,7 @@ function EditAddress(props) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>CITY</Text>
-                            <Input placeholder={base.city ? base.city : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                            <Input placeholder="Enter City" editable={true} style={styles.inputs} onChangeText={(text) => {
                                 setCity(() => {
                                     return text;
                                 })
@@ -195,7 +194,7 @@ function EditAddress(props) {
 
                         <Block style={styles.blocks}>
                             <Text style={styles.text}>ZIP</Text>
-                            <Input placeholder={base.zip ? base.zip : ""} editable={true} style={styles.inputs} onChangeText={(text) => {
+                            <Input placeholder="Enter Zip" editable={true} style={styles.inputs} onChangeText={(text) => {
                                 setZip(() => {
                                     return text;
                                 })
@@ -216,12 +215,12 @@ function EditAddress(props) {
                 </Block>
 
                 <Block style={{ flex: 2 }}>
-                    <Button full color={nowTheme.COLORS.WHITE} style={styles.buttons} onPress={updateAddress}>
+                    <Button full color={nowTheme.COLORS.WHITE} style={styles.buttons} onPress={AddAddress}>
                         <Text
                             style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, color: nowTheme.COLORS.WHITE }}
                             size={14}
                         >
-                            UPDATE
+                            SAVE
                         </Text>
                     </Button>
                 </Block>
@@ -273,4 +272,4 @@ const styles = StyleSheet.create({
 })
 
 
-export default connect(state => ({ user: state.user }), { updateUser })(EditAddress);
+export default connect(state => ({ user: state.user }), { updateUser })(AddAddress);

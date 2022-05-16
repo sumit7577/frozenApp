@@ -56,7 +56,8 @@ const Icons = {
   profiePic: require("../assets/setttingIcon/profile_image.png"),
   privacy : require("../assets/setttingIcon/Privacy.png"),
   condition : require("../assets/setttingIcon/Term_Condition.png"),
-  back: require('../assets/setttingIcon/back_btn.png')
+  back: require('../assets/setttingIcon/back_btn.png'),
+  search:require("../assets/setttingIcon/Searchicon.png")
 }
 
 export{
