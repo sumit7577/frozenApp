@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Block, Text } from 'galio-framework';
 import { nowTheme } from "../constants";
 import { Button, Input } from '../components';
-import { getAllProducts, getProducts } from "../network/products";
+import { getProducts,getCollections } from "../network/products";
 import _ from 'lodash';
 import { Card } from "../components";
 import { useSelector } from 'react-redux';
@@ -28,19 +28,19 @@ export default function Search(props) {
         }
         setResponse(true);
         try {
-            const resp = await getAllProducts();
+            const resp = await getCollections();
             resp.map(value => {
-                if (value.title.includes(text)) {
-                    getProducts(value.id, 30).then(data => {
-                        setProducts((prevProd) => {
-                            return [...prevProd, data]
-                        })
+                getProducts(value.id, 30).then(data => {
+                    data.products.map(value => {
+                        if (value.title.toUpperCase().indexOf(text.toUpperCase()) !== -1) {
+                            setProducts((prevProd) => {
+                                return [...prevProd, value]
+                            })
+                        }
                     })
-                }
-
-
+                })
+                setResponse(false)
             })
-            setResponse(false)
         }
         catch (e) {
             console.log(e);
@@ -85,6 +85,7 @@ export default function Search(props) {
     }, []);*/
 
     const { navigation } = props;
+    console.log(allprods)
     return (
         <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
             <Block row middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
@@ -105,26 +106,18 @@ export default function Search(props) {
                 </Block>
                 <Block style={{ flex: 6 }}>
                     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-                        {allprods.map((value, index) => {
-                            return (
-                                _.map(_.chunk(value.products, 2), (element, index) => {
-                                    return (
-                                        <Block flex row center key={index} style={styles.home}>
-                                            {_.map(element, (item, i) => {
-                                                return (
-                                                    <Card name={item.title} navigation={navigation} item={{
-                                                        id: item?.id, detail: item?.description, price: item?.variants[0]?.price, code: item.variants[0].priceV2,
-                                                        variantId: item?.variants[0]?.id,
-                                                        available: item.availableForSale
-                                                    }} imageUri={item.images[0].src} uri horizontal style={{ margin: 8, }} key={i} isText={true} isImage />
-                                                )
-                                            })}
-                                        </Block>
-                                    )
-                                })
-                            )
-                        })
-                        }
+                        {_.map(_.chunk(allprods, 2), (element, index) => (
+                            <Block flex row center key={index} style={styles.home}>
+                                {_.map(element, (item, i) => (
+                                    <Card name={item.title} navigation={navigation} item={{
+                                        id: item?.id, detail: item?.description, price: item?.variants[0]?.price, code: item.variants[0].priceV2,
+                                        variantId: item?.variants[0]?.id,
+                                        available: item.availableForSale
+                                    }} imageUri={item.images[0].src} uri horizontal style={{ margin: 8, }} key={i} isText={true} isImage />
+                                )
+                                )}
+                            </Block>
+                        ))}
                     </ScrollView>
                 </Block>
                 <Block>

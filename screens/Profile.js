@@ -2,10 +2,8 @@ import React from 'react';
 import { Dimensions, Image, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'galio-framework';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Button } from '../components';
 import { nowTheme } from '../constants';
-import { homeLogo } from "../constants/Images";
 import { connect } from 'react-redux';
 import { updateUser } from '../store/user/actions';
 import { useSelector } from 'react-redux';
@@ -17,14 +15,9 @@ const { width, height } = Dimensions.get('screen');
 
 const Profile = (props) => {
   let user = useSelector(state => state.user.user);
-  const baseAddr = user.address.edges[0].node;
+  const baseAddr = user?.defaultAddress;
   const fullName = user.firstName + " " + user.lastName;
-  const fullAddress = user.firstName + " (Default)" + "\n" + baseAddr.address1 + baseAddr?.address2 + "\n" + baseAddr.city + "\n" + baseAddr.country + "\n" + baseAddr.zip
-  const { updateUser } = props;
-  const clearUser = async () => {
-    updateUser(null);
-    await AsyncStorage.clear();
-  }
+  const fullAddress = user.firstName + " (Default)" + "\n" + baseAddr?.address1 + baseAddr?.address2 + "\n" + baseAddr?.city + "\n" + baseAddr?.country + "\n" + baseAddr?.zip
   return (
     <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
       <Block row style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
@@ -44,7 +37,7 @@ const Profile = (props) => {
           <Text style={{ fontSize: 22, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.BOLD2, textAlign: "center" }}>{fullName ? fullName : "Username Not exists!"}</Text>
           <Text style={styles.text}>{user.email ? user.email : "Email not exists!"}</Text>
           <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, textAlign: "center" }}>{user.address ? fullAddress : "Address Not exists!"}</Text>
-          <Text style={{ fontSize: 15, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{user.number ? user.number : "Phone Number Not exists!"}</Text>
+          <Text style={{ fontSize: 15, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{baseAddr.phone ? baseAddr.phone : "Phone Number Not exists!"}</Text>
         </View>
 
         <View style={{ flex: 4, alignItems: "center" }}>

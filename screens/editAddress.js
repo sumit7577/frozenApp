@@ -108,7 +108,7 @@ function EditAddress(props) {
         <SafeAreaView>
             <Block row style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
                 <TouchableOpacity onPress={() => {
-                    navigation.pop();
+                    navigation.goBack();
                 }}>
                     <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
                 </TouchableOpacity>
