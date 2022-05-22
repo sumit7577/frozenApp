@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from '../screens/Home';
 import Stores from '../screens/store';
@@ -24,12 +24,13 @@ import Summary from '../screens/summary';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import AddAddress from '../screens/addAddress';
 import Collection from '../screens/collection';
+import { navIcon } from '../constants/Images';
 
 
 
 const Stack = createStackNavigator();
-const TabNav = createBottomTabNavigator();
-const Tab = createMaterialBottomTabNavigator();
+const Tab = createBottomTabNavigator();
+//const Tab = createMaterialBottomTabNavigator();
 
 function ProfileStack(props) {
   return (
@@ -46,6 +47,7 @@ function HomeStack(props) {
     <Stack.Navigator mode="card" headerMode="screen" initialRouteName='Homepage'>
       <Stack.Screen name="Homepage" component={Home} options={{ headerShown: false }} />
       <Stack.Screen name="Collection" component={Collection} options={{ headerShown: false }} />
+      <Stack.Screen name="SearchDetail" component={SearchDetail} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }
@@ -115,9 +117,9 @@ function StoreStack(props) {
 */
 
 
-/*function CustomBar({ state, descriptors, navigation }) {
+function CustomBar({ state, descriptors, navigation }) {
   return (
-    <View style={{ flexDirection: 'row', height: 78, backgroundColor: "black", justifyContent: "space-between" }}>
+    <View style={{ flexDirection: 'row', height: 55, backgroundColor: "black", justifyContent: "space-between" }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -146,65 +148,33 @@ function StoreStack(props) {
             target: route.key,
           });
         };
-
-        if (route.name === "Home") {
-          return (null
-          )
-        }
-
-        else {
-          return (
-            <TouchableOpacity
-              accessibilityRole="button"
-              key={index}
-              accessibilityState={isFocused ? { selected: true } : {}}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarTestID}
-              onPress={onPress}
-              onLongPress={onLongPress}
-              style={{ alignItems: "center", justifyContent: "center", height: 70, width: 70, margin: 4 }}
-            >
-              <CustomIcons name={label} size={35} color={nowTheme.COLORS.THEME} />
-            </TouchableOpacity>
-          );
-        }
+        return (
+          <TouchableOpacity
+            accessibilityRole="button"
+            key={index}
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            style={{ alignItems: "center", justifyContent: "center", height: 70, width: 70 }}
+          >
+            <Image source={navIcon[route.name]} style={{height:30,width:30}} tintColor={isFocused? nowTheme.COLORS.THEME :nowTheme.COLORS.WHITE} />
+          </TouchableOpacity>
+        );
       })}
     </View>
   );
 }
-*/
+
 
 export default function AppStack(props) {
   return (
-    <Tab.Navigator initialRouteName="Home" barStyle={{ backgroundColor: nowTheme.COLORS.WHITE }}
-      activeColor={nowTheme.COLORS.THEME}
-      inactiveColor={nowTheme.COLORS.MUTED} 
-      labeled={false}>
-      <Tab.Screen name="Home" component={HomeStack} options={{
-        tabBarLabel: 'Home',
-        tabBarIcon: ({ color }) => (
-          <Entypo name="home" color={color} size={24} />
-        ),
-      }} />
-      <Tab.Screen name="Search" component={SearchStack} options={{
-        tabBarLabel: 'Search',
-        tabBarIcon: ({ color }) => (
-          <Octicons name="search" color={color} size={23} />
-        ),
-      }} />
-
-      <Tab.Screen name="Cart" component={StoreStack} options={{
-        tabBarLabel: 'Cart',
-        tabBarIcon: ({ color }) => (
-          <MaterialCommunityIcons name="cart" size={24} color={color} />
-        ),
-      }} />
-      <Tab.Screen name="Setting" component={SettingStack} options={{
-        tabBarLabel: 'Setting',
-        tabBarIcon: ({ color }) => (
-          <Octicons name="three-bars" color={color} size={24} />
-        ),
-      }} />
+    <Tab.Navigator initialRouteName="Home" tabBar={(props) => <CustomBar {...props} />}>
+      <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="Search" component={SearchStack} />
+      <Tab.Screen name="Cart" component={StoreStack} />
+      <Tab.Screen name="Setting" component={SettingStack} />
     </Tab.Navigator>
   );
 }

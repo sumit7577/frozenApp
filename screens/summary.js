@@ -117,7 +117,7 @@ export default function Summary(props) {
                 <TouchableOpacity onPress={() => {
                     props.navigation.pop()
                 }}>
-                    <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 8 }} />
+                    <Image source={Icons.back} tintColor={nowTheme.COLORS.THEME} style={{ height: 15, width: 17, marginTop: 8 }} />
                 </TouchableOpacity>
                 <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4,marginLeft:"30%",fontSize:16 }}>Order Summary</Text>
             </Block>

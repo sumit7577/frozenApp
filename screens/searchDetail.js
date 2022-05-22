@@ -100,7 +100,7 @@ export default function SearchDetail(props) {
         <TouchableOpacity onPress={() => {
           navigation.goBack();
         }}>
-          <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
+          <Image source={Icons.back} tintColor={nowTheme.COLORS.THEME} style={{ height: 15, width: 17, marginTop: 10 }} />
         </TouchableOpacity>
         <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16,marginLeft:"30%" }}>Product Detail</Text>
       </Block>

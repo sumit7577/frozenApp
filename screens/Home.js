@@ -1,10 +1,12 @@
 import React from "react";
-import { StyleSheet, Dimensions, ScrollView } from "react-native";
+import { StyleSheet, Dimensions, ScrollView, Image } from "react-native";
 import { Block, Text } from 'galio-framework';
 import _ from 'lodash';
 import { Card } from "../components";
 import { nowTheme } from "../constants";
 import { getCollections } from "../network/products";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import Loader from '../components/Loader';
 
 class Home extends React.Component {
   constructor() {
@@ -51,13 +53,43 @@ class Home extends React.Component {
           </Block>
           </Block>*/}
         <Block style={{ flex: 8 }}>
-          {this.state.list.length === 0 ? (<Text>Loading...</Text>) :
+          {this.state.list.length === 0 ? (<Loader response={true} />) :
             <ScrollView showsVerticalScrollIndicator={false}>
-              <Card full name={this.state.list[0].name} tags={this.state.list[0]} imageUri={this.state.list[0].image} uri navigation={property.navigation} horizontal style={{ margin: 8, maxWidth: width }} button key={this.state.list[0].id} isText={false} isImage />
+              <TouchableOpacity key={this.state.list[0].id} style={{ width: width, padding: 8 }} onPress={() => property.navigation.navigate("Home", {
+                screen: "Collection", params: {
+                  name: this.state.list[0].name,
+                  tag: this.state.list[0],
+                }
+              })}>
+                <Block style={{ height: 150, width: "100%" }} >
+                  <Image source={{ uri: this.state.list[0].image }} style={{ height: "80%", width: "100%" }} />
+                  <Text style={{
+                    textAlign: "center", fontFamily: nowTheme.FONTFAMILY.BOLD,
+                    color: nowTheme.COLORS.THEME,
+                    fontSize: 14,
+                    top: 10
+                  }}>{this.state.list[0].name}</Text>
+                </Block>
+              </TouchableOpacity>
               {_.map(_.chunk(this.state.list.slice(1), 2), (element, index) => (
-                <Block flex row center key={index} style={styles.home}>
+                <Block flex row space="between" center key={index} style={styles.home}>
                   {_.map(element, (item, i) => (
-                    <Card full name={item.name} tags={item} imageUri={item.image} uri navigation={property.navigation} horizontal style={{ margin: 8, maxWidth: width }} button key={item.id} isText={false} isImage />
+                    <TouchableOpacity key={i} style={{ width: width / 2, padding: 8 }} onPress={() => property.navigation.navigate("Home", {
+                      screen: "Collection", params: {
+                        name: item.name,
+                        tag: item,
+                      }
+                    })}>
+                      <Block style={{ height: 150, width: "90%" }} >
+                        <Image source={{ uri: item.image }} style={{ height: "60%", width: "100%" }} />
+                        <Text style={{
+                          textAlign: "center", fontFamily: nowTheme.FONTFAMILY.BOLD,
+                          color: nowTheme.COLORS.THEME,
+                          fontSize: 14,
+                          top: 10
+                        }}>{item.name}</Text>
+                      </Block>
+                    </TouchableOpacity>
                   )
                   )}
                 </Block>
@@ -69,11 +101,15 @@ class Home extends React.Component {
     );
   }
 }
+{/*<Card full name={item.name} tags={item} imageUri={item.image} uri
+                      navigation={property.navigation} horizontal style={{ margin: 8, maxWidth: width }}
+                      button key={item.id} isText={false} isImage />*/ }
 
 const { width, height } = Dimensions.get("screen");
 const styles = StyleSheet.create({
   home: {
     width: width * .95,
+    marginTop: 10
   },
   top: {
     flexDirection: "row",

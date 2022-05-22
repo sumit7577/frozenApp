@@ -4,13 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { Block, Text } from 'galio-framework';
 import { nowTheme } from "../constants";
 import { Button, Input } from '../components';
-import { getProducts,getCollections } from "../network/products";
+import { getProducts, getCollections } from "../network/products";
 import _ from 'lodash';
 import { Card } from "../components";
 import { useSelector } from 'react-redux';
 import Loader from '../components/Loader';
 import { Icons } from '../constants/Images';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { getSymbol } from '../network/checkout';
 
 
 export default function Search(props) {
@@ -34,21 +35,19 @@ export default function Search(props) {
                     data.products.map(value => {
                         if (value.title.toUpperCase().indexOf(text.toUpperCase()) !== -1) {
                             setProducts((prevProd) => {
+                                setResponse(false);
                                 return [...prevProd, value]
                             })
                         }
                     })
-                })
-                setResponse(false)
+                }) 
             })
         }
         catch (e) {
+            setResponse(false);
             console.log(e);
         }
     }
-    useEffect(() => {
-
-    })
     /*useEffect(() => {
         if (props.route?.params?.tag) {
             setResponse(() => {
@@ -85,7 +84,6 @@ export default function Search(props) {
     }, []);*/
 
     const { navigation } = props;
-    console.log(allprods)
     return (
         <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
             <Block row middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
@@ -104,16 +102,47 @@ export default function Search(props) {
                     </TouchableOpacity>
 
                 </Block>
-                <Block style={{ flex: 6 }}>
+                <Block style={{ flex: 6, marginBottom: "10%" }}>
                     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                         {_.map(_.chunk(allprods, 2), (element, index) => (
                             <Block flex row center key={index} style={styles.home}>
                                 {_.map(element, (item, i) => (
-                                    <Card name={item.title} navigation={navigation} item={{
+                                    <TouchableOpacity key={i} style={{ width: width / 2, padding: 8, height: height / 5 }} onPress={() => navigation.navigate("Home", {
+                                        screen: "SearchDetail", params: {
+                                            name: item.title,
+                                            desc: item?.description,
+                                            image: item.images[0].src,
+                                            price: item?.variants[0]?.price,
+                                            code: item.variants[0].priceV2.currencyCode,
+                                            variantId: item?.variants[0]?.id,
+                                            id: item.id,
+                                            available: item.availableForSale
+                                        }
+                                    })}>
+                                        <Block style={{ height: "100%", width: "90%" }} >
+                                            <Image source={{ uri: item.images[0].src }} style={{ height: "70%", width: "100%" }} />
+                                            <Text style={{
+                                                fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                                color: nowTheme.COLORS.BLACK,
+                                                fontSize: 9,
+                                                textAlign: 'center',
+                                                top: 5,
+                                            }}>{item.title}</Text>
+                                            <Text style={{
+                                                fontFamily: nowTheme.FONTFAMILY.REGULAR,
+                                                color: nowTheme.COLORS.BLACK,
+                                                fontSize: 11,
+                                                textAlign: 'center',
+                                                top: 5,
+                                            }}>{getSymbol(item.variants[0].priceV2.currencyCode)} {item.variants[0].price}</Text>
+                                        </Block>
+
+                                        {/*<Card name={item.title} navigation={navigation} item={{
                                         id: item?.id, detail: item?.description, price: item?.variants[0]?.price, code: item.variants[0].priceV2,
                                         variantId: item?.variants[0]?.id,
                                         available: item.availableForSale
-                                    }} imageUri={item.images[0].src} uri horizontal style={{ margin: 8, }} key={i} isText={true} isImage />
+                                    }} imageUri={item.images[0].src} uri horizontal style={{ margin: 8, }} key={i} isText={true} isImage />*/}
+                                    </TouchableOpacity>
                                 )
                                 )}
                             </Block>

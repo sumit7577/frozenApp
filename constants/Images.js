@@ -60,6 +60,13 @@ const Icons = {
   search:require("../assets/setttingIcon/Searchicon.png")
 }
 
+const navIcon = {
+  Home: require("../assets/navicons/home.png"),
+  Search: require("../assets/navicons/search.png"),
+  Cart: require("../assets/navicons/cart.png"),
+  Setting:require("../assets/navicons/setting.png")
+}
+
 export{
   Brands,
   Categories,
@@ -68,6 +75,7 @@ export{
   addressLogo,
   Icons,
   noProduct,
+  navIcon
 }
 
 /*export default {

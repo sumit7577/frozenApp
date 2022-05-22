@@ -39,7 +39,7 @@ class Card extends React.Component {
             </Block>}
           {isText == false ? <View /> :
             <Block flex style={titleStyles} >
-              <TouchableOpacity onPress={() => navigation.navigate("Search", {
+              <TouchableOpacity onPress={() => navigation.navigate("Home", {
                 screen: "SearchDetail", params: {
                   name: name,
                   desc: item.detail,
@@ -111,13 +111,13 @@ Card.propTypes = {
 const styles = StyleSheet.create({
   card: {
     marginVertical: theme.SIZES.BASE,
-    borderWidth: 0,
     height: 230,
+    borderWidth:0,
     marginBottom: 4,
   },
   buttonCard: {
+    borderWidth:0,
     marginVertical: theme.SIZES.BASE,
-    borderWidth: 0,
     height: 200,
     marginBottom: 4,
   },

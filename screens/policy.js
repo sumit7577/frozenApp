@@ -14,7 +14,7 @@ export default function Policy(props) {
         <TouchableOpacity onPress={() => {
           props.navigation.pop()
         }}>
-          <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
+          <Image source={Icons.back} tintColor={nowTheme.COLORS.THEME} style={{ height: 15, width: 17, marginTop: 10 }} />
         </TouchableOpacity>
         <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD2, padding: 4, fontSize: 16, marginLeft: "30%" }}>Privacy Policy</Text>
       </Block>

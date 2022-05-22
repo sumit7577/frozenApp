@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "FrozenStore",
+    "name": "Frozen Store",
     "slug": "frozen-store",
     "privacy": "public",
     "platforms": [
       "ios",
       "android"
     ],
-    "version": "7.0",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -23,11 +23,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.frozenstore.sumit"
+      "bundleIdentifier": "com.frozen.store"
     },
     "description": "Frozen Store E-Commerce",
     "android": {
-      "package": "com.frozenstore.sumit"
+      "package": "com.frozen.store"
     }
   }
 }

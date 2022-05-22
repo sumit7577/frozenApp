@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, Dimensions,Image } from 'react-native';
+import { StyleSheet, ScrollView, Dimensions, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useEffect } from 'react';
 import { Block, Text } from 'galio-framework';
@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import Loader from '../components/Loader';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Icons } from '../constants/Images';
+import { getSymbol } from '../network/checkout';
 
 
 export default function Collection(props) {
@@ -61,27 +62,58 @@ export default function Collection(props) {
                 <TouchableOpacity onPress={() => {
                     navigation.goBack();
                 }}>
-                    <Image source={Icons.back} style={{ height: 15, width: 17, marginTop: 10 }} />
+                    <Image source={Icons.back} tintColor={nowTheme.COLORS.THEME} style={{ height: 15, width: 17, marginTop: 10 }} />
                 </TouchableOpacity>
-                <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16,textAlign:"center" }}>{props.route.params.tag.name}</Text>
+                <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, textAlign: "center" }}>{props.route.params.tag.name}</Text>
                 <Block></Block>
             </Block>
             <Loader response={response} />
             <Block style={styles.container}>
-                <Block style={{ flex: 6 }}>
+                <Block style={{ flex: 6,marginBottom:"10%" }}>
                     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                         {allprods.map((value, index) => {
                             return (
                                 _.map(_.chunk(value.products, 2), (element, index) => {
                                     return (
-                                        <Block flex row center key={index} style={styles.home}>
+                                        <Block flex row space="between" center key={index} style={styles.home}>
                                             {_.map(element, (item, i) => {
                                                 return (
-                                                    <Card name={item.title} navigation={navigation} item={{
-                                                        id: item?.id, detail: item?.description, price: item?.variants[0]?.price, code: item.variants[0].priceV2,
-                                                        variantId: item?.variants[0]?.id,
-                                                        available: item.availableForSale
-                                                    }} imageUri={item.images[0].src} uri horizontal style={{ margin: 8, }} key={i} isText={true} isImage />
+                                                    <TouchableOpacity key={i} style={{ width: width / 2, padding: 8,height:height/5 }} onPress={() => navigation.navigate("Home", {
+                                                        screen: "SearchDetail", params: {
+                                                          name: item.title,
+                                                          desc: item?.description,
+                                                          image: item.images[0].src,
+                                                          price: item?.variants[0]?.price,
+                                                          code: item.variants[0].priceV2.currencyCode,
+                                                          variantId: item?.variants[0]?.id,
+                                                          id: item.id,
+                                                          available: item.availableForSale
+                                                        }
+                                                    })}>
+                                                        <Block style={{ height: "100%", width: "90%" }} >
+                                                            <Image source={{ uri: item.images[0].src }} style={{ height: "70%", width: "100%" }} />
+                                                            <Text style={{
+                                                                fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                                                color: nowTheme.COLORS.BLACK,
+                                                                fontSize: 9,
+                                                                textAlign: 'center',
+                                                                top: 5,
+                                                            }}>{item.title}</Text>
+                                                            <Text style={{
+                                                                fontFamily: nowTheme.FONTFAMILY.REGULAR,
+                                                                color: nowTheme.COLORS.BLACK,
+                                                                fontSize: 11,
+                                                                textAlign: 'center',
+                                                                top: 5,
+                                                            }}>{getSymbol(item.variants[0].priceV2.currencyCode)} {item.variants[0].price}</Text>
+                                                        </Block>
+
+                                                        {/*<Card name={item.title} navigation={navigation} item={{
+                                                            id: item?.id, detail: item?.description, price: item?.variants[0]?.price, code: item.variants[0].priceV2,
+                                                            variantId: item?.variants[0]?.id,
+                                                            available: item.availableForSale
+                                                        }} imageUri={item.images[0].src} uri horizontal style={{ margin: 8, }} key={i} isText={true} isImage />*/}
+                                                    </TouchableOpacity>
                                                 )
                                             })}
                                         </Block>
@@ -120,7 +152,8 @@ const styles = StyleSheet.create({
     },
     home: {
         width: width * .95,
-        height: height / 4.2,
+        height: height / 5,
+        margin:8,
     },
     inputs: {
         borderWidth: 1,

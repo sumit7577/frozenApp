@@ -8,6 +8,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { getCheckout, getStripeToken, completeCheckout } from '../network/checkout';
 import getSymbolFromCurrency from 'currency-symbol-map'
 import Loader from '../components/Loader';
+import { GooglePay } from 'react-native-google-pay'
 
 export default function Payment(props) {
   const { route, navigation } = props;
@@ -36,6 +37,38 @@ export default function Payment(props) {
     })
 
   }, [route.params.id]);
+
+  const allowedCardNetworks= ['VISA', 'MASTERCARD']
+  const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS']
+  const gatewayRequestData = {
+    cardPaymentMethod: {
+      tokenizationSpecification: {
+        type: 'PAYMENT_GATEWAY',
+        gateway: 'example',
+        gatewayMerchantId: 'exampleGatewayMerchantId',
+      },
+      allowedCardNetworks,
+      allowedCardAuthMethods,
+    },
+    transaction: {
+      totalPrice: '123',
+      totalPriceStatus: 'FINAL',
+      currencyCode: 'RUB',
+    },
+    merchantName: 'Example Merchant',
+  }
+
+  const Pay2 = async() => {
+    // Check if Google Pay is available
+    GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods).then((ready) => {
+      if (ready) {
+        // Request payment token
+        GooglePay.requestPayment(gatewayRequestData)
+          .then(this.handleSuccess)
+          .catch(this.handleError)
+      }
+    })
+  }
 
   const Pay = () => {
     if (cardNumber.number && cardNumber.month, cardNumber.year && cardNumber.cvv) {
@@ -145,7 +178,7 @@ export default function Payment(props) {
 
           </Block>
 
-          <Button full style={{ backgroundColor: nowTheme.COLORS.DRIBBBLE, alignSelf: "center", marginTop: 10, }} onPress={Pay}>
+          <Button full style={{ backgroundColor: nowTheme.COLORS.DRIBBBLE, alignSelf: "center", marginTop: 10, }} onPress={Pay2}>
             <Text
               style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, color: nowTheme.COLORS.WHITE }}
             >
