@@ -82,16 +82,16 @@ export default function Collection(props) {
                                                         screen: "SearchDetail", params: {
                                                           name: item.title,
                                                           desc: item?.description,
-                                                          image: item.images[0].src,
+                                                          image: item?.images[0]?.src,
                                                           price: item?.variants[0]?.price,
-                                                          code: item.variants[0].priceV2.currencyCode,
+                                                          code: item?.variants[0]?.priceV2?.currencyCode,
                                                           variantId: item?.variants[0]?.id,
                                                           id: item.id,
                                                           available: item.availableForSale
                                                         }
                                                     })}>
                                                         <Block style={{ height: "100%", width: "90%" }} >
-                                                            <Image source={{ uri: item.images[0].src }} style={{ height: "70%", width: "100%" }} />
+                                                            <Image source={{ uri: item?.images[0]?.src }} style={{ height: "70%", width: "100%" }} />
                                                             <Text style={{
                                                                 fontFamily: nowTheme.FONTFAMILY.BOLD,
                                                                 color: nowTheme.COLORS.BLACK,

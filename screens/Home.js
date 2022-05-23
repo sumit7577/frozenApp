@@ -55,7 +55,7 @@ class Home extends React.Component {
         <Block style={{ flex: 8 }}>
           {this.state.list.length === 0 ? (<Loader response={true} />) :
             <ScrollView showsVerticalScrollIndicator={false}>
-              <TouchableOpacity key={this.state.list[0].id} style={{ width: width, padding: 8 }} onPress={() => property.navigation.navigate("Home", {
+              <TouchableOpacity key={this.state.list[0].id} style={{ width: width , padding: 8 }} onPress={() => property.navigation.navigate("Home", {
                 screen: "Collection", params: {
                   name: this.state.list[0].name,
                   tag: this.state.list[0],
@@ -71,6 +71,7 @@ class Home extends React.Component {
                   }}>{this.state.list[0].name}</Text>
                 </Block>
               </TouchableOpacity>
+              
               {_.map(_.chunk(this.state.list.slice(1), 2), (element, index) => (
                 <Block flex row space="between" center key={index} style={styles.home}>
                   {_.map(element, (item, i) => (
