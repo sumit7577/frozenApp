@@ -13,6 +13,9 @@ import { getSymbol } from "../network/checkout";
 import Loader from '../components/Loader';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Icons } from '../constants/Images';
+import { addressLogo } from '../constants/Images';
+
+
 export default function SearchDetail(props) {
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
@@ -102,12 +105,14 @@ export default function SearchDetail(props) {
         }}>
           <Image source={Icons.back} tintColor={nowTheme.COLORS.THEME} style={{ height: 15, width: 17, marginTop: 10 }} />
         </TouchableOpacity>
-        <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16,marginLeft:"30%" }}>Product Detail</Text>
+        <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, marginLeft: "30%" }}>Product Detail</Text>
       </Block>
       <Loader response={response} />
       <Block middle style={styles.container}>
         <Block style={styles.header}>
-          <Image source={{ uri: route.params.image }} style={{ height: 150, width: 150, alignSelf: "center" }} />
+          {route.params.image ? <Image source={{ uri: route.params.image }} style={{ height: 150, width: 150, alignSelf: "center" }} /> :
+            <Image source={addressLogo} style={{ height: 150, width: 150, alignSelf: "center",resizeMode:"contain" }} />}
+
           <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, }}> {route.params.name}</Text>
           <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}>
             {getSymbol(route.params.code)}{price}

@@ -12,6 +12,7 @@ import Loader from '../components/Loader';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Icons } from '../constants/Images';
 import { getSymbol } from '../network/checkout';
+import { addressLogo } from '../constants/Images';
 
 
 export default function Collection(props) {
@@ -69,7 +70,7 @@ export default function Collection(props) {
             </Block>
             <Loader response={response} />
             <Block style={styles.container}>
-                <Block style={{ flex: 6,marginBottom:"10%" }}>
+                <Block style={{ flex: 6, marginBottom: "10%" }}>
                     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                         {allprods.map((value, index) => {
                             return (
@@ -78,20 +79,25 @@ export default function Collection(props) {
                                         <Block flex row space="between" center key={index} style={styles.home}>
                                             {_.map(element, (item, i) => {
                                                 return (
-                                                    <TouchableOpacity key={i} style={{ width: width / 2, padding: 8,height:height/5 }} onPress={() => navigation.navigate("Home", {
+                                                    <TouchableOpacity key={i} style={{ width: width / 2, padding: 8, height: height / 5 }} onPress={() => navigation.navigate("Home", {
                                                         screen: "SearchDetail", params: {
-                                                          name: item.title,
-                                                          desc: item?.description,
-                                                          image: item?.images[0]?.src,
-                                                          price: item?.variants[0]?.price,
-                                                          code: item?.variants[0]?.priceV2?.currencyCode,
-                                                          variantId: item?.variants[0]?.id,
-                                                          id: item.id,
-                                                          available: item.availableForSale
+                                                            name: item.title,
+                                                            desc: item?.description,
+                                                            image: item?.images[0]?.src,
+                                                            price: item?.variants[0]?.price,
+                                                            code: item?.variants[0]?.priceV2?.currencyCode,
+                                                            variantId: item?.variants[0]?.id,
+                                                            id: item.id,
+                                                            available: item.availableForSale
                                                         }
                                                     })}>
                                                         <Block style={{ height: "100%", width: "90%" }} >
-                                                            <Image source={{ uri: item?.images[0]?.src }} style={{ height: "70%", width: "100%" }} />
+                                                            {item?.images[0]?.src ? <Image source={{ uri: item.images[0].src }} style={{ height: "70%", width: "100%" }} /> :
+                                                                <Image source={addressLogo} style={{ height: "70%", width: "100%" }} onError={() => {
+                                                                    item.images[0].src = addressLogo
+                                                                }} />
+                                                            }
+
                                                             <Text style={{
                                                                 fontFamily: nowTheme.FONTFAMILY.BOLD,
                                                                 color: nowTheme.COLORS.BLACK,
@@ -153,7 +159,7 @@ const styles = StyleSheet.create({
     home: {
         width: width * .95,
         height: height / 5,
-        margin:8,
+        margin: 8,
     },
     inputs: {
         borderWidth: 1,

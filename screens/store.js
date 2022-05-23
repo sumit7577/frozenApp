@@ -10,6 +10,7 @@ import { getCart, getCartProduct, updateCartItems } from "../network/products";
 import { createCheckout, getSymbol } from "../network/checkout";
 import Loader from "../components/Loader";
 import { noProduct } from "../constants/Images";
+import { addressLogo } from "../constants/Images";
 
 
 function Stores(props) {
@@ -25,7 +26,7 @@ function Stores(props) {
     const [cartdetail, setCart] = useState(() => {
         return null;
     });
-    const [addressIndex,setIndex] = useState(()=>{
+    const [addressIndex, setIndex] = useState(() => {
         return 0;
     })
     const [allProds, setProds] = useState([]);
@@ -195,7 +196,7 @@ function Stores(props) {
         return (
             <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
                 <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
-                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4,fontSize:16 }}>CART</Text>
+                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16 }}>CART</Text>
                 </Block>
                 <Loader response={response} />
                 <Block style={styles.container}>
@@ -204,11 +205,12 @@ function Stores(props) {
                             {allProds.map((value, index) => {
                                 return (
                                     <Block middle row style={styles.prods} key={index}>
-                                        <Image source={{ uri: value?.images[0]?.src }} style={{ height: 50, width: 50 }} />
+                                        {value?.images[0]?.src ? <Image source={{ uri: value?.images[0]?.src }} style={{ height: 50, width: 50 }} /> :
+                                            <Image source={addressLogo} style={{ height: 50, width: 50 }} />}
                                         <Block>
                                             <Text style={{ maxWidth: width * 0.4, fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 12, paddingLeft: 5, paddingVertical: 10, }}>
                                                 {value?.title}</Text>
-                                                <Text style={{fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, paddingLeft: 5,}}>{getSymbol(value.variants[0].priceV2.currencyCode)}{value.variants[0]?.price}</Text>
+                                            <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, paddingLeft: 5, }}>{getSymbol(value.variants[0].priceV2.currencyCode)}{value.variants[0]?.price}</Text>
                                         </Block>
 
                                         <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 40, height: 40 }} onPress={() => {
@@ -278,17 +280,17 @@ function Stores(props) {
                             <Block style={{ alignItems: "center" }}>
                                 <Button border style={{ backgroundColor: nowTheme.COLORS.WHITE, height: 50, width: width / 3, marginTop: "20%" }}
                                     onPress={() => {
-                                        users.address.edges.map((value,index)=>{
-                                            if(value.node.id === users.defaultAddress.id){
-                                                setIndex(()=>{
+                                        users.address.edges.map((value, index) => {
+                                            if (value.node.id === users.defaultAddress.id) {
+                                                setIndex(() => {
                                                     return index;
                                                 })
                                             }
                                         })
                                         navigation.navigate("Setting", {
                                             screen: "SettingHome", params: {
-                                                addressId:users.defaultAddress.id,
-                                                id:addressIndex,
+                                                addressId: users.defaultAddress.id,
+                                                id: addressIndex,
                                             }
                                         })
                                     }}>
