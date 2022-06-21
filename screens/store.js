@@ -129,7 +129,7 @@ function Stores(props) {
 
         if (lineItems.length >= 1) {
             createCheckout(lineItems, addresses.address1, addresses?.address2, addresses.city, addresses?.company,
-                users.firstName, users.lastName, users?.number, addresses?.zip, addresses.country, users?.email, users.token).then(
+                users.defaultAddress.firstName, users.defaultAddress.lastName, users?.defaultAddress.phone, addresses?.zip, addresses.country, users?.email, users.token).then(
                     res => {
                         setResponse(() => {
                             return false;
@@ -140,6 +140,7 @@ function Stores(props) {
                                     id: res.id,
                                     cartId: cart.data.cartCreate.cart.id,
                                     totalPrice: res.totalPrice,
+                                    url:res.webUrl,
                                 }
                             })
                         }

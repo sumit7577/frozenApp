@@ -4,15 +4,15 @@ import React, { useState, useEffect } from 'react';
 import { Block, Text } from 'galio-framework';
 import { nowTheme } from "../constants";
 import { Button } from '../components';
-import { getCollections, getProducts } from "../network/products";
-import _ from 'lodash';
-import { Card } from "../components";
+import { getProducts } from "../network/products";
+import _, { concat } from 'lodash';
 import { useSelector } from 'react-redux';
 import Loader from '../components/Loader';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Icons } from '../constants/Images';
 import { getSymbol } from '../network/checkout';
 import { addressLogo } from '../constants/Images';
+import { File_Data, HOME_ITEMS } from "../constants/articles";
 
 
 export default function Collection(props) {
@@ -36,12 +36,24 @@ export default function Collection(props) {
         });*/
         const setProduct = (value) => {
             getProducts(value, 30).then(data => {
+                data.products.map(value => {
+                    for (let name of File_Data) {
+                        if (name["Product Title"] == value.title) {
+                            for (let tags of users.tags) {
+                                if (name[tags + " Price"] !== undefined && name[tags + " Price"] !== null) {
+                                    value.price23 = name[tags + " Price"]
+                                }
+                            }
+                        }
+                    }
+                })
                 setResponse(() => {
                     return false;
                 })
                 setProducts((prevProd) => {
                     return [...prevProd, data]
                 })
+
             }).catch((error) => {
                 setResponse(() => {
                     return false;
@@ -49,11 +61,12 @@ export default function Collection(props) {
                 console.warn(error)
             })
         }
-        setProduct(props.route?.params?.tag?.id)
+        setProduct(props.route?.params?.tag?.id);
 
         return () => {
             setProducts([])
         }
+
     }, [props.route?.params?.tag]);
 
     const { navigation } = props;
@@ -63,14 +76,14 @@ export default function Collection(props) {
                 <TouchableOpacity onPress={() => {
                     navigation.goBack();
                 }}>
-                    <Image source={Icons.back} tintColor={nowTheme.COLORS.THEME} style={{ height: 15, width: 17, marginTop: 10 }} />
+                    <Image source={Icons.back} tintColor={nowTheme.COLORS.BLACK} style={{ height: 15, width: 17, marginTop: 10 }} />
                 </TouchableOpacity>
                 <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, textAlign: "center" }}>{props.route.params.tag.name}</Text>
                 <Block></Block>
             </Block>
             <Loader response={response} />
             <Block style={styles.container}>
-                <Block style={{ flex: 6, marginBottom: "10%" }}>
+                <Block style={{ flex: 6, marginBottom: "20%" }}>
                     <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
                         {allprods.map((value, index) => {
                             return (
@@ -85,6 +98,7 @@ export default function Collection(props) {
                                                             desc: item?.description,
                                                             image: item?.images[0]?.src,
                                                             price: item?.variants[0]?.price,
+                                                            price23:item?.price23,
                                                             code: item?.variants[0]?.priceV2?.currencyCode,
                                                             variantId: item?.variants[0]?.id,
                                                             id: item.id,
@@ -99,19 +113,41 @@ export default function Collection(props) {
                                                             }
 
                                                             <Text style={{
-                                                                fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                                                fontFamily: nowTheme.FONTFAMILY.REGULAR,
                                                                 color: nowTheme.COLORS.BLACK,
                                                                 fontSize: 9,
                                                                 textAlign: 'center',
                                                                 top: 5,
                                                             }}>{item.title}</Text>
-                                                            <Text style={{
-                                                                fontFamily: nowTheme.FONTFAMILY.REGULAR,
-                                                                color: nowTheme.COLORS.BLACK,
-                                                                fontSize: 11,
-                                                                textAlign: 'center',
-                                                                top: 5,
-                                                            }}>{getSymbol(item.variants[0].priceV2.currencyCode)} {item.variants[0].price}</Text>
+                                                            {item.price23 ?
+                                                                <Block row center>
+                                                                    <Text style={{
+                                                                        fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                                                        color: nowTheme.COLORS.BLACK,
+                                                                        fontSize: 11,
+                                                                        textAlign: 'center',
+                                                                        top: 5,
+                                                                    }}>
+                                                                        {getSymbol(item.variants[0].priceV2.currencyCode)} {item?.price23}
+                                                                    </Text>
+                                                                    <Text style={{
+                                                                        textDecorationLine: 'line-through',
+                                                                        textDecorationStyle: 'solid',
+                                                                        fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                                                        color: nowTheme.COLORS.BLACK,
+                                                                        fontSize: 11,
+                                                                        textAlign: 'center',
+                                                                        top: 5,
+                                                                        marginLeft:10,
+                                                                    }}>{getSymbol(item.variants[0].priceV2.currencyCode)} {item?.variants[0]?.price}</Text>
+                                                                </Block> :
+                                                                <Text style={{
+                                                                    fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                                                    color: nowTheme.COLORS.BLACK,
+                                                                    fontSize: 11,
+                                                                    textAlign: 'center',
+                                                                    top: 5,
+                                                                }}>{getSymbol(item.variants[0].priceV2.currencyCode)} {item?.variants[0]?.price}</Text>}
                                                         </Block>
 
                                                         {/*<Card name={item.title} navigation={navigation} item={{

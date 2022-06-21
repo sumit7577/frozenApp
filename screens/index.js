@@ -32,7 +32,7 @@ class AppHome extends React.Component {
                     const base = res.data.data;
                     updateUser({
                         id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone,
-                        email: base.customer.email, token: user, defaultAddress: base.customer.defaultAddress,localization: this.state.localize
+                        email: base.customer.email, token: user, defaultAddress: base.customer.defaultAddress,localization: this.state.localize,tags:base.customer.tags
                     })
                 }
                 else{

@@ -7,6 +7,7 @@ import { nowTheme } from "../constants";
 import { getCollections } from "../network/products";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Loader from '../components/Loader';
+import { addressLogo } from "../constants/Images";
 
 class Home extends React.Component {
   constructor() {
@@ -22,7 +23,7 @@ class Home extends React.Component {
       response.map((value, index) => {
         if (value.title.startsWith("All")) {
           this.setState(prevState => ({
-            list: [...prevState.list, { id: value.id, name: value.title, image: value.image.src }]
+            list: [...prevState.list, { id: value.id, name: value.title, image: value?.image?.src }]
           }));
         }
       })
@@ -55,14 +56,17 @@ class Home extends React.Component {
         <Block style={{ flex: 8 }}>
           {this.state.list.length === 0 ? (<Loader response={true} />) :
             <ScrollView showsVerticalScrollIndicator={false}>
-              <TouchableOpacity key={this.state.list[0].id} style={{ width: width , padding: 8 }} onPress={() => property.navigation.navigate("Home", {
+              <TouchableOpacity key={this.state.list[0].id} style={{ width: width, padding: 8 }} onPress={() => property.navigation.navigate("Home", {
                 screen: "Collection", params: {
                   name: this.state.list[0].name,
                   tag: this.state.list[0],
                 }
               })}>
                 <Block style={{ height: 150, width: "100%" }} >
-                  <Image source={{ uri: this.state.list[0].image }} style={{ height: "80%", width: "100%" }} />
+                  {this.state.list[0].image ? <Image source={{ uri: this.state.list[0].image }} style={{ height: "80%", width: "100%" }} /> :
+                    <Image source={addressLogo} style={{ height: "80%", width: "100%", resizeMode: "contain" }} />
+                  }
+
                   <Text style={{
                     textAlign: "center", fontFamily: nowTheme.FONTFAMILY.BOLD,
                     color: nowTheme.COLORS.THEME,
@@ -71,7 +75,7 @@ class Home extends React.Component {
                   }}>{this.state.list[0].name}</Text>
                 </Block>
               </TouchableOpacity>
-              
+
               {_.map(_.chunk(this.state.list.slice(1), 2), (element, index) => (
                 <Block flex row space="between" center key={index} style={styles.home}>
                   {_.map(element, (item, i) => (
@@ -82,7 +86,9 @@ class Home extends React.Component {
                       }
                     })}>
                       <Block style={{ height: 150, width: "90%" }} >
-                        <Image source={{ uri: item.image }} style={{ height: "60%", width: "100%" }} />
+                        {item.image ? <Image source={{ uri: item.image }} style={{ height: "60%", width: "100%" }} /> :
+                          <Image source={addressLogo} style={{ height: "60%", width: "100%",resizeMode:"contain" }} />}
+
                         <Text style={{
                           textAlign: "center", fontFamily: nowTheme.FONTFAMILY.BOLD,
                           color: nowTheme.COLORS.THEME,

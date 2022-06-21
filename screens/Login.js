@@ -63,7 +63,7 @@ class Login extends React.Component {
           }
           else {
             getUser(this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken).then(data => {
-              if (data.data.data.customer === undefined || data.data.data.customer.email !== this.state.username) {
+              if (data.data.data.customer === undefined) {
                 this.setState({ response: false });
                 Alert.alert(
                   "Server Error",
@@ -91,7 +91,8 @@ class Login extends React.Component {
                 updateUser({
                   id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone,
                   email: base.customer.email, token: this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken, defaultAddress: base.customer.defaultAddress
-                  , localization: this.state.localize
+                  , localization: this.state.localize,
+                  tags:base.customer.tags
                 });
               }
             }).catch(error => {

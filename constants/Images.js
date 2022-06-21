@@ -49,13 +49,12 @@ const Favourites = [
 
 const Icons = {
   profile : require("../assets/setttingIcon/Profile.png"),
-  address: require("../assets/setttingIcon/Address.png"),
-  contactUs : require("../assets/setttingIcon/contact_us3x.png"),
-  logout: require("../assets/setttingIcon/Logout.png"),
-  profile: require("../assets/setttingIcon/Profile.png"),
+  address: require("../assets/setttingIcon/address_manage.jpeg"),
+  contactUs : require("../assets/setttingIcon/contact_us.jpeg"),
+  logout: require("../assets/setttingIcon/logout.jpeg"),
   profiePic: require("../assets/setttingIcon/profile_image.png"),
-  privacy : require("../assets/setttingIcon/Privacy.png"),
-  condition : require("../assets/setttingIcon/Term_Condition.png"),
+  privacy : require("../assets/setttingIcon/policy.jpeg"),
+  condition : require("../assets/setttingIcon/condition.jpeg"),
   back: require('../assets/setttingIcon/back_btn.png'),
   search:require("../assets/setttingIcon/Searchicon.png")
 }

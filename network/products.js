@@ -42,6 +42,7 @@ const getUser = async (password) => {
             lastName
             email
             phone
+            tags
             defaultAddress{
                 id
                 address1
@@ -128,7 +129,7 @@ const createCart = async (token,key,value,merchandiseId,quantity,note,discountCo
           buyerIdentity: {
             customerAccessToken: \"${token}"
           },
-          discountCodes: "",
+          discountCodes: "sage-238",
           lines: {
             attributes: {
               key: \"${key}",

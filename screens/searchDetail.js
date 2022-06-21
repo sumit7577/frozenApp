@@ -49,7 +49,13 @@ export default function SearchDetail(props) {
 
   useEffect(() => {
     setPrice(() => {
-      return (route.params.price * number).toFixed(2);
+      if (!route.params.price23) {
+        return (route.params.price * number).toFixed(2);
+      }
+      else{
+        return (route.params.price23 * number).toFixed(2);
+      }
+
     })
 
   }, [number]);
@@ -103,7 +109,7 @@ export default function SearchDetail(props) {
         <TouchableOpacity onPress={() => {
           navigation.goBack();
         }}>
-          <Image source={Icons.back} tintColor={nowTheme.COLORS.THEME} style={{ height: 15, width: 17, marginTop: 10 }} />
+          <Image source={Icons.back} tintColor={nowTheme.COLORS.BLACK} style={{ height: 15, width: 17, marginTop: 10 }} />
         </TouchableOpacity>
         <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, marginLeft: "30%" }}>Product Detail</Text>
       </Block>
@@ -111,7 +117,7 @@ export default function SearchDetail(props) {
       <Block middle style={styles.container}>
         <Block style={styles.header}>
           {route.params.image ? <Image source={{ uri: route.params.image }} style={{ height: 150, width: 150, alignSelf: "center" }} /> :
-            <Image source={addressLogo} style={{ height: 150, width: 150, alignSelf: "center",resizeMode:"contain" }} />}
+            <Image source={addressLogo} style={{ height: 150, width: 150, alignSelf: "center", resizeMode: "contain" }} />}
 
           <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, }}> {route.params.name}</Text>
           <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}>

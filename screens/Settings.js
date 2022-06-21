@@ -63,7 +63,7 @@ export default function Settings(props) {
         </Block>
 
         <Block style={styles.boxes} row middle>
-          <Image source={Icons.privacy} style={{ height: 30, width: 30 }} />
+          <Image source={Icons.condition} style={{ height: 30, width: 30 }} />
           <TouchableOpacity onPress={() => {
             navigation.navigate("Setting", {
               screen: "Condition"

@@ -35,7 +35,7 @@ export default function Contact(props) {
         <TouchableOpacity onPress={() => {
           props.navigation.pop()
         }}>
-          <Image source={Icons.back} tintColor={nowTheme.COLORS.THEME} style={{ height: 15, width: 17, marginTop: 10 }} />
+          <Image source={Icons.back} tintColor={nowTheme.COLORS.BLACK} style={{ height: 15, width: 17, marginTop: 10 }} />
         </TouchableOpacity>
         <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, marginLeft: "30%" }}>CUSTOMER SERVICE</Text>
       </Block>

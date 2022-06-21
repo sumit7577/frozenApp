@@ -4,3 +4,5 @@ export const HOME_ITEMS = [
   { title: 'Account', url: 'Account', icon: 'user-circle' },
   { title: 'Help', url: 'Help', icon: 'life-ring' }
 ]
+
+export const File_Data = require('../assets/data/price_data.json');

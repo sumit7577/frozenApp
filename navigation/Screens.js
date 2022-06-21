@@ -6,10 +6,6 @@ import Stores from '../screens/store';
 import Profile from '../screens/Profile';
 import { nowTheme } from '../constants';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Octicons from 'react-native-vector-icons/Octicons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 import Address from "../screens/manageAddress";
 import EditAddress from '../screens/editAddress';
@@ -21,10 +17,11 @@ import Policy from '../screens/policy';
 import Contact from '../screens/contact';
 import Condition from '../screens/condition';
 import Summary from '../screens/summary';
-import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import AddAddress from '../screens/addAddress';
 import Collection from '../screens/collection';
 import { navIcon } from '../constants/Images';
+import TermCondition from '../screens/terms_condition2';
+import Payment2 from '../screens/payment2';
 
 
 
@@ -73,6 +70,7 @@ function SettingStack(props) {
       <Stack.Screen name="Contact" component={Contact} options={{ headerShown: false }} />
       <Stack.Screen name="Policy" component={Policy} options={{ headerShown: false }} />
       <Stack.Screen name="Condition" component={Condition} options={{ headerShown: false }} />
+      
     </Stack.Navigator>
   )
 }
@@ -82,7 +80,9 @@ function StoreStack(props) {
     <Stack.Navigator mode="card" headerMode="screen" initialRouteName='Stores'>
       <Stack.Screen name="Stores" component={Stores} options={{ headerShown: false }} />
       <Stack.Screen name="Summary" component={Summary} options={{ headerShown: false }} />
+      <Stack.Screen name="Condition2" component={TermCondition} options={{ headerShown: false }} />
       <Stack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
+      <Stack.Screen name="Payment2" component={Payment2} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }

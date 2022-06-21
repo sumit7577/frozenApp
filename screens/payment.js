@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Input } from "../components";
 import { nowTheme } from '../constants';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import { getCheckout, getStripeToken, completeCheckout } from '../network/checkout';
+import { getCheckout, getStripeToken, completeCheckout, getShopifyVaultToken, completeCheckoutV2 } from '../network/checkout';
 import getSymbolFromCurrency from 'currency-symbol-map'
 import Loader from '../components/Loader';
 import { GooglePay } from 'react-native-google-pay'
@@ -38,7 +38,7 @@ export default function Payment(props) {
 
   }, [route.params.id]);
 
-  const allowedCardNetworks= ['VISA', 'MASTERCARD']
+  const allowedCardNetworks = ['VISA', 'MASTERCARD']
   const allowedCardAuthMethods = ['PAN_ONLY', 'CRYPTOGRAM_3DS']
   const gatewayRequestData = {
     cardPaymentMethod: {
@@ -58,7 +58,7 @@ export default function Payment(props) {
     merchantName: 'Example Merchant',
   }
 
-  const Pay2 = async() => {
+  const Pay2 = async () => {
     // Check if Google Pay is available
     GooglePay.isReadyToPay(allowedCardNetworks, allowedCardAuthMethods).then((ready) => {
       if (ready) {
@@ -73,22 +73,22 @@ export default function Payment(props) {
   const Pay = () => {
     if (cardNumber.number && cardNumber.month, cardNumber.year && cardNumber.cvv) {
       setResponse(true);
-      getStripeToken(cardNumber.number, cardNumber.month, cardNumber.year, cardNumber.cvv).then(res => {
-        if (res.error) {
+      getShopifyVaultToken(cardNumber.number, cardNumber.month, cardNumber.year, cardNumber.cvv).then(res => {
+        if (!res.data?.id) {
           setResponse(false);
-          Alert.alert(res.error.message);
+          Alert.alert("Something Error Happened");
         }
         else {
-          completeCheckout(route.params.id, res.id, checkout.totalPrice, checkout.totalPriceV2.currencyCode, checkout.shippingAddress).then(res => {
-            if (res.data?.data.checkoutCompleteWithTokenizedPaymentV3.checkout.id &&
-              res.data?.data.checkoutCompleteWithTokenizedPaymentV3.checkoutUserErrors.length == 0 &&
-              res.data?.data.checkoutCompleteWithTokenizedPaymentV3.checkout.completedAt != null) {
+          completeCheckoutV2(route.params.id, res.data.id, checkout.totalPrice, checkout.totalPriceV2.currencyCode, checkout.shippingAddress).then(res => {
+            if (res.data?.data.checkoutCompleteWithCreditCardV2 !== null &&
+              res.data?.errors.length == 0 &&
+              res.data?.data.checkoutCompleteWithCreditCardV2?.completedAt != null) {
               setResponse(false);
               Alert.alert("Payment Successful");
             }
-            if (res.data?.data.checkoutCompleteWithTokenizedPaymentV3.checkout.id && res.data?.data.checkoutCompleteWithTokenizedPaymentV3.payment.transaction.statusV2 === "ERROR") {
+            else {
               setResponse(false);
-              Alert.alert("Server Error", "Please Enable Stripe Payments in Your Shop To Accept Payments")
+              Alert.alert("Server Error", res?.data?.errors[0].message);
             }
 
           }).catch(error => {
@@ -178,7 +178,7 @@ export default function Payment(props) {
 
           </Block>
 
-          <Button full style={{ backgroundColor: nowTheme.COLORS.DRIBBBLE, alignSelf: "center", marginTop: 10, }} onPress={Pay2}>
+          <Button full style={{ backgroundColor: nowTheme.COLORS.DRIBBBLE, alignSelf: "center", marginTop: 10, }} onPress={Pay}>
             <Text
               style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12, color: nowTheme.COLORS.WHITE }}
             >

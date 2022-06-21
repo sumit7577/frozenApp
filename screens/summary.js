@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Image, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Block } from 'galio-framework'
@@ -12,11 +12,12 @@ import { getShippingCost } from '../network/checkout'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Icons } from '../constants/Images'
 import { addressLogo } from '../constants/Images'
-
+import Checkbox from 'expo-checkbox';
 
 export default function Summary(props) {
-    const { cartId, id, totalPrice } = props.route.params;
+    const { cartId, id, totalPrice,url } = props.route.params;
     const [allProds, setProds] = useState([]);
+    const [isChecked, setChecked] = useState(false);
     const [totalAmount, setTotalAmount] = useState(() => {
         return []
     });
@@ -29,13 +30,19 @@ export default function Summary(props) {
     })
 
     const completePayment = () => {
-        props.navigation.navigate("Cart", {
-            screen: "Payment", params: {
-                id: id,
-                cartId: cartId,
-                totalPrice: totalAmount[2],
-            }
-        })
+        if (!isChecked) {
+            Alert.alert("Error", 'Please Accept the Terms & Conditions')
+        }
+        else {
+            props.navigation.navigate("Cart", {
+                screen: "Payment2", params: {
+                    id: id,
+                    cartId: cartId,
+                    totalPrice: totalAmount[2],
+                    url:url,
+                }
+            })
+        }
     }
 
     useEffect(() => {
@@ -118,7 +125,7 @@ export default function Summary(props) {
                 <TouchableOpacity onPress={() => {
                     props.navigation.pop()
                 }}>
-                    <Image source={Icons.back} tintColor={nowTheme.COLORS.THEME} style={{ height: 15, width: 17, marginTop: 8 }} />
+                    <Image source={Icons.back} tintColor={nowTheme.COLORS.BLACK} style={{ height: 15, width: 17, marginTop: 8 }} />
                 </TouchableOpacity>
                 <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, padding: 4, marginLeft: "30%", fontSize: 16 }}>Order Summary</Text>
             </Block>
@@ -176,6 +183,29 @@ export default function Summary(props) {
                             <Text style={styles.text2}>Total Amount</Text>
                             <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}>{currencyCode[2]}{totalAmount[2]}</Text>
                         </Block>
+                        <Block row style={{ alignItems: "center", paddingLeft: 8 }}>
+                            <Checkbox
+                                value={isChecked}
+                                onValueChange={setChecked}
+                                color={isChecked ? nowTheme.COLORS.THEME : undefined}
+                            />
+                            <Text style={{
+                                fontFamily: nowTheme.FONTFAMILY.REGULAR,
+                                fontSize: 15
+                            }}>I agree to the </Text>
+                            <TouchableOpacity onPress={() => {
+                                props.navigation.navigate("Condition2")
+                            }}>
+                                <Text style={{
+                                    textDecorationLine: 'underline',
+                                    textDecorationStyle: 'solid',
+                                    color: nowTheme.COLORS.THEME,
+                                    fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                    fontSize: 15,
+                                }}>terms and conditions</Text>
+                            </TouchableOpacity>
+
+                        </Block>
                     </Block>
 
                     <Button full style={{ backgroundColor: nowTheme.COLORS.THEME, alignSelf: "center" }} onPress={completePayment}>
@@ -212,7 +242,7 @@ const styles = StyleSheet.create({
 
     },
     footer: {
-        flex: 5,
+        flex: 5.5,
         padding: 8
     },
     addressText: {

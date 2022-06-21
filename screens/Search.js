@@ -122,14 +122,14 @@ export default function Search(props) {
                                         <Block style={{ height: "100%", width: "90%" }} >
                                             <Image source={{ uri: item.images[0].src }} style={{ height: "70%", width: "100%" }} />
                                             <Text style={{
-                                                fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                                fontFamily: nowTheme.FONTFAMILY.REGULAR,
                                                 color: nowTheme.COLORS.BLACK,
                                                 fontSize: 9,
                                                 textAlign: 'center',
                                                 top: 5,
                                             }}>{item.title}</Text>
                                             <Text style={{
-                                                fontFamily: nowTheme.FONTFAMILY.REGULAR,
+                                                fontFamily: nowTheme.FONTFAMILY.BOLD,
                                                 color: nowTheme.COLORS.BLACK,
                                                 fontSize: 11,
                                                 textAlign: 'center',
