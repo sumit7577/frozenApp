@@ -41,7 +41,7 @@ export default function Collection(props) {
                         if (name["Product Title"] == value.title) {
                             for (let tags of users.tags) {
                                 if (name[tags + " Price"] !== undefined && name[tags + " Price"] !== null) {
-                                    value.price23 = name[tags + " Price"]
+                                    value.price23 = name[tags + " Price"].toFixed(2)
                                 }
                             }
                         }

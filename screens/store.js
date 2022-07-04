@@ -11,10 +11,14 @@ import { createCheckout, getSymbol } from "../network/checkout";
 import Loader from "../components/Loader";
 import { noProduct } from "../constants/Images";
 import { addressLogo } from "../constants/Images";
+import Checkbox from 'expo-checkbox';
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { getGid } from "../network/admin";
 
 
 function Stores(props) {
     const { route, navigation } = props;
+    const [isChecked, setChecked] = useState(false);
     const updatedCart = route?.params?.property;
     const cart = useSelector(state => state.product.list);
     const [quantity, setQuantity] = useState(0);
@@ -22,9 +26,9 @@ function Stores(props) {
     const addresses = users.defaultAddress;
     const [response, setResponse] = useState(() => {
         return false;
-    })
+    });
     const [cartdetail, setCart] = useState(() => {
-        return null;
+        return [];
     });
     const [addressIndex, setIndex] = useState(() => {
         return 0;
@@ -36,34 +40,37 @@ function Stores(props) {
     const [currencyCode, setCurrencyCode] = useState(() => {
         return []
     });
-
     useEffect(() => {
         setResponse(() => {
             return true;
-        })
+        });
         getCart(cart?.data?.cartCreate.cart.id).then(res => {
-
             setCart(res?.data?.data.cart?.lines?.edges);
-            setTotalAmount(() => {
-                const baseObject = res?.data?.data.cart;
-                return [baseObject.estimatedCost.subtotalAmount.amount,
-                baseObject.estimatedCost.totalTaxAmount.amount,
-                baseObject.estimatedCost.totalAmount.amount];
-            });
-
-            setCurrencyCode(() => {
-                const baseObject = res?.data?.data.cart;
-
-                return [getSymbol(baseObject.estimatedCost.subtotalAmount.currencyCode),
-                getSymbol(baseObject.estimatedCost.totalTaxAmount.currencyCode),
-                getSymbol(baseObject.estimatedCost.totalAmount.currencyCode)];
-            });
+            let base2 = res?.data?.data.cart?.lines?.edges
+            if (base2 && base2.length > 0) {
+                setTotalAmount(() => {
+                    const baseObject = res?.data?.data?.cart;
+                    return [baseObject.estimatedCost.subtotalAmount.amount,
+                    baseObject.estimatedCost.totalTaxAmount?.amount,
+                    baseObject.estimatedCost.totalAmount.amount];
+                });
+            }
+            if (base2 && base2.length > 0) {
+                setCurrencyCode(() => {
+                    const baseObject = res?.data?.data?.cart;
+                    return [getSymbol(baseObject.estimatedCost.subtotalAmount.currencyCode),
+                    getSymbol(baseObject.estimatedCost.totalTaxAmount.currencyCode),
+                    getSymbol(baseObject.estimatedCost.totalAmount.currencyCode)];
+                });
+            } else {
+                console.log("no products");
+            }
 
 
 
             let base = res?.data?.data.cart?.lines?.edges;
 
-            if (base.length >= 1) {
+            if (base && base.length > 0) {
 
                 base?.map((value) => {
                     getCartProduct(value.node.attributes[0].value).then(res => {
@@ -140,7 +147,7 @@ function Stores(props) {
                                     id: res.id,
                                     cartId: cart.data.cartCreate.cart.id,
                                     totalPrice: res.totalPrice,
-                                    url:res.webUrl,
+                                    url: res.webUrl,
                                 }
                             })
                         }
@@ -156,7 +163,76 @@ function Stores(props) {
 
     }
 
+    const termCheckout = () => {
+        setResponse(() => {
+            return true;
+        });
+        let lineItems = [];
+        let discount = {
+            description: "Custom discount",
+            value_type: "fixed_amount", value: "10.0", amount: "10.00", title: "Custom"
+        }
+        if (allProds && allProds.length >= 1) {
+            allProds.map(value => {
+                lineItems.push(
+                    {
+                        title: value.title,
+                        originalUnitPrice: value.variants[0].price,
+                        quantity: value.quantity,
+                        appliedDiscount: {
+                            description: "wholesale",
+                            value: 5,
+                            amount: 3.74,
+                            valueType: "PERCENTAGE",
+                            title: "Test Discount Dont Trust this"
+                        },
+                        weight: {
+                            value: 1,
+                            unit: "KILOGRAMS"
+                        },
+                        customAttributes: [
+                            {
+                                key: "id",
+                                value: value.id,
+                            },
+                        ]
+                    }
+                )
+            });
+        }
+        else {
+            setResponse(() => {
+                return false;
+            })
+            Alert.alert("No Products");
+        };
+        if (lineItems.length >= 1) {
+            getGid(lineItems, discount, users.id, users.email).then(
+                res => {
+                    setResponse(() => {
+                        return false;
+                    });
+                    if (res.data.data.draftOrderCreate.userErrors.length < 1) {
+                        Alert.alert("Order Success", "Order Successfully Placed!");
+                    }
+                    else {
+                        setResponse(() => {
+                            return false;
+                        })
+                        Alert.alert("Order Failed", "Can`t Complete Your order Right Now. Please! Try Again Later");
+                    }
+                }
+            ).catch(error => {
+                setResponse(() => {
+                    return false;
+                })
+                Alert.alert("Order Failed", "Can`t Complete Your order Right Now. Please! Try Again Later");
+            })
+        }
+    }
+
     const increaseCounter = (merchandiseId, prodouctId, variantId, index, quantity) => {
+        setResponse(true);
         if (quantity < 999) {
             updateCartItems(merchandiseId, prodouctId, quantity + 1, variantId, cart?.data?.cartCreate.cart.id).then(res => {
                 if (res.data.data.cartLinesUpdate.userErrors == 0) {
@@ -172,21 +248,22 @@ function Stores(props) {
     }
 
     const decraseCounter = (merchandiseId, prodouctId, variantId, index, quantity) => {
-        if (quantity >= 2) {
-            updateCartItems(merchandiseId, prodouctId, quantity - 1, variantId, cart?.data?.cartCreate.cart.id).then(res => {
-                if (res.data.data.cartLinesUpdate.userErrors == 0) {
-                    setQuantity(quantity - 1);
-                }
-            }).catch(error => {
-                console.log(error);
-            })
-        }
-        else {
-            Alert.alert("Server Error", "Can`t Add Less Than 0 Products")
-        }
+        setResponse(true);
+        updateCartItems(merchandiseId, prodouctId, quantity - 1, variantId, cart?.data?.cartCreate.cart.id).then(res => {
+            if (res.data.data.cartLinesUpdate.userErrors == 0) {
+                setQuantity(quantity - 1);
+                getCart(cart?.data?.cartCreate.cart.id).then(res => {
+                    setCart(res?.data?.data.cart?.lines?.edges);
+                }).catch(error => {
+                    console.log(error);
+                })
+            }
+        }).catch(error => {
+            console.log(error);
+        })
     }
 
-    if (cartdetail === null) {
+    if (!cartdetail || cartdetail.length < 1) {
         return (
             <SafeAreaView style={{ alignItems: "center", position: "absolute", top: height / 4, left: width / 8 }}>
                 <Image source={noProduct} style={{ resizeMode: "contain", height: 300, width: 300 }} />
@@ -202,7 +279,7 @@ function Stores(props) {
                 <Loader response={response} />
                 <Block style={styles.container}>
                     <Block style={styles.header} middle>
-                        <ScrollView showsVerticalScrollIndicator={false}>
+                        <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnable={true}>
                             {allProds.map((value, index) => {
                                 return (
                                     <Block middle row style={styles.prods} key={index}>
@@ -318,13 +395,42 @@ function Stores(props) {
                                 <Text style={{ textAlign: "center", fontFamily: nowTheme.FONTFAMILY.MEDIUM, fontSize: 10, paddingHorizontal: 20 }}>
                                     By placing an order you agree to our terms & conditions of sale & use of equipment, to view them click here</Text>
                             </Block>
+                            {users.tags.includes("net30") && <Block row style={{ alignItems: "center", paddingLeft: 8, marginTop: 8 }}>
+                                <Checkbox
+                                    value={isChecked}
+                                    onValueChange={setChecked}
+                                />
+                                <Text style={{
+                                    fontFamily: nowTheme.FONTFAMILY.REGULAR,
+                                    fontSize: 15
+                                }}>I agree to the </Text>
+                                <TouchableOpacity onPress={() => {
+                                    props.navigation.navigate("Condition2")
+                                }}>
+                                    <Text style={{
+                                        textDecorationLine: 'underline',
+                                        textDecorationStyle: 'solid',
+                                        color: nowTheme.COLORS.THEME,
+                                        fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                        fontSize: 15,
+                                    }}>terms and conditions</Text>
+                                </TouchableOpacity>
+                            </Block>}
+
                         </Block>
 
                     </Block>
 
                     <Block style={styles.footer} center>
-
-                        <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={createCart}>
+                        {users.tags.includes("net30") ? <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={termCheckout}>
+                            <Text
+                                style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
+                                size={12}
+                                color={nowTheme.COLORS.WHITE}
+                            >
+                                TERM CHECKOUT
+                            </Text>
+                        </Button> : <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={createCart}>
                             <Text
                                 style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
                                 size={12}
@@ -332,9 +438,8 @@ function Stores(props) {
                             >
                                 CHECKOUT
                             </Text>
-                        </Button>
+                        </Button>}
                     </Block>
-
                 </Block>
             </SafeAreaView>
         );

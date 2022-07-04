@@ -1,6 +1,8 @@
 import { axios, client } from "./products";
-import { SHOPIFY_STORE } from "@env";
+import { SHOPIFY_STORE, ADMIN_STORE, ADMIN_KEY } from "@env";
 import getSymbolFromCurrency from 'currency-symbol-map'
+import Axios from "axios";
+import getGId, { getGid } from "./admin";
 
 
 const createCheckout = async (lineItems, address1, address2, city, company, firstName, lastName, phone, zip, country, email, token) => {
@@ -12,7 +14,7 @@ const createCheckout = async (lineItems, address1, address2, city, company, firs
 
   if (response.id) {
     await client.checkout.addLineItems(response.id, lineItems);
-    //associateCustomer(response.id, token);
+    associateCustomer(response.id, token);
     //updateShippingAddress(response.id,address1,address2,city,company,firstName,lastName,phone,zip,country);
     getShippingCost(response.id).then(res => {
       updateShippingCost(response.id, res?.data?.data.node.availableShippingRates.shippingRates[0].handle);
@@ -59,14 +61,18 @@ const getStripeToken = async (number, month, year, cvv) => {
   return data;
 }
 
-const getShopifyVaultToken = async (number, month, year, cvv,firstName="sumit",lastName="kumar") => {
-  const variable = {"credit_card":{"number":number,"first_name":firstName,
-  "last_name":lastName,"month":month,"year":year,"verification_value":cvv}};
-  const response = await axios.post("https://elb.deposit.shopifycs.com/sessions",variable);
+const getShopifyVaultToken = async (number, month, year, cvv, firstName = "sumit", lastName = "kumar") => {
+  const variable = {
+    "credit_card": {
+      "number": number, "first_name": firstName,
+      "last_name": lastName, "month": month, "year": year, "verification_value": cvv
+    }
+  };
+  const response = await axios.post("https://elb.deposit.shopifycs.com/sessions", variable);
   return response;
 }
 
-const completeCheckoutV2 = async(checkoutId,vaultId,amount,currencyCode,address)=>{
+const completeCheckoutV2 = async (checkoutId, vaultId, amount, currencyCode, address) => {
   const variable = `
   payment: {
     paymentAmount: {
@@ -116,7 +122,7 @@ const completeCheckoutV2 = async(checkoutId,vaultId,amount,currencyCode,address)
       }
     }
   }`
-  const response = await axios.post(SHOPIFY_STORE,JSON.stringify({query:data}));
+  const response = await axios.post(SHOPIFY_STORE, JSON.stringify({ query: data }));
   return response;
 }
 
@@ -231,9 +237,44 @@ const updateShippingCost = async (checkoutId, handle) => {
 
 }
 
+const getOrders = async (token) => {
+  const data = `{
+    customer(customerAccessToken: \"${token}"\){
+        orders(first:100){
+            edges{
+                node{
+                    id
+                    name
+                    processedAt
+                    totalPriceV2{
+                        amount
+                        currencyCode
+                    }
+                    fulfillmentStatus
+                    financialStatus
+                    shippingAddress{
+                        address1
+                        address2
+                        city
+                        company
+                        country
+                        name 
+                        phone
+                        zip
+                      }
+                  }
+              }
+          }
+      }
+  }`;
+  const response = await axios.post(SHOPIFY_STORE, JSON.stringify({ query: data }));
+  return response;
+}
+
 const getSymbol = (currencyCode) => {
   const symbol = getSymbolFromCurrency(currencyCode);
   return symbol;
-}
+};
 
-export { createCheckout, getCheckout, getStripeToken, completeCheckout, updateShippingAddress, getSymbol, getShippingCost, getShopifyVaultToken,completeCheckoutV2 };
+
+export { createCheckout, getCheckout, getStripeToken, completeCheckout, updateShippingAddress, getSymbol, getShippingCost, getShopifyVaultToken, completeCheckoutV2, getOrders };

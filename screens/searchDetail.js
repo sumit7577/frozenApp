@@ -119,8 +119,8 @@ export default function SearchDetail(props) {
           {route.params.image ? <Image source={{ uri: route.params.image }} style={{ height: 150, width: 150, alignSelf: "center" }} /> :
             <Image source={addressLogo} style={{ height: 150, width: 150, alignSelf: "center", resizeMode: "contain" }} />}
 
-          <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, }}> {route.params.name}</Text>
-          <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}>
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14 }}> {route.params.name}</Text>
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD,fontSize: 14 }}>
             {getSymbol(route.params.code)}{price}
           </Text>
         </Block>
@@ -130,18 +130,6 @@ export default function SearchDetail(props) {
           <Block row bottom style={{ alignItems: "center" }}>
             <Text style={styles.text}>{getSymbol(route.params.code)}{price}</Text>
 
-            <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 50, height: 40 }} onPress={increaseCounter}>
-              <Text
-                style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
-                size={14}
-                color={nowTheme.COLORS.THEME}
-              >
-                +
-              </Text>
-            </Button>
-
-            <Text style={styles.text}>{number}</Text>
-
             <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 50, height: 40 }} onPress={decreaseCounter}>
               <Text
                 style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
@@ -149,6 +137,18 @@ export default function SearchDetail(props) {
                 color={nowTheme.COLORS.THEME}
               >
                 -
+              </Text>
+            </Button>
+
+            <Text style={styles.text}>{number}</Text>
+
+            <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 50, height: 40 }} onPress={increaseCounter}>
+              <Text
+                style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
+                size={14}
+                color={nowTheme.COLORS.THEME}
+              >
+                +
               </Text>
             </Button>
 
@@ -175,11 +175,8 @@ export default function SearchDetail(props) {
         </Block>
 
         <Block style={styles.footer} top>
-          <Text style={styles.texts}>{route.params.desc.slice(0, 54)}
+          <Text style={styles.texts}>{route.params.desc}
           </Text>
-          <Text style={styles.texts}>{route.params.desc.slice(54, 98)}</Text>
-          <Text style={styles.texts}>{route.params.desc.slice(98, 196)}</Text>
-          <Text style={styles.texts}>{route.params.desc.slice(196)}</Text>
         </Block>
 
       </Block>
@@ -206,9 +203,8 @@ const styles = StyleSheet.create({
   },
   footer: {
     flex: 8,
-    marginLeft: 15,
-    maxWidth: width / 1.3,
-    paddingTop: height / 12,
+    margin:20,
+    paddingTop:height/20,
   },
   details: {
     width: "90%",
@@ -217,7 +213,7 @@ const styles = StyleSheet.create({
   },
   texts: {
     fontFamily: nowTheme.FONTFAMILY.REGULAR,
-    fontSize: 13.5,
+    fontSize: 16,
     marginBottom: 20,
   }
 });

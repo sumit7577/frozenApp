@@ -10,6 +10,8 @@ import { getUser, creatToken } from "../network/products";
 import * as Localization from 'expo-localization';
 import Loader from '../components/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -20,6 +22,7 @@ class Login extends React.Component {
       username: "",
       password: "",
       value: {},
+      show: false,
       localize: Localization.locale,
       response: false
     }
@@ -92,7 +95,7 @@ class Login extends React.Component {
                   id: base.customer.id, firstName: base.customer.firstName, lastName: base.customer.lastName, address: base.customer.addresses, number: base.customer.phone,
                   email: base.customer.email, token: this.state.value.customerAccessTokenCreate.customerAccessToken.accessToken, defaultAddress: base.customer.defaultAddress
                   , localization: this.state.localize,
-                  tags:base.customer.tags
+                  tags: base.customer.tags
                 });
               }
             }).catch(error => {
@@ -119,10 +122,18 @@ class Login extends React.Component {
               this.setState({ username: text })
             }} />
           </Block>
-          <Block>
-            <Input secureTextEntry maxLength={40} placeholder='Password' style={{ borderWidth: 1, borderColor: nowTheme.COLORS.THEME, height: 55 }} onChangeText={text => {
+          <Block row style={{ borderWidth: 1, borderColor: nowTheme.COLORS.THEME, height: 55, backgroundColor: nowTheme.COLORS.WHITE, borderRadius: 8, alignItems: "center" }}>
+            {this.state.show ? <Input maxLength={40} placeholder='Password' style={{ borderWidth: 0, width: width / 1.2 }} onChangeText={text => {
               this.setState({ password: text })
-            }} />
+            }} /> :
+              <Input secureTextEntry maxLength={40} placeholder='Password' style={{ borderWidth: 0, width: width / 1.2 }} onChangeText={text => {
+                this.setState({ password: text })
+              }} />}
+            <TouchableOpacity onPress={() => {
+              this.setState({ show: !this.state.show });
+            }}>
+              {this.state.show ? <Ionicons name="ios-eye-outline" size={22} /> : <Ionicons name="ios-eye-off-outline" size={22} />}
+            </TouchableOpacity>
           </Block>
           <Button full color={nowTheme.COLORS.THEME} style={{ backgroundColor: nowTheme.COLORS.THEME, marginLeft: 4 }} onPress={onLogin}>
             <Text
@@ -134,7 +145,7 @@ class Login extends React.Component {
             </Text>
           </Button>
           <Block>
-            <Link style={{ color: "black", textAlign: "right", marginRight: 5,fontSize:16}} onPress={() => navigation.navigate("ForgetPassword")}>Forgotten Password</Link>
+            <Link style={{ color: "black", textAlign: "right", marginRight: 5, fontSize: 16 }} onPress={() => navigation.navigate("ForgetPassword")}>Forgotten Password</Link>
           </Block>
 
         </Block>

@@ -15,7 +15,7 @@ import { addressLogo } from '../constants/Images'
 import Checkbox from 'expo-checkbox';
 
 export default function Summary(props) {
-    const { cartId, id, totalPrice,url } = props.route.params;
+    const { cartId, id, totalPrice, url } = props.route.params;
     const [allProds, setProds] = useState([]);
     const [isChecked, setChecked] = useState(false);
     const [totalAmount, setTotalAmount] = useState(() => {
@@ -39,7 +39,7 @@ export default function Summary(props) {
                     id: id,
                     cartId: cartId,
                     totalPrice: totalAmount[2],
-                    url:url,
+                    url: url,
                 }
             })
         }
@@ -144,14 +144,13 @@ export default function Summary(props) {
                     <Text style={styles.addressText}>Order Summary</Text>
                     <ScrollView showsVerticalScrollIndicator={false}>
                         {allProds.map((value, index) => (
-                            <Block row space="between" key={index} style={{ padding: 8, margin: 10, marginTop: 0, borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED }}>
+                            <Block row space="between" key={index} style={{ padding: 8, margin: 10, borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED }}>
                                 <Block center>
                                     {value?.images[0]?.src ? <Image source={{ uri: value.images[0].src }} style={{ height: 50, width: 50 }} /> :
                                         <Image source={addressLogo} style={{ height: 50, width: 50 }} />}
-
                                 </Block>
                                 <Block style={{ padding: 8 }}>
-                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14 }}>{value.title}</Text>
+                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14,maxWidth:"95%" }}>{value.title}</Text>
                                     <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 14, paddingTop: 4 }}>{currencyCode[0]}{value.variants[0].price}</Text>
                                     <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, paddingTop: 4 }}>Quantity {value.quantity}</Text>
                                 </Block>
@@ -187,7 +186,6 @@ export default function Summary(props) {
                             <Checkbox
                                 value={isChecked}
                                 onValueChange={setChecked}
-                                color={isChecked ? nowTheme.COLORS.THEME : undefined}
                             />
                             <Text style={{
                                 fontFamily: nowTheme.FONTFAMILY.REGULAR,
@@ -204,7 +202,6 @@ export default function Summary(props) {
                                     fontSize: 15,
                                 }}>terms and conditions</Text>
                             </TouchableOpacity>
-
                         </Block>
                     </Block>
 
@@ -242,7 +239,7 @@ const styles = StyleSheet.create({
 
     },
     footer: {
-        flex: 5.5,
+        flex: 6,
         padding: 8
     },
     addressText: {

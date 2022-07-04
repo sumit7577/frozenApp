@@ -7,9 +7,11 @@ import { nowTheme } from '../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Icons } from '../constants/Images';
 import Loader from "../components/Loader";
+import { useSelector } from 'react-redux';
 
 export default function Payment2(props) {
     const { url } = props.route.params;
+    const user = useSelector(state => state.user.user);
     const [response, setResponse] = useState(() => {
         return true;
     })
@@ -26,7 +28,7 @@ export default function Payment2(props) {
             </Block>
             <WebView
                 style={styles.container}
-                source={{ uri: url }}
+                source={{ uri: url,headers:{"X-Shopify-Customer-Access-Token":user.token} }}
                 onLoad={() => {
                     setResponse(() => {
                         return false;

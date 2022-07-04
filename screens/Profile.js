@@ -40,19 +40,6 @@ const Profile = (props) => {
           <Text style={{ fontSize: 15, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{baseAddr.phone ? baseAddr.phone : "Phone Number Not exists!"}</Text>
         </View>
 
-        <View style={{ flex: 4, alignItems: "center" }}>
-
-          <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME, marginLeft: 4 }}>
-            <Text
-              style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
-              size={12}
-              color={nowTheme.COLORS.WHITE}
-            >
-              PREVIOUS ORDERS
-            </Text>
-          </Button>
-        </View>
-
       </View>
     </SafeAreaView>
   )

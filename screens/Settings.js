@@ -24,7 +24,7 @@ export default function Settings(props) {
   return (
     <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE, height: "100%" }}>
       <Block middle style={{ borderBottomWidth: 1, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
-        <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4,fontSize:16 }}>SETTINGS</Text>
+        <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16 }}>SETTINGS</Text>
       </Block>
       <Block style={styles.container}>
         <Block style={styles.boxes} row middle>
@@ -35,6 +35,18 @@ export default function Settings(props) {
             });
           }}>
             <Text style={styles.text}>Profile</Text>
+          </TouchableOpacity>
+
+        </Block>
+
+        <Block style={styles.boxes} row middle>
+          <Image source={Icons.order} style={{ height: 30, width: 30 }} />
+          <TouchableOpacity onPress={() => {
+            navigation.navigate("Setting", {
+              screen: "Order"
+            });
+          }}>
+            <Text style={styles.text}>Previous Orders</Text>
           </TouchableOpacity>
 
         </Block>

@@ -52,11 +52,12 @@ const Icons = {
   address: require("../assets/setttingIcon/address_manage.jpeg"),
   contactUs : require("../assets/setttingIcon/contact_us.jpeg"),
   logout: require("../assets/setttingIcon/logout.jpeg"),
-  profiePic: require("../assets/setttingIcon/profile_image.png"),
+  profiePic: require("../assets/branding/address.jpg"),
   privacy : require("../assets/setttingIcon/policy.jpeg"),
   condition : require("../assets/setttingIcon/condition.jpeg"),
   back: require('../assets/setttingIcon/back_btn.png'),
-  search:require("../assets/setttingIcon/Searchicon.png")
+  search:require("../assets/setttingIcon/Searchicon.png"),
+  order:require("../assets/setttingIcon/orders.png")
 }
 
 const navIcon = {

@@ -6,7 +6,6 @@ import Stores from '../screens/store';
 import Profile from '../screens/Profile';
 import { nowTheme } from '../constants';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Entypo from 'react-native-vector-icons/Entypo';
 import Address from "../screens/manageAddress";
 import EditAddress from '../screens/editAddress';
 import Search from '../screens/Search';
@@ -22,6 +21,7 @@ import Collection from '../screens/collection';
 import { navIcon } from '../constants/Images';
 import TermCondition from '../screens/terms_condition2';
 import Payment2 from '../screens/payment2';
+import Orders from '../screens/orders';
 
 
 
@@ -64,6 +64,7 @@ function SettingStack(props) {
     <Stack.Navigator mode="card" headerMode="screen" initialRouteName='SettingHome' >
       <Stack.Screen name="SettingHome" component={Settings} options={{ headerShown: false }} />
       <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+      <Stack.Screen name="Order" component={Orders} options={{ headerShown: false }} />
       <Stack.Screen name="ManageAddress" component={Address} options={{ headerShown: false }} />
       <Stack.Screen name="EditAddress" component={EditAddress} options={{ headerShown: false }} />
       <Stack.Screen name="AddAddress" component={AddAddress} options={{ headerShown: false }} />
