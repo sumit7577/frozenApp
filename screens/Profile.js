@@ -16,8 +16,8 @@ const { width, height } = Dimensions.get('screen');
 const Profile = (props) => {
   let user = useSelector(state => state.user.user);
   const baseAddr = user?.defaultAddress;
-  const fullName = user.firstName + " " + user.lastName;
-  const fullAddress = user.firstName + " (Default)" + "\n" + baseAddr?.address1 + baseAddr?.address2 + "\n" + baseAddr?.city + "\n" + baseAddr?.country + "\n" + baseAddr?.zip
+  const fullName = user.firstName;
+  const fullAddress = baseAddr.firstName + " (Default)" + "\n" + baseAddr?.address1 + baseAddr?.address2 + " " + baseAddr?.city + " " + baseAddr?.country + " " + baseAddr?.zip
   return (
     <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
       <Block row style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
@@ -34,10 +34,10 @@ const Profile = (props) => {
         </View>
 
         <View style={{ flex: 2, alignItems: "center", marginLeft: 10, marginRight: 10 }}>
-          <Text style={{ fontSize: 22, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.BOLD2, textAlign: "center" }}>{fullName ? fullName : "Username Not exists!"}</Text>
+          <Text style={{ fontSize: 40, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.BOLD2, textAlign: "center" }}>{fullName ? fullName : "Username Not exists!"}</Text>
           <Text style={styles.text}>{user.email ? user.email : "Email not exists!"}</Text>
-          <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, textAlign: "center" }}>{user.address ? fullAddress : "Address Not exists!"}</Text>
-          <Text style={{ fontSize: 15, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{baseAddr.phone ? baseAddr.phone : "Phone Number Not exists!"}</Text>
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, textAlign: "center",fontSize:18}}>{user.address ? fullAddress : "Address Not exists!"}</Text>
+          <Text style={{ fontSize: 18, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>{baseAddr.phone ? baseAddr.phone : "Phone Number Not exists!"}</Text>
         </View>
 
       </View>
@@ -47,7 +47,7 @@ const Profile = (props) => {
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 15, marginTop: 8, fontFamily: nowTheme.FONTFAMILY.BOLD, textAlign: "center"
+    fontSize: 17, margin: 8, fontFamily: nowTheme.FONTFAMILY.BOLD, textAlign: "center"
   },
   button: {
     backgroundColor: nowTheme.COLORS.WHITE, marginLeft: 4

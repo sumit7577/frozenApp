@@ -53,7 +53,7 @@ function SearchStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen" initialRouteName='SearchHome'>
       <Stack.Screen name="SearchHome" component={Search} options={{ headerShown: false }} />
-      <Stack.Screen name="SearchDetail" component={SearchDetail} options={{ headerShown: false }} />
+      <Stack.Screen name="SearchDetails" component={SearchDetail} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 

@@ -6,12 +6,12 @@ import { nowTheme } from "../constants";
 import { Button, Input } from '../components';
 import { getProducts, getCollections } from "../network/products";
 import _ from 'lodash';
-import { Card } from "../components";
 import { useSelector } from 'react-redux';
 import Loader from '../components/Loader';
 import { Icons } from '../constants/Images';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { getSymbol } from '../network/checkout';
+import { File_Data, HOME_ITEMS } from "../constants/articles";
 
 
 export default function Search(props) {
@@ -34,14 +34,23 @@ export default function Search(props) {
                 getProducts(value.id, 30).then(data => {
                     data.products.map(value => {
                         if (value.title.toUpperCase().indexOf(text.toUpperCase()) !== -1) {
+                            for (let name of File_Data) {
+                                if (name["Product Title"] == value.title) {
+                                    for (let tags of users.tags) {
+                                        if (name[tags + " Price"] !== undefined && name[tags + " Price"] !== null) {
+                                            value.price23 = name[tags + " Price"].toFixed(2)
+                                        }
+                                    }
+                                }
+                            }
                             setProducts((prevProd) => {
                                 setResponse(false);
                                 return [...prevProd, value]
                             })
                         }
-                    })
-                }) 
-            })
+                    });
+                });
+            });
         }
         catch (e) {
             setResponse(false);
@@ -107,8 +116,8 @@ export default function Search(props) {
                         {_.map(_.chunk(allprods, 2), (element, index) => (
                             <Block flex row center key={index} style={styles.home}>
                                 {_.map(element, (item, i) => (
-                                    <TouchableOpacity key={i} style={{ width: width / 2, padding: 8, height: height / 5 }} onPress={() => navigation.navigate("Home", {
-                                        screen: "SearchDetail", params: {
+                                    <TouchableOpacity key={i} style={{ width: width / 2, padding: 8, height: height / 5 }} onPress={() => navigation.navigate("Search", {
+                                        screen: "SearchDetails", params: {
                                             name: item.title,
                                             desc: item?.description,
                                             image: item.images[0].src,
@@ -116,6 +125,7 @@ export default function Search(props) {
                                             code: item.variants[0].priceV2.currencyCode,
                                             variantId: item?.variants[0]?.id,
                                             id: item.id,
+                                            price23:item?.price23,
                                             available: item.availableForSale
                                         }
                                     })}>
@@ -128,13 +138,32 @@ export default function Search(props) {
                                                 textAlign: 'center',
                                                 top: 5,
                                             }}>{item.title}</Text>
-                                            <Text style={{
-                                                fontFamily: nowTheme.FONTFAMILY.BOLD,
-                                                color: nowTheme.COLORS.BLACK,
-                                                fontSize: 11,
-                                                textAlign: 'center',
-                                                top: 5,
-                                            }}>{getSymbol(item.variants[0].priceV2.currencyCode)} {item.variants[0].price}</Text>
+                                            {item.price23 ? <Block row center style={{top:5}}>
+                                                <Text style={{
+                                                    fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                                    color: nowTheme.COLORS.BLACK,
+                                                    fontSize: 11,
+                                                    textAlign: 'center',
+                                                }}>
+                                                    {getSymbol(item.variants[0].priceV2.currencyCode)} {item.price23}
+                                                </Text>
+                                                <Text style={{
+                                                    textDecorationLine: 'line-through',
+                                                    textDecorationStyle: 'solid',
+                                                    fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                                    color: nowTheme.COLORS.MUTED,
+                                                    fontSize: 11,
+                                                    textAlign: 'center',
+                                                    marginLeft: 10,
+                                                }}>{getSymbol(item.variants[0].priceV2.currencyCode)} {item.variants[0].price}</Text>
+                                            </Block> :
+                                                <Text style={{
+                                                    fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                                    color: nowTheme.COLORS.BLACK,
+                                                    fontSize: 11,
+                                                    textAlign: 'center',
+                                                    top: 5,
+                                                }}>{getSymbol(item.variants[0].priceV2.currencyCode)} {item.variants[0].price}</Text>}
                                         </Block>
 
                                         {/*<Card name={item.title} navigation={navigation} item={{

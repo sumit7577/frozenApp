@@ -3,7 +3,7 @@ import { StyleSheet, Dimensions, ScrollView, Image, Alert } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Block, Text } from 'galio-framework';
 import _ from 'lodash';
-import { Button } from "../components";
+import { Button, Input } from "../components";
 import { nowTheme } from '../constants';
 import { useSelector } from "react-redux";
 import { getCart, getCartProduct, updateCartItems } from "../network/products";
@@ -62,13 +62,13 @@ function Stores(props) {
     useEffect(() => {
         let TotalPrice = 0;
         cartdetail?.map((value) => {
-            if(value.price23){
+            if (value.price23) {
                 TotalPrice += value.quantity * value.price23;
             }
-            else{
+            else {
                 TotalPrice += value.quantity * value.price;
             }
-            
+
         });
         setTotalAmount(() => {
             return [TotalPrice];
@@ -76,8 +76,8 @@ function Stores(props) {
         setCurrencyCode(() => {
             return [cartdetail[0]?.code];
         });
-        (async()=>{
-            await AsyncStorage.setItem("products",JSON.stringify(cartdetail));
+        (async () => {
+            await AsyncStorage.setItem("products", JSON.stringify(cartdetail));
         })();
     }, [cartdetail]);
 
@@ -186,7 +186,7 @@ function Stores(props) {
                                     id: res.id,
                                     totalPrice: res.totalPrice,
                                     url: res.webUrl,
-                                    checkoutId:res.id,
+                                    checkoutId: res.id,
                                 }
                             });
                         }
@@ -256,7 +256,7 @@ function Stores(props) {
                         (async () => {
                             await AsyncStorage.removeItem("products");
                         })();
-                        setCart(()=>{
+                        setCart(() => {
                             return [];
                         })
                         Alert.alert("Order Success", "Order Successfully Placed!");
@@ -356,14 +356,14 @@ function Stores(props) {
     }
     else {
         return (
-            <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE }}>
+            <SafeAreaView style={{ backgroundColor: nowTheme.COLORS.WHITE, height: "100%" }}>
                 <Block middle style={{ borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED, padding: 4, margin: 8 }}>
                     <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16 }}>CART</Text>
                 </Block>
                 <Loader response={response} />
                 <Block style={styles.container}>
-                    <Block style={styles.header} middle>
-                        <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnable={true}>
+                    <ScrollView overScrollMode="always">
+                        <Block style={styles.header} middle>
                             {cartdetail.map((value, index) => {
                                 return (
                                     <Block middle row style={styles.prods} key={index}>
@@ -372,7 +372,7 @@ function Stores(props) {
                                         <Block>
                                             <Text style={{ maxWidth: width * 0.4, fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 12, paddingLeft: 5, paddingVertical: 10, }}>
                                                 {value?.name}</Text>
-                                            <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, paddingLeft: 5, }}>{getSymbol(value.code)}{value.price23? value.price23:value.price}</Text>
+                                            <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, paddingLeft: 5, }}>{getSymbol(value.code)}{value.price23 ? value.price23 : value.price}</Text>
                                         </Block>
 
                                         <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 40, height: 40 }} onPress={() => {
@@ -403,19 +403,19 @@ function Stores(props) {
                                     </Block>
                                 )
                             })}
-                        </ScrollView>
 
-                    </Block>
 
-                    <Block style={styles.body}>
-                        <Block style={{ flex: 1, padding: 5, marginRight: 8 }} right>
+                        </Block>
 
-                            <Block row style={styles.bill}>
-                                <Text style={styles.texts}>SUB TOTAL</Text>
-                                <Text style={styles.texts}>{getSymbol(currencyCode[0])}{totalAmount[0].toFixed(2)}</Text>
-                            </Block>
+                        <Block style={styles.body}>
+                            <Block style={{ flex: 1, padding: 5, marginRight: 8 }} right>
 
-                            {/*<Block row style={styles.bill}>
+                                <Block row style={styles.bill}>
+                                    <Text style={styles.texts}>SUB TOTAL</Text>
+                                    <Text style={styles.texts}>{getSymbol(currencyCode[0])}{totalAmount[0].toFixed(2)}</Text>
+                                </Block>
+
+                                {/*<Block row style={styles.bill}>
                                 <Text style={styles.texts}>VAT</Text>
                                 <Text style={styles.texts}>{currencyCode[1]}{totalAmount[1]}</Text>
                             </Block>
@@ -425,106 +425,109 @@ function Stores(props) {
                                 <Text style={styles.texts}>{currencyCode[2]}{totalAmount[2]}</Text>
                         </Block>*/}
 
-                        </Block>
-
-                        <Block style={{ flex: 3, justifyContent: "space-between", paddingLeft: 12, paddingRight: 12 }} row>
-
-                            <Block>
-                                <Text style={styles.texts}>SHIPPING ADDRESS</Text>
-                                <Text style={styles.text}>{users.defaultAddress.firstName} {users.defaultAddress.lastName}</Text>
-                                <Text style={styles.text}>{addresses.address1}</Text>
-                                <Text style={styles.text}>{addresses.city} {addresses.zip}</Text>
-                                <Text style={styles.text}>{addresses.country}</Text>
-                                <Text style={{ marginTop: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 13 }}>
-                                    {users.defaultAddress.phone ? users.defaultAddress.phone : "Phone Number Not Exists!"}</Text>
                             </Block>
 
-                            <Block style={{ alignItems: "center" }}>
-                                <Button border style={{ backgroundColor: nowTheme.COLORS.WHITE, height: 50, width: width / 3, marginTop: "20%" }}
-                                    onPress={() => {
-                                        users.address.edges.map((value, index) => {
-                                            if (value.node.id === users.defaultAddress.id) {
-                                                setIndex(() => {
-                                                    return index;
-                                                })
-                                            }
-                                        })
-                                        navigation.navigate("Setting", {
-                                            screen: "SettingHome", params: {
-                                                addressId: users.defaultAddress.id,
-                                                id: addressIndex,
-                                            }
-                                        })
-                                    }}>
-                                    <Text
-                                        style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
-                                        size={12}
-                                        color={nowTheme.COLORS.THEME}
-                                    >
-                                        EDIT
-                                    </Text>
-                                </Button>
+                            <Block style={{ flex: 3, marginTop: "10%", justifyContent: "space-between", paddingLeft: 12, paddingRight: 12 }} row>
+
+                                <Block>
+                                    <Text style={styles.texts}>SHIPPING ADDRESS</Text>
+                                    <Text style={styles.text}>{users.defaultAddress.firstName} {users.defaultAddress.lastName}</Text>
+                                    <Text style={styles.text}>{addresses.address1}</Text>
+                                    <Text style={styles.text}>{addresses.city} {addresses.zip}</Text>
+                                    <Text style={styles.text}>{addresses.country}</Text>
+                                    <Text style={{ marginTop: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 13 }}>
+                                        {users.defaultAddress.phone ? users.defaultAddress.phone : "Phone Number Not Exists!"}</Text>
+                                </Block>
+
+                                <Block style={{ alignItems: "center" }}>
+                                    <Button border style={{ backgroundColor: nowTheme.COLORS.WHITE, height: 50, width: width / 3, marginTop: "20%" }}
+                                        onPress={() => {
+                                            users.address.edges.map((value, index) => {
+                                                if (value.node.id === users.defaultAddress.id) {
+                                                    setIndex(() => {
+                                                        return index;
+                                                    })
+                                                }
+                                            })
+                                            navigation.navigate("Setting", {
+                                                screen: "SettingHome", params: {
+                                                    addressId: users.defaultAddress.id,
+                                                    id: addressIndex,
+                                                }
+                                            })
+                                        }}>
+                                        <Text
+                                            style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
+                                            size={12}
+                                            color={nowTheme.COLORS.THEME}
+                                        >
+                                            EDIT
+                                        </Text>
+                                    </Button>
+                                </Block>
+
                             </Block>
 
-                        </Block>
+                            <Block style={{ flex: 4, margin: 10, justifyContent: "space-between", marginTop: "10%" }}>
 
-                        <Block style={{ flex: 4, margin: 10, justifyContent: "space-between" }}>
+                                <Block style={{ borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: height / 8, justifyContent: "center", borderRadius: 5 }}>
+                                    <Text style={{ textAlign: "center", color: nowTheme.COLORS.MUTED, fontSize: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR, paddingHorizontal: 20 }}>
+                                        include any purchase order numbers, notes or special instructions for your order here</Text>
+                                </Block>
 
-                            <Block style={{ borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: height / 8, justifyContent: "center", borderRadius: 5 }}>
-                                <Text style={{ textAlign: "center", color: nowTheme.COLORS.MUTED, fontSize: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR, paddingHorizontal: 20 }}>
-                                    include any purchase order numbers, notes or special instructions for your order here</Text>
-                            </Block>
-
-                            <Block>
-                                <Text style={{ textAlign: "center", fontFamily: nowTheme.FONTFAMILY.MEDIUM, fontSize: 10, paddingHorizontal: 20 }}>
-                                    By placing an order you agree to our terms & conditions of sale & use of equipment, to view them click here</Text>
-                            </Block>
-                            {users.tags.includes("net30") && <Block row style={{ alignItems: "center", paddingLeft: 8, marginTop: 8 }}>
-                                <Checkbox
-                                    value={isChecked}
-                                    onValueChange={setChecked}
-                                />
-                                <Text style={{
-                                    fontFamily: nowTheme.FONTFAMILY.REGULAR,
-                                    fontSize: 15
-                                }}>I agree to the </Text>
-                                <TouchableOpacity onPress={() => {
-                                    props.navigation.navigate("Condition2")
-                                }}>
+                                <Block>
+                                    
+                                    <Text style={{ textAlign: "center", fontFamily: nowTheme.FONTFAMILY.MEDIUM, fontSize: 10, paddingHorizontal: 20, marginTop: "5%" }}>
+                                        By placing an order you agree to our terms & conditions of sale & use of equipment.</Text>
+                                </Block>
+                                {users.tags.includes("net30") && <Block row style={{ alignItems: "center", paddingLeft: 8, marginTop: "10%" }}>
+                                    <Checkbox
+                                        value={isChecked}
+                                        onValueChange={setChecked}
+                                    />
                                     <Text style={{
-                                        textDecorationLine: 'underline',
-                                        textDecorationStyle: 'solid',
-                                        color: nowTheme.COLORS.THEME,
-                                        fontFamily: nowTheme.FONTFAMILY.BOLD,
-                                        fontSize: 15,
-                                    }}>terms and conditions</Text>
-                                </TouchableOpacity>
-                            </Block>}
+                                        fontFamily: nowTheme.FONTFAMILY.REGULAR,
+                                        fontSize: 15
+                                    }}>I agree to the </Text>
+                                    <TouchableOpacity onPress={() => {
+                                        props.navigation.navigate("Condition2")
+                                    }}>
+                                        <Text style={{
+                                            textDecorationLine: 'underline',
+                                            textDecorationStyle: 'solid',
+                                            color: nowTheme.COLORS.THEME,
+                                            fontFamily: nowTheme.FONTFAMILY.BOLD,
+                                            fontSize: 15,
+                                        }}>terms and conditions</Text>
+                                    </TouchableOpacity>
+                                </Block>}
+
+                            </Block>
 
                         </Block>
 
-                    </Block>
-
-                    <Block style={styles.footer} center>
-                        {users.tags.includes("net30") ? <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={isChecked ? termCheckout : erorMessage}>
-                            <Text
-                                style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
-                                size={12}
-                                color={nowTheme.COLORS.WHITE}
-                            >
-                                TERM CHECKOUT
-                            </Text>
-                        </Button> : <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={createCart}>
-                            <Text
-                                style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
-                                size={12}
-                                color={nowTheme.COLORS.WHITE}
-                            >
-                                CHECKOUT
-                            </Text>
-                        </Button>}
-                    </Block>
+                        <Block style={styles.footer} center>
+                            {users.tags.includes("net30") ? <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={isChecked ? termCheckout : erorMessage}>
+                                <Text
+                                    style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
+                                    size={12}
+                                    color={nowTheme.COLORS.WHITE}
+                                >
+                                    TERM CHECKOUT
+                                </Text>
+                            </Button> : <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={createCart}>
+                                <Text
+                                    style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
+                                    size={12}
+                                    color={nowTheme.COLORS.WHITE}
+                                >
+                                    CHECKOUT
+                                </Text>
+                            </Button>}
+                        </Block>
+                    </ScrollView>
                 </Block>
+
             </SafeAreaView>
         );
     }
@@ -533,7 +536,8 @@ function Stores(props) {
 const { width, height } = Dimensions.get("screen");
 const styles = StyleSheet.create({
     container: {
-        height: "100%",
+        height: "90%",
+        display: "flex",
     },
     header: {
         flex: 2,
@@ -544,7 +548,7 @@ const styles = StyleSheet.create({
         flex: 5,
     },
     footer: {
-        flex: 2,
+        flex: 9,
     },
     prods: {
         width: "100%",

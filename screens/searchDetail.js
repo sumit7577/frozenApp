@@ -169,9 +169,29 @@ export default function SearchDetail(props) {
             <Image source={addressLogo} style={{ height: 150, width: 150, alignSelf: "center", resizeMode: "contain" }} />}
 
           <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 16 }}> {route.params.name}</Text>
-          <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 16 }}>
-            {getSymbol(route.params.code)}{route.params.price23? route.params.price23:route.params.price}
-          </Text>
+          {route.params.price23 ? <Block row>
+            <Text style={{
+              fontFamily: nowTheme.FONTFAMILY.BOLD,
+              color: nowTheme.COLORS.BLACK,
+              fontSize: 16,
+              textAlign: 'center',
+            }}>
+              {getSymbol(route.params.code)} {route.params.price23}
+            </Text>
+            <Text style={{
+              textDecorationLine: 'line-through',
+              textDecorationStyle: 'solid',
+              fontFamily: nowTheme.FONTFAMILY.BOLD,
+              color: nowTheme.COLORS.MUTED,
+              fontSize: 16,
+              textAlign: 'center',
+              marginLeft: 10,
+            }}>{getSymbol(route.params.code)} {route.params.price}</Text>
+          </Block> :
+            <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 16 }}>
+              {getSymbol(route.params.code)}{route.params.price}
+            </Text>}
+
         </Block>
 
         <Block style={styles.body}>
@@ -254,7 +274,7 @@ const styles = StyleSheet.create({
   footer: {
     flex: 6,
     margin: 15,
-    
+
   },
   details: {
     width: "90%",
