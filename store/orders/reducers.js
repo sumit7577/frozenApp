@@ -1,15 +1,15 @@
-import { LIST_MEMBER } from '../mutations';
+import { ADD_PRODUCTS} from '../mutations';
 
 const initialState = {
-    list: null
+    list: []
 };
 
 export default function orderReducer(state = initialState, action) {
     switch (action.type) {
-        case LIST_MEMBER:
+        case ADD_PRODUCTS:
             return {
                 ...state,
-                list: action.payload
+                list: [action.payload,...state.list]
             };
         default:
             return state;

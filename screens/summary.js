@@ -13,9 +13,10 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Icons } from '../constants/Images'
 import { addressLogo } from '../constants/Images'
 import Checkbox from 'expo-checkbox';
+import { getCheckout } from '../network/checkout'
 
 export default function Summary(props) {
-    const { cartId, id, totalPrice, url } = props.route.params;
+    const { checkoutId, id, totalPrice, url } = props.route.params;
     const [allProds, setProds] = useState([]);
     const [isChecked, setChecked] = useState(false);
     const [totalAmount, setTotalAmount] = useState(() => {
@@ -37,15 +38,54 @@ export default function Summary(props) {
             props.navigation.navigate("Cart", {
                 screen: "Payment2", params: {
                     id: id,
-                    cartId: cartId,
                     totalPrice: totalAmount[2],
                     url: url,
                 }
             })
         }
-    }
+    };
 
     useEffect(() => {
+        setResponse(() => {
+            return true;
+        })
+        getCheckout(checkoutId).then(res => {
+            if (res.id) {
+                setResponse(()=>{
+                    return false;
+                })
+                setProds(() => {
+                    return res.lineItems;
+                });
+                setTotalAmount(()=>{
+                    return[res.subtotalPrice,res.totalTax,res.totalPrice];
+                });
+                setCurrencyCode(()=>{
+                    return [getSymbol(res.totalPriceV2.currencyCode),getSymbol(res.totalPriceV2.currencyCode),getSymbol(res.totalPriceV2.currencyCode)];
+                });
+                setShippingCost(()=>{
+                    if(res.shippingLine == null){
+                        return 0.00;
+                    }
+                    else{
+                        return res?.shippingLine?.price;
+                    }
+                    
+                })
+            } else {
+                setResponse(() => {
+                    return false;
+                })
+                Alert.alert("Server Error", 'Can`t Complete Checkout Now!Please Try Again Later')
+            }
+        }).catch(error => {
+            setResponse(() => {
+                return false;
+            })
+        });
+    }, [checkoutId]);
+
+    /*useEffect(() => {
         setResponse(() => {
             return true;
         })
@@ -56,21 +96,21 @@ export default function Summary(props) {
                 baseObject.estimatedCost.totalTaxAmount.amount,
                 baseObject.estimatedCost.totalAmount.amount];
             });
-
+    
             setCurrencyCode(() => {
                 const baseObject = res?.data?.data.cart;
-
+    
                 return [getSymbol(baseObject.estimatedCost.subtotalAmount.currencyCode),
                 getSymbol(baseObject.estimatedCost.totalTaxAmount.currencyCode),
                 getSymbol(baseObject.estimatedCost.totalAmount.currencyCode)];
             });
-
-
-
+    
+    
+    
             let base = res?.data?.data.cart?.lines?.edges;
-
+    
             if (base.length >= 1) {
-
+    
                 base?.map((value) => {
                     getCartProduct(value.node.attributes[0].value).then(res => {
                         setResponse(() => {
@@ -90,31 +130,31 @@ export default function Summary(props) {
                 }
                 )
             }
-
+    
             else {
                 setResponse(() => {
                     return false;
                 })
                 console.log("no products")
             }
-
+    
         }).catch(error => {
             setResponse(() => {
                 return false;
             })
             console.log(error);
         })
-
+    
         getShippingCost(id).then(res => {
             setShippingCost(() => {
                 return res.data.data.node.availableShippingRates.shippingRates[0].priceV2.amount
             });
         })
-
+    
         return () => {
             setProds([]);
         }
-    }, [cartId]);
+    }, [cartId]);*/
 
     const user = useSelector(state => state.user.user.defaultAddress);
     const fullAddress = user.address1 + " " + user.address2 + " " + user.city + " " + user.country + " " + user.province + " " + user.zip
@@ -143,15 +183,15 @@ export default function Summary(props) {
                 <Block style={styles.body}>
                     <Text style={styles.addressText}>Order Summary</Text>
                     <ScrollView showsVerticalScrollIndicator={false}>
-                        {allProds.map((value, index) => (
+                        {allProds?.map((value, index) => (
                             <Block row space="between" key={index} style={{ padding: 8, margin: 10, borderBottomWidth: 0.5, borderColor: nowTheme.COLORS.MUTED }}>
                                 <Block center>
-                                    {value?.images[0]?.src ? <Image source={{ uri: value.images[0].src }} style={{ height: 50, width: 50 }} /> :
+                                    {value?.variant.image?.src ? <Image source={{ uri: value.variant.image.src }} style={{ height: 50, width: 50 }} /> :
                                         <Image source={addressLogo} style={{ height: 50, width: 50 }} />}
                                 </Block>
                                 <Block style={{ padding: 8 }}>
-                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14,maxWidth:"95%" }}>{value.title}</Text>
-                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 14, paddingTop: 4 }}>{currencyCode[0]}{value.variants[0].price}</Text>
+                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, maxWidth: "95%" }}>{value.title}</Text>
+                                    <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 14, paddingTop: 4 }}>{getSymbol(value.variant.priceV2.currencyCode)}{value.variant.price}</Text>
                                     <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, paddingTop: 4 }}>Quantity {value.quantity}</Text>
                                 </Block>
                             </Block>
@@ -164,7 +204,7 @@ export default function Summary(props) {
                     <Text style={styles.addressText}>Price Details</Text>
                     <Block>
                         <Block row space="between">
-                            <Text style={styles.text}>Price(2 Item)</Text>
+                            <Text style={styles.text}>Price({allProds?.length} Item)</Text>
                             <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}>{currencyCode[0]}{totalAmount[0]}</Text>
                         </Block>
 

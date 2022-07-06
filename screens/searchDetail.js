@@ -14,23 +14,42 @@ import Loader from '../components/Loader';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Icons } from '../constants/Images';
 import { addressLogo } from '../constants/Images';
+import { addOrder } from '../store/orders/actions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function SearchDetail(props) {
-  const dispatch = useDispatch();
+  /*const dispatch = useDispatch();
   const user = useSelector(state => state.user.user);
   const cart = useSelector(state => state.product);
-  const { route, navigation } = props;
-  const [number, setNumber] = useState(1);
-  const [response, setResponse] = useState(() => {
+  const products = useSelector(state => state.order.list);*/
+  const [isAdded, setAdded] = useState(() => {
     return false;
-  })
+  });
+  const { route, navigation } = props;
+  //const [number, setNumber] = useState(1);
+  //const [price, setPrice] = useState(() => {
+  //  return route.params.price;
+  //});
+  route.params.quantity = 1;
 
-  const [price, setPrice] = useState(() => {
-    return route.params.price;
-  })
+  useEffect(() => {
+    (async () => {
+      const productStorage = await AsyncStorage.getItem("products");
+      let allProds = JSON.parse(productStorage);
+      if (allProds) {
+        allProds.map((value) => {
+          if (value.id == route.params.id) {
+            setAdded(() => {
+              return true;
+            })
+          }
+        })
+      }
+    })();
+  }, [route.params]);
 
-  const increaseCounter = () => {
+  /*const increaseCounter = () => {
     setNumber((prevNumber) => {
       return prevNumber + 1;
     });
@@ -52,16 +71,47 @@ export default function SearchDetail(props) {
       if (!route.params.price23) {
         return (route.params.price * number).toFixed(2);
       }
-      else{
+      else {
         return (route.params.price23 * number).toFixed(2);
       }
 
     })
 
-  }, [number]);
+  }, [number]);*/
+
+
+  const goToCart = () => {
+    navigation.navigate("Cart", {
+      screen: "Stores"
+    });
+  }
 
   const addtoCart = () => {
-    setResponse(() => {
+    setAdded(true);
+    (async () => {
+      let productArray = [];
+      const existingProduct = await AsyncStorage.getItem("products");
+      let newProduct = JSON.parse(existingProduct);
+      if (newProduct) {
+        newProduct.map((value) => {
+          if (value.id == route.params.id) {
+            setAdded(true);
+          }
+          else {
+            productArray.push(value);
+          }
+        });
+        productArray.push(route.params);
+        await AsyncStorage.setItem("products", JSON.stringify(productArray));
+      }
+      else {
+        productArray.push(route.params);
+        await AsyncStorage.setItem("products", JSON.stringify(productArray));
+      }
+    })();
+
+
+    /*setResponse(() => {
       return true;
     })
     if (cart.list == null) {
@@ -100,7 +150,7 @@ export default function SearchDetail(props) {
         })
         console.log(error);
       })
-    }
+    }*/
 
   }
   return (
@@ -113,22 +163,22 @@ export default function SearchDetail(props) {
         </TouchableOpacity>
         <Text style={{ fontFamily: nowTheme.FONTFAMILY.MEDIUM, padding: 4, fontSize: 16, marginLeft: "30%" }}>Product Detail</Text>
       </Block>
-      <Loader response={response} />
       <Block middle style={styles.container}>
         <Block style={styles.header}>
           {route.params.image ? <Image source={{ uri: route.params.image }} style={{ height: 150, width: 150, alignSelf: "center" }} /> :
             <Image source={addressLogo} style={{ height: 150, width: 150, alignSelf: "center", resizeMode: "contain" }} />}
 
-          <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14 }}> {route.params.name}</Text>
-          <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD,fontSize: 14 }}>
-            {getSymbol(route.params.code)}{price}
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 16 }}> {route.params.name}</Text>
+          <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 16 }}>
+            {getSymbol(route.params.code)}{route.params.price23? route.params.price23:route.params.price}
           </Text>
         </Block>
 
         <Block style={styles.body}>
 
           <Block row bottom style={{ alignItems: "center" }}>
-            <Text style={styles.text}>{getSymbol(route.params.code)}{price}</Text>
+
+            {/*<Text style={styles.text}>{getSymbol(route.params.code)}{price}</Text>
 
             <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 50, height: 40 }} onPress={decreaseCounter}>
               <Text
@@ -150,15 +200,15 @@ export default function SearchDetail(props) {
               >
                 +
               </Text>
-            </Button>
+      </Button>*/}
 
           </Block>
           {route.params.available ?
-            <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }} onPress={addtoCart}>
+            <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE }} onPress={isAdded ? goToCart : addtoCart}>
               <Text
                 style={{ fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 14, color: nowTheme.COLORS.THEME }}
               >
-                ADD TO CART
+                {isAdded ? "GO TO CART" : "ADD TO CART"}
               </Text>
             </Button> :
             <Button full border style={{ backgroundColor: nowTheme.COLORS.WHITE, borderColor: nowTheme.COLORS.ERROR }} onPress={() => {
@@ -199,17 +249,17 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   body: {
-    flex: 1.5,
+    flex: 1,
   },
   footer: {
-    flex: 8,
-    margin:20,
-    paddingTop:height/20,
+    flex: 6,
+    margin: 15,
+    
   },
   details: {
     width: "90%",
   }, text: {
-    fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 12,
+    fontFamily: nowTheme.FONTFAMILY.BOLD, fontSize: 15,
   },
   texts: {
     fontFamily: nowTheme.FONTFAMILY.REGULAR,

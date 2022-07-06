@@ -1,4 +1,4 @@
-import { SHOW_LOADING } from '../mutations';
+import { SHOW_LOADING,ADD_PRODUCTS } from '../mutations';
 import httpService from '../../network/http-service';
 
 export function processOrder(payload) {
@@ -15,3 +15,10 @@ export function processOrder(payload) {
         }
     };
 };
+
+
+export function addOrder(payload){
+    return function(dispatch) {
+        dispatch({type:ADD_PRODUCTS,payload:payload});
+    }
+}

@@ -264,7 +264,7 @@ const updateCartItems = async(merchandiseId,id,quantity,lineId,cartId)=>{
           merchandiseId:\"${merchandiseId}"\,
           quantity: ${quantity}
         }
-    `
+    `;
     const data = `
     mutation cartLinesUpdate{
         cartLinesUpdate(cartId: \"${cartId}"\, ${variable}) {

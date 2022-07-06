@@ -1,8 +1,6 @@
 import { axios, client } from "./products";
 import { SHOPIFY_STORE, ADMIN_STORE, ADMIN_KEY } from "@env";
 import getSymbolFromCurrency from 'currency-symbol-map'
-import Axios from "axios";
-import getGId, { getGid } from "./admin";
 
 
 const createCheckout = async (lineItems, address1, address2, city, company, firstName, lastName, phone, zip, country, email, token) => {

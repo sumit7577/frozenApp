@@ -14,12 +14,16 @@ import { addressLogo } from "../constants/Images";
 import Checkbox from 'expo-checkbox';
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { getGid } from "../network/admin";
-
+import { useDispatch } from "react-redux";
+import { addProduct } from "../store/products/actions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 
 function Stores(props) {
     const { route, navigation } = props;
+    const dispatch = useDispatch();
     const [isChecked, setChecked] = useState(false);
-    const updatedCart = route?.params?.property;
+    //const updatedCart = route?.params?.property;
     const cart = useSelector(state => state.product.list);
     const [quantity, setQuantity] = useState(0);
     const users = useSelector(state => state.user.user);
@@ -33,14 +37,52 @@ function Stores(props) {
     const [addressIndex, setIndex] = useState(() => {
         return 0;
     })
-    const [allProds, setProds] = useState([]);
+    //const [allProds, setProds] = useState([]);
     const [totalAmount, setTotalAmount] = useState(() => {
         return []
     });
     const [currencyCode, setCurrencyCode] = useState(() => {
         return []
     });
+    const isFocused = useIsFocused();
+
     useEffect(() => {
+        (async () => {
+            const productList = await AsyncStorage.getItem("products");
+            const allProducts = JSON.parse(productList);
+            if (allProducts) {
+                setCart(() => {
+                    return allProducts;
+                });
+            }
+        })();
+
+    }, [isFocused]);
+
+    useEffect(() => {
+        let TotalPrice = 0;
+        cartdetail?.map((value) => {
+            if(value.price23){
+                TotalPrice += value.quantity * value.price23;
+            }
+            else{
+                TotalPrice += value.quantity * value.price;
+            }
+            
+        });
+        setTotalAmount(() => {
+            return [TotalPrice];
+        })
+        setCurrencyCode(() => {
+            return [cartdetail[0]?.code];
+        });
+        (async()=>{
+            await AsyncStorage.setItem("products",JSON.stringify(cartdetail));
+        })();
+    }, [cartdetail]);
+
+
+    /*useEffect(() => {
         setResponse(() => {
             return true;
         });
@@ -66,12 +108,9 @@ function Stores(props) {
                 console.log("no products");
             }
 
-
-
             let base = res?.data?.data.cart?.lines?.edges;
 
             if (base && base.length > 0) {
-
                 base?.map((value) => {
                     getCartProduct(value.node.attributes[0].value).then(res => {
                         setResponse(() => {
@@ -109,18 +148,18 @@ function Stores(props) {
         return () => {
             setProds([]);
         }
-    }, [updatedCart, quantity]);
+    }, [updatedCart, quantity, cart]);*/
 
     const createCart = () => {
         setResponse(() => {
             return true;
         })
         let lineItems = [];
-        if (allProds && allProds.length >= 1) {
-            allProds.map(value => {
+        if (cartdetail && cartdetail.length >= 1) {
+            cartdetail.map(value => {
                 lineItems.push(
                     {
-                        variantId: value.variants[0].id,
+                        variantId: value.variantId,
                         quantity: value.quantity,
                         customAttributes: [{ key: "id", value: value.id }]
                     }
@@ -145,11 +184,11 @@ function Stores(props) {
                             navigation.navigate("Cart", {
                                 screen: "Summary", params: {
                                     id: res.id,
-                                    cartId: cart.data.cartCreate.cart.id,
                                     totalPrice: res.totalPrice,
                                     url: res.webUrl,
+                                    checkoutId:res.id,
                                 }
-                            })
+                            });
                         }
 
                     }
@@ -172,19 +211,19 @@ function Stores(props) {
             description: "Custom discount",
             value_type: "fixed_amount", value: "10.0", amount: "10.00", title: "Custom"
         }
-        if (allProds && allProds.length >= 1) {
-            allProds.map(value => {
+        if (cartdetail && cartdetail.length >= 1) {
+            cartdetail.map(value => {
                 lineItems.push(
                     {
-                        title: value.title,
-                        originalUnitPrice: value.variants[0].price,
+                        title: value.name,
+                        originalUnitPrice: value.price,
                         quantity: value.quantity,
                         appliedDiscount: {
                             description: "wholesale",
-                            value: 5,
-                            amount: 3.74,
+                            value: value.quantity,
+                            amount: value.price23,
                             valueType: "PERCENTAGE",
-                            title: "Test Discount Dont Trust this"
+                            title: "A Wholesale Discount For Net30 Users"
                         },
                         weight: {
                             value: 1,
@@ -212,13 +251,20 @@ function Stores(props) {
                     setResponse(() => {
                         return false;
                     });
+
                     if (res.data.data.draftOrderCreate.userErrors.length < 1) {
+                        (async () => {
+                            await AsyncStorage.removeItem("products");
+                        })();
+                        setCart(()=>{
+                            return [];
+                        })
                         Alert.alert("Order Success", "Order Successfully Placed!");
                     }
                     else {
                         setResponse(() => {
                             return false;
-                        })
+                        });
                         Alert.alert("Order Failed", "Can`t Complete Your order Right Now. Please! Try Again Later");
                     }
                 }
@@ -231,8 +277,21 @@ function Stores(props) {
         }
     }
 
-    const increaseCounter = (merchandiseId, prodouctId, variantId, index, quantity) => {
-        setResponse(true);
+    const increaseCounter = (id, index, quantity) => {
+        if (cartdetail[index].quantity < 999) {
+            setCart((prev) => {
+                const prevArray = [...prev];
+                prevArray[index].quantity += 1;
+                return prevArray;
+            });
+            (async () => {
+                await AsyncStorage.setItem("products", JSON.stringify(cartdetail));
+            })();
+        }
+        else {
+            Alert.alert("Cart Error", "Cart Limit Exceeded!")
+        }
+        /*setResponse(true);
         if (quantity < 999) {
             updateCartItems(merchandiseId, prodouctId, quantity + 1, variantId, cart?.data?.cartCreate.cart.id).then(res => {
                 if (res.data.data.cartLinesUpdate.userErrors == 0) {
@@ -244,11 +303,32 @@ function Stores(props) {
         }
         else {
             Alert.alert("Server Error", "Cart Limit Exceeded!")
-        }
+        }*/
     }
 
-    const decraseCounter = (merchandiseId, prodouctId, variantId, index, quantity) => {
-        setResponse(true);
+    const decraseCounter = (id, index, quantity) => {
+        if (cartdetail[index].quantity > 1) {
+            setCart((prev) => {
+                const prevArray = [...prev];
+                prevArray[index].quantity -= 1;
+                return prevArray;
+            });
+            (async () => {
+                await AsyncStorage.setItem("products", JSON.stringify(cartdetail));
+            })();
+        }
+        else {
+            setCart((prev) => {
+                const prevArray = [...prev];
+                prevArray.splice(index, 1);
+                return prevArray;
+            });
+            (async () => {
+                await AsyncStorage.setItem("products", JSON.stringify(cartdetail));
+            })();
+        }
+
+        /*setResponse(true);
         updateCartItems(merchandiseId, prodouctId, quantity - 1, variantId, cart?.data?.cartCreate.cart.id).then(res => {
             if (res.data.data.cartLinesUpdate.userErrors == 0) {
                 setQuantity(quantity - 1);
@@ -260,7 +340,11 @@ function Stores(props) {
             }
         }).catch(error => {
             console.log(error);
-        })
+        })*/
+    };
+
+    const erorMessage = () => {
+        Alert.alert("Error", 'Please Accept the Terms & Conditions');
     }
 
     if (!cartdetail || cartdetail.length < 1) {
@@ -280,19 +364,19 @@ function Stores(props) {
                 <Block style={styles.container}>
                     <Block style={styles.header} middle>
                         <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnable={true}>
-                            {allProds.map((value, index) => {
+                            {cartdetail.map((value, index) => {
                                 return (
                                     <Block middle row style={styles.prods} key={index}>
-                                        {value?.images[0]?.src ? <Image source={{ uri: value?.images[0]?.src }} style={{ height: 50, width: 50 }} /> :
+                                        {value?.image && value.image != "" ? <Image source={{ uri: value?.image }} style={{ height: 50, width: 50 }} /> :
                                             <Image source={addressLogo} style={{ height: 50, width: 50 }} />}
                                         <Block>
                                             <Text style={{ maxWidth: width * 0.4, fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 12, paddingLeft: 5, paddingVertical: 10, }}>
-                                                {value?.title}</Text>
-                                            <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, paddingLeft: 5, }}>{getSymbol(value.variants[0].priceV2.currencyCode)}{value.variants[0]?.price}</Text>
+                                                {value?.name}</Text>
+                                            <Text style={{ fontFamily: nowTheme.FONTFAMILY.REGULAR, fontSize: 14, paddingLeft: 5, }}>{getSymbol(value.code)}{value.price23? value.price23:value.price}</Text>
                                         </Block>
 
                                         <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 40, height: 40 }} onPress={() => {
-                                            decraseCounter(value.variants[0].id, value.id, value.variantId, index, value.quantity);
+                                            decraseCounter(value.id, index, value.quantity);
                                         }}>
                                             <Text
                                                 style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
@@ -306,7 +390,7 @@ function Stores(props) {
                                         <Text style={styles.text}>{value.quantity}</Text>
 
                                         <Button small style={{ backgroundColor: nowTheme.COLORS.THEME, width: 40, height: 40 }} onPress={() => {
-                                            increaseCounter(value.variants[0].id, value.id, value.variantId, index, value.quantity);
+                                            increaseCounter(value.id, index, value.quantity);
                                         }}>
                                             <Text
                                                 style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
@@ -324,14 +408,14 @@ function Stores(props) {
                     </Block>
 
                     <Block style={styles.body}>
-                        <Block style={{ flex: 3, padding: 5, marginRight: 8 }} right>
+                        <Block style={{ flex: 1, padding: 5, marginRight: 8 }} right>
 
                             <Block row style={styles.bill}>
                                 <Text style={styles.texts}>SUB TOTAL</Text>
-                                <Text style={styles.texts}>{currencyCode[0]}{totalAmount[0]}</Text>
+                                <Text style={styles.texts}>{getSymbol(currencyCode[0])}{totalAmount[0].toFixed(2)}</Text>
                             </Block>
 
-                            <Block row style={styles.bill}>
+                            {/*<Block row style={styles.bill}>
                                 <Text style={styles.texts}>VAT</Text>
                                 <Text style={styles.texts}>{currencyCode[1]}{totalAmount[1]}</Text>
                             </Block>
@@ -339,7 +423,7 @@ function Stores(props) {
                             <Block row style={styles.bill}>
                                 <Text style={styles.texts}>TOTAL</Text>
                                 <Text style={styles.texts}>{currencyCode[2]}{totalAmount[2]}</Text>
-                            </Block>
+                        </Block>*/}
 
                         </Block>
 
@@ -422,7 +506,7 @@ function Stores(props) {
                     </Block>
 
                     <Block style={styles.footer} center>
-                        {users.tags.includes("net30") ? <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={termCheckout}>
+                        {users.tags.includes("net30") ? <Button full border style={{ backgroundColor: nowTheme.COLORS.THEME }} onPress={isChecked ? termCheckout : erorMessage}>
                             <Text
                                 style={{ fontFamily: nowTheme.FONTFAMILY.BOLD }}
                                 size={12}
