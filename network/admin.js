@@ -1,7 +1,7 @@
 import Axios from "axios";
 import { ADMIN_STORE, ADMIN_KEY } from "@env";
 
-const getGid = async (lineItems, discount, customerId, email) => {
+const getGid = async (lineItems, discount, customerId, email,note) => {
   var globalResponse;
   const variable = `{
         customers(first: 10, query:"(email:${email})") {
@@ -24,7 +24,7 @@ const getGid = async (lineItems, discount, customerId, email) => {
     const variable2 = {
       "input": {
         "customerId": response.data.data.customers.edges[0].node.id,
-        "note": "Test draft order",
+        "note": note,
         "email": email,
         "taxExempt": true,
         "appliedDiscount": {

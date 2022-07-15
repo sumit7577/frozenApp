@@ -3,11 +3,11 @@ import { SHOPIFY_STORE, ADMIN_STORE, ADMIN_KEY } from "@env";
 import getSymbolFromCurrency from 'currency-symbol-map'
 
 
-const createCheckout = async (lineItems, address1, address2, city, company, firstName, lastName, phone, zip, country, email, token) => {
+const createCheckout = async (lineItems, address1, address2, city, company, firstName, lastName, phone, zip, country, email, token,note) => {
   const response = await client.checkout.create({
     email: email, lineItems: [],
     shippingAddress: { address1, address2, city, company, country, firstName, lastName, phone, zip },
-    note: "",
+    note: note,
   });
 
   if (response.id) {

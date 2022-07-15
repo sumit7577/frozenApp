@@ -18,11 +18,15 @@ import { useDispatch } from "react-redux";
 import { addProduct } from "../store/products/actions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
+import { View } from "react-native-web";
 
 function Stores(props) {
     const { route, navigation } = props;
     const dispatch = useDispatch();
     const [isChecked, setChecked] = useState(false);
+    const [note, setNote] = useState(() => {
+        return "";
+    })
     //const updatedCart = route?.params?.property;
     const cart = useSelector(state => state.product.list);
     const [quantity, setQuantity] = useState(0);
@@ -175,7 +179,7 @@ function Stores(props) {
 
         if (lineItems.length >= 1) {
             createCheckout(lineItems, addresses.address1, addresses?.address2, addresses.city, addresses?.company,
-                users.defaultAddress.firstName, users.defaultAddress.lastName, users?.defaultAddress.phone, addresses?.zip, addresses.country, users?.email, users.token).then(
+                users.defaultAddress.firstName, users.defaultAddress.lastName, users?.defaultAddress.phone, addresses?.zip, addresses.country, users?.email, users.token, note).then(
                     res => {
                         setResponse(() => {
                             return false;
@@ -246,7 +250,7 @@ function Stores(props) {
             Alert.alert("No Products");
         };
         if (lineItems.length >= 1) {
-            getGid(lineItems, discount, users.id, users.email).then(
+            getGid(lineItems, discount, users.id, users.email, note).then(
                 res => {
                     setResponse(() => {
                         return false;
@@ -258,6 +262,9 @@ function Stores(props) {
                         })();
                         setCart(() => {
                             return [];
+                        });
+                        setNote(() => {
+                            return "";
                         })
                         Alert.alert("Order Success", "Order Successfully Placed!");
                     }
@@ -349,8 +356,16 @@ function Stores(props) {
 
     if (!cartdetail || cartdetail.length < 1) {
         return (
-            <SafeAreaView style={{ alignItems: "center", position: "absolute", top: height / 4, left: width / 8 }}>
-                <Image source={noProduct} style={{ resizeMode: "contain", height: 300, width: 300 }} />
+            <SafeAreaView style={{ height: "100%" }}>
+                <Block middle style={{ height: "100%" }}>
+                    <Text style={{ fontSize: 18, fontFamily: nowTheme.FONTFAMILY.REGULAR }}>You have no items in your cart</Text>
+                    <TouchableOpacity onPress={() => {
+                        navigation.navigate("Home");
+                    }}>
+                        <Text style={{ fontFamily: nowTheme.FONTFAMILY.BOLD2, color: "blue", fontSize: 10,padding:5 }}>Continue shopping</Text>
+                    </TouchableOpacity>
+
+                </Block>
             </SafeAreaView>
         )
     }
@@ -471,12 +486,16 @@ function Stores(props) {
                             <Block style={{ flex: 4, margin: 10, justifyContent: "space-between", marginTop: "10%" }}>
 
                                 <Block style={{ borderWidth: 2, borderColor: nowTheme.COLORS.THEME, height: height / 8, justifyContent: "center", borderRadius: 5 }}>
-                                    <Text style={{ textAlign: "center", color: nowTheme.COLORS.MUTED, fontSize: 12, fontFamily: nowTheme.FONTFAMILY.REGULAR, paddingHorizontal: 20 }}>
-                                        include any purchase order numbers, notes or special instructions for your order here</Text>
+                                    <Input placeholder="Include any purchase order numbers, notes or special instructions for your order here" multiline={true} style={{ height: "100%", width: "100%", borderWidth: 0 }}
+                                        onChangeText={(text) => {
+                                            setNote(() => {
+                                                return text
+                                            });
+                                        }} />
                                 </Block>
 
                                 <Block>
-                                    
+
                                     <Text style={{ textAlign: "center", fontFamily: nowTheme.FONTFAMILY.MEDIUM, fontSize: 10, paddingHorizontal: 20, marginTop: "5%" }}>
                                         By placing an order you agree to our terms & conditions of sale & use of equipment.</Text>
                                 </Block>

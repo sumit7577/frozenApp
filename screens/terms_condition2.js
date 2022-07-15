@@ -6,11 +6,17 @@ import { Block } from 'galio-framework';
 import { nowTheme } from '../constants';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Icons } from '../constants/Images';
+import Loader from '../components/Loader';
+import { useState } from 'react';
 
 export default function TermCondition(props) {
+  const [response,setResponse] = useState(()=>{
+    return true;
+  });
   return (
     <>
       <Block row style={{ padding: 4, margin:8,marginTop:23,marginBottom:-25 }}>
+        <Loader response={response} />
         <TouchableOpacity onPress={() => {
           props.navigation.pop()
         }}>
@@ -20,6 +26,11 @@ export default function TermCondition(props) {
       <WebView
         style={styles.container}
         source={{ uri: 'https://www.frozenstore.com/pages/terms-conditions-of-sale' }}
+        onLoadEnd={()=>{
+          setResponse(()=>{
+            return false;
+          })
+        }}
       />
     </>
   )
